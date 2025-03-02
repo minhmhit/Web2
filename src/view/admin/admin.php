@@ -15,9 +15,9 @@
         @import url('https://fonts.googleapis.com/css2?family=Sen:wght@400..800&display=swap');
     </style>
     <!-- css -->
-    <link rel="stylesheet" href="asset\css\admin.css" />
-    <link rel="stylesheet" href="asset\css\admin-responsive.css">
-    <link rel="stylesheet" href="asset\css\toast-msg.css">
+    <link rel="stylesheet" href="..\assets\css\admin.css" />
+    <link rel="stylesheet" href="..\assets\css\admin-responsive.css">
+    <link rel="stylesheet" href="..\assets\css\toast-msg.css">
     <title>Store Manager</title>
 </head>
 
