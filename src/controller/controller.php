@@ -1,7 +1,7 @@
 <?php 
 
 // require header
-include_once "view/header.php";
+include_once("view/header.php");
 
 if(isset($_GET['pg'])&&($_GET['pg'])!=""){
 
@@ -12,26 +12,26 @@ if(isset($_GET['pg'])&&($_GET['pg'])!=""){
             // }
             // có thể chuyển trang bằng get php
             // include product
-            include_once "view/product.php";
+            include_once("view/home.php");
             break;
 
             
         
         default:
             //include home
-            include_once "view/home.php";
+            include_once("view/home.php");
 
             break;
     }
 }else{
-    include_once "view/home.php";
+    include_once("view/home.php");
 
 
 }
 
 
 // include footer
-include_once "view/footer.php";
+include_once("view/footer.php");
 
 
 ?>

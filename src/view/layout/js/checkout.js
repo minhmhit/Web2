@@ -43,7 +43,7 @@ function showCartCheckout() {
             cartItemhtml += `
                     <div class="modal-container cart-item" data-productID="${product.id}">
                         <div class="img-container">
-                            <img src="${product.image}" onerror="this.src='./asset/img/catalogue/coming-soon.jpg'">
+                            <img src="${product.image}" onerror="this.src='.view/layout/asset/img/catalogue/coming-soon.jpg'">
                         </div>
                         <div class="cart-item-info">
                             <p class="display-product-name">${product.name}</p>

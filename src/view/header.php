@@ -10,10 +10,10 @@
         @import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Sen:wght@400..800&display=swap');
     </style>
-    <link rel="icon" href="asset\img\logo.jpg" type="image/x-icon">
-    <link rel="stylesheet" href="asset\css\main.css">
-    <link rel="stylesheet" href="asset\css\main-responsive.css">
-    <link rel="stylesheet" href="asset\css\toast-msg.css">
+    <link rel="icon" href="asset/img/logo.jpg" type="image/x-icon">
+    <link rel="stylesheet" href="view/layout/asset/css/main.css">
+    <link rel="stylesheet" href="view/layout/asset/css/main-responsive.css">
+    <link rel="stylesheet" href="view/layout/asset/css/toast-msg.css">
     <script src="https://kit.fontawesome.com/e8d4a112b7.js" crossorigin="anonymous"></script>
 </head>
 

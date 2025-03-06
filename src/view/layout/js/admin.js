@@ -55,7 +55,7 @@ function showProductList(vitri, products = []) {
                 <td>${i + 1}</td>
                 <td>${products[i].id}</td>
                 <td>
-                    <img src="../${products[i].image}" alt="${products[i].name}" onerror="this.src='./asset/img/catalogue/coming-soon.jpg'">
+                    <img src="../${products[i].image}" alt="${products[i].name}" onerror="this.src='./view/layout/asset/img/catalogue/coming-soon.jpg'">
                 </td>
                 <td class="align-left">${products[i].name}</td>
                 <td>${vnd(products[i].price)}</td>
@@ -173,7 +173,7 @@ function addProduct() {
     const brand = document.querySelector("#productBrand").value;
     const sex = document.querySelector("#sex").value;
     // const image = document.getElementById("productImage").files[0]
-    //     ? "./asset/img/catalogue/" +
+    //     ? ".view/layout/view/layout/asset/img/catalogue/" +
     //     document.getElementById("productImage").files[0].name
     //     : "";
     const image = document.querySelector("#productImage").value;
@@ -224,7 +224,7 @@ function resetForm() {
     document.querySelector("#productCategory").value = "Sneaker";
     document.querySelector("#productBrand").value = "Nike";
     document.querySelector("#sex").value = "M";
-    document.getElementById("productImage").src = "./asset/img/temp.jpg";
+    document.getElementById("productImage").src = ".view/layout/asset/img/temp.jpg";
 
     // Bỏ chọn tất cả checkbox size
     const checkboxes = document.querySelectorAll("input[name='size']");
@@ -470,7 +470,7 @@ function updateProduct(id) {
     const brand = document.querySelector("#productBrand").value;
     const sex = document.querySelector("#sex").value;
     const image = document.getElementById("productImage").files[0]
-        ? "./asset/img/catalogue/" +
+        ? ".view/layout/asset/img/catalogue/" +
         document.getElementById("productImage").files[0].name
         : originalProduct.image; // Giữ lại hình ảnh cũ nếu không chọn mới
 
@@ -508,7 +508,7 @@ function updateProduct(id) {
     resetForm();
     document.querySelector(".add h2").textContent = "ADD NEW PRODUCT";
     document.querySelector("#form").textContent = "ADD";
-    document.querySelector(".form-group img").src = "./asset/img/temp.jpg";
+    document.querySelector(".form-group img").src = ".view/layout/asset/img/temp.jpg";
     document.querySelector("#form").onclick = addProduct; // Gán lại sự kiện cho nút
 }
 // Tìm kiếm sản phẩm

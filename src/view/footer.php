@@ -54,10 +54,10 @@
                 </div>
             </div>
         </footer>
-        <script src="js\initialization.js"></script>
-        <script src="js\main.js"></script>
-        <script src="js\checkout.js"></script>
-        <script src="js\toast-msg.js"></script>
+        <script src="view/layout/js/initialization.js"></script>
+        <script src="view/layout/js/main.js"></script>
+        <script src="view/layout/js/checkout.js"></script>
+        <script src="view/layout/js/toast-msg.js"></script>
     </div>
 </body>
 
