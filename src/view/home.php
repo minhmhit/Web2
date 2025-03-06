@@ -1,4 +1,4 @@
-<?php require_once('header.php'); ?>
+<?php require_once("header.php"); ?>
 
 <main>
             <!-- TOAST -->
@@ -497,13 +497,13 @@
                                             </div>
                                             <div class="cardsthanhtoan">
                                                 <div class="img-container">
-                                                    <img src="view/layout/view/layout/asset/img/card/mc.png" alt="">
+                                                    <img src="view/layout/asset/img/card/mc.png" alt="">
                                                 </div>
                                                 <div class="img-container">
-                                                    <img src="view/layout/view/layout/asset/img/card/pp.png" alt="">
+                                                    <img src="view/layout/asset/img/card/pp.png" alt="">
                                                 </div>
                                                 <div class="img-container">
-                                                    <img src="view/layout/view/layout/asset/img/card/vi.png" alt="">
+                                                    <img src="view/layout/asset/img/card/vi.png" alt="">
                                                 </div>
                                             </div>
                                         </form>
