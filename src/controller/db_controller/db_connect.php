@@ -1,7 +1,7 @@
 <?php
 
 $host = 'localhost'; 
-$dbname = 'broshoes'; 
+$dbname = 'bangiay_db'; 
 $username = 'root'; 
 $password = ''; 
 
