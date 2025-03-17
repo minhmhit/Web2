@@ -96,7 +96,7 @@ function updateMenuVisibility() {
 }
 
 // For signup form
-function handleSignupForm() {
+function handleSignupForm(event) {
     event.preventDefault();
 
     let username = document.getElementById("username-signup").value.trim();
