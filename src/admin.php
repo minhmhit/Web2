@@ -15,9 +15,9 @@
         @import url('https://fonts.googleapis.com/css2?family=Sen:wght@400..800&display=swap');
     </style>
     <!-- css -->
-    <link rel="stylesheet" href="..\assets\css\admin.css" />
-    <link rel="stylesheet" href="..\assets\css\admin-responsive.css">
-    <link rel="stylesheet" href="..\assets\css\toast-msg.css">
+    <link rel="stylesheet" href="view/layout/asset/css/admin.css" />
+    <link rel="stylesheet" href="view/layout/asset/css/admin-responsive.css" />
+    <link rel="stylesheet" href="view/layout/asset/css/toast-msg.css" />
     <title>Store Manager</title>
 </head>
 
@@ -31,7 +31,7 @@
         </div>
         <div class="admin-sidebar" id="admin-sidebar">
             <div class="admin-sidebar__top">
-                <a class="img-container" href=""><img class="header-logo" src="asset\img\logo.jpg" alt="Bro Shoes"></a>
+                <a class="img-container" href=""><img class="header-logo" src="view/layout/asset/img/logo.jpg" alt="Bro Shoes"></a>
             </div>
             <aside class="admin-sidebar__content">
                 <ul>
@@ -58,7 +58,7 @@
                 </ul>
                 <ul>
                     <li><a><i class="fa-solid fa-user-tie"></i><span class="display-username"></span></a></li>
-                    <li><a href="index.html"><i class="fa-regular fa-circle-left"></i><span>RETURN</span></a></li>
+                    <li><a href="index.php"><i class="fa-regular fa-circle-left"></i><span>RETURN</span></a></li>
                     <li><a onclick="logOut()"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>LOG OUT</span></a></li>
                 </ul>
             </aside>
@@ -82,7 +82,7 @@
                                 <div class="box">
                                     <h2 class="display-user-count">0</h2>
                                     <div class="on-box">
-                                        <img src="asset/img/admin-homepage/users.png" alt="" style=" width: 200px;">
+                                        <img src="view/layout/asset/img/admin-homepage/users.png" alt="" style=" width: 200px;">
                                         <h3>ACTIVE USERS</h3>
                                     </div>
                                 </div>
@@ -90,7 +90,7 @@
                             <div class="card-single">
                                 <div class="box">
                                     <div class="on-box">
-                                        <img src="asset/img/admin-homepage/shopping.png" alt="" style=" width: 200px;">
+                                        <img src="view/layout/asset/img/admin-homepage/shopping.png" alt="" style=" width: 200px;">
                                         <h2 class="display-product-count">0</h2>
                                         <h3>PRODUCTS ON SALE</h3>
                                     </div>
@@ -100,7 +100,7 @@
                                 <div class="box">
                                     <h2 class="display-total-income">0</h2>
                                     <div class="on-box">
-                                        <img src="asset/img/admin-homepage/income.png" alt="" style=" width: 200px;">
+                                        <img src="view/layout/asset/img/admin-homepage/income.png" alt="" style=" width: 200px;">
                                         <h3>TOTAL INCOME</h3>
                                     </div>
                                 </div>
@@ -547,9 +547,9 @@
             </section>
         </main>
     </section>
-    <script src="js\initialization.js"></script>
-    <script src="js\toast-msg.js"></script>
-    <script src="js\admin.js"></script>
+    <script src="view/layout/js/initialization.js"></script>
+    <script src="view/layout/js/toast-msg.js"></script>
+    <script src="view/layout/js/admin.js"></script>
 </body>
 
 </html>

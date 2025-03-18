@@ -1,7 +1,9 @@
 <?php 
-
-// require header
+// require header;
+include_once("controller/db_controller/api.php");
 include_once("view/header.php");
+
+
 
 if(isset($_GET['pg'])&&($_GET['pg'])!=""){
 
@@ -14,6 +16,8 @@ if(isset($_GET['pg'])&&($_GET['pg'])!=""){
             // include product
             include_once("view/home.php");
             break;
+        case 'admin':
+
 
             
         

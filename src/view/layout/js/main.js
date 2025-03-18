@@ -1192,9 +1192,9 @@ window.onload = () => {
 // BANNER - BEGIN /////////////////////////////////////////////////////
 
 const imageArray = [
-    'asset/img/banner/banner1.jpg',
-    'asset/img/banner/banner2.jpg',
-    'asset/img/banner/banner3.jpg'
+    '/Web2/src/view/layout/asset/img/banner/banner1.jpg',
+    '/Web2/src/view/layout/asset/img/banner/banner2.jpg',
+    '/Web2/src/view/layout/asset/img/banner/banner3.jpg'
 ];
 
 const bannerImagesContainer = document.querySelector('.banner-images');

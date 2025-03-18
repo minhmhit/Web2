@@ -1,3 +1,21 @@
+// API URLs
+const API_BASE_URL = "http://localhost/Web2/src/controller/db_controller/api.php?action=";
+
+// Fetch dữ liệu từ API
+async function fetchData(action, method = "GET", body = null) {
+    try {
+        const options = { method, headers: { "Content-Type": "application/json" } };
+        if (body) options.body = JSON.stringify(body);
+        
+        const response = await fetch(API_BASE_URL + action, options);
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Fetch error:", error);
+        return [];
+    }
+}
+
 // phân trang hiển thị
 function togglePage(elementId) {
     let selectedPage = document.getElementById(elementId);
@@ -37,6 +55,21 @@ function togglePage(elementId) {
     window.scrollTo({ top: 0 });
 }
 
+// Lấy danh sách sản phẩm từ API
+async function getProducts() {
+    return await fetchData("get_products");
+}
+
+// Lấy danh sách tài khoản từ API
+async function getAccounts() {
+    return await fetchData("get_accounts");
+}
+
+// Lấy danh sách đơn hàng từ API
+async function getOrders() {
+    return await fetchData("get_orders");
+}
+
 function toggleSideBar() {
     const sideBar = document.getElementById("admin-sidebar");
     sideBar.classList.toggle("open");
@@ -45,43 +78,39 @@ function toggleSideBar() {
 //thêm dòng này
 let productNeedRender = []; // biến để lưu danh sách hiển thị
 //sửa hàm này
-function showProductList(vitri, products = []) {
-    productNeedRender = products; // Cập nhật biến toàn cục mỗi lần gọi
-    var s = "";
-    var dem = 0;
-    for (let i = vitri; i < products.length; i++) {
-        s += `
+async function showProductList() {
+    let products = await getProducts();
+    if (!Array.isArray(products)) {
+        console.error("Invalid products data:", products);
+        return;
+    }
+    
+    let html = "";
+    products.forEach((product, index) => {
+        html += `
             <tr>
-                <td>${i + 1}</td>
-                <td>${products[i].id}</td>
+                <td>${index + 1}</td>
+                <td>${product.id}</td>
+                <td><img src="../${product.image}" alt="${product.name}"></td>
+                <td class="align-left">${product.name}</td>
+                <td>${product.price}</td>
+                <td>${product.category}</td>
+                <td class="align-left">${product.brand}</td>
+                <td>${product.sex}</td>
+                <td>${Array.isArray(product.size) ? product.size.join(", ") : "N/A"}</td>
                 <td>
-                    <img src="../${products[i].image}" alt="${products[i].name}" onerror="this.src='./view/layout/asset/img/catalogue/coming-soon.jpg'">
-                </td>
-                <td class="align-left">${products[i].name}</td>
-                <td>${vnd(products[i].price)}</td>
-                <td>${products[i].category}</td>
-                <td class="align-left">${products[i].brand}</td>
-                <td>${products[i].sex}</td>
-                <td>${products[i].size}</td>
-                <td>
-                    <button class="details-btn" onclick="editProduct('${products[i].id}')" style="display: ${products[i].isDeleted ? "none" : ""}">
+                    <button class="details-btn" onclick="editProduct('${product.id}')">
                         <i class="fa-solid fa-pen-to-square"></i>Edit</button>
-                    <button class="delete-btn details-btn" onclick="deleteproduct('${products[i].id}')" style="display: ${products[i].isDeleted ? "none" : ""}">
+                    <button class="delete-btn details-btn" onclick="deleteProduct('${product.id}')">
                         <i class="fa-solid fa-trash"></i></button>
-                    <button class="details-btn restore-btn" onclick="restoreproduct('${products[i].id}')" style="display: ${products[i].isDeleted ? "" : "none"}">
-                        <i class="fa-solid fa-trash-can-arrow-up"></i></button>
                 </td>
             </tr>`;
-
-        dem++;
-        if (dem == PRODUCT_PER_PAGE) {
-            break;
-        }
-    }
-
-    document.getElementById("products").innerHTML = s;
+    });
+    document.getElementById("products").innerHTML = html;
     setPagination(products);
 }
+
+
 const PRODUCT_PER_PAGE = 10;
 //sửa hàm này
 function setPagination(arr = []) {
@@ -102,117 +131,40 @@ function setActivePage(pageNumber) {
         btn.classList.toggle("active", index + 1 === pageNumber);
     });
 }
-//sửa dòng gần cuối filterProduct đổi hàm showProductSearch thành showProductList
 
-// let products = localStorage.getItem("products")
-//   ? JSON.parse(localStorage.getItem("products")).filter(
-//       (item) => item.isDeleted == false
-//     )
-//   : [];
 
-// function showProductList(vitri,
-//     products = localStorage.getItem("products") ?
-//         JSON.parse(localStorage.getItem("products")).filter(item => item.isDeleted == false)
-//         : []) {
-//     var s = "";
-//     var dem = 0;
-//     for (let i = vitri; i < products.length; i++) {
-
-//         s += `
-//             <tr>
-//                 <td>${i + 1}</td>
-//                 <td>${products[i].id}</td>
-//                 <td>
-//                     <img src="../${products[i].image}" alt="${products[i].name}">
-//                 </td>
-//                 <td class="align-left">${products[i].name}</td>
-//                 <td>${vnd(products[i].price)}</td>
-//                 <td>${products[i].category}</td>
-//                 <td class="align-left">${products[i].brand}</td>
-//                 <td>${products[i].sex}</td>
-//                 <td>${products[i].size}</td>
-//                 <td>
-//                     <button class="details-btn" onclick="editProduct('${products[i].id}')"><i class="fa-solid fa-pen-to-square"></i>Edit</button>
-//                     <button class="delete-btn details-btn" onclick="deleteproduct('${products[i].id}')"><i class="fa-solid fa-trash"></i></button>
-//                 </td>
-//             </tr>`;
-
-//         dem++;
-//         if (dem == PRODUCT_PER_PAGE) {
-//             break;
-//         }
-//     }
-
-//     document.getElementById("products").innerHTML = s;
-//     setPagination(products);
-// }
-
-// const PRODUCT_PER_PAGE = 10;
-
-// function setPagination(arr = []) {
-//     let sotrang = Math.ceil(arr.length / PRODUCT_PER_PAGE);
-//     let button = "";
-//     for (let i = 1; i <= sotrang; i++) {
-//         vitri = (i - 1) * PRODUCT_PER_PAGE;
-//         button +=
-//             '<button class="active" onClick="showProductList(' +
-//             vitri +
-//             ')">' +
-//             i +
-//             "</button>";
-//     }
-//     document.querySelector(".listPage").innerHTML = button;
-// }
-
-function addProduct() {
-    let products = JSON.parse(localStorage.getItem("products"));
-    const id = ID_TYPE[1] + (products.length + 1);
+async function addProduct() {
     const name = document.querySelector("#productName").value;
     const price = document.querySelector("#productPrice").value;
     const category = document.querySelector("#productCategory").value;
     const brand = document.querySelector("#productBrand").value;
     const sex = document.querySelector("#sex").value;
-    // const image = document.getElementById("productImage").files[0]
-    //     ? ".view/layout/view/layout/asset/img/catalogue/" +
-    //     document.getElementById("productImage").files[0].name
-    //     : "";
     const image = document.querySelector("#productImage").value;
-    console.log(image);
-
-    // Lấy giá trị các size đã chọn
+    
+    // Lấy danh sách size đã chọn
     const selectedSizes = document.querySelectorAll("input[name='size']:checked");
-    const sizeValues = Array.from(selectedSizes).map((checkbox) =>
-        Number(checkbox.value)
-    );
-    Array.from(sizeValues);
+    const sizeValues = Array.from(selectedSizes).map(checkbox => Number(checkbox.value));
 
-    // Kiểm tra nếu có size được chọn, nếu không thì thông báo
     if (!name || !price || !category) {
         toastMsg({ title: "ERROR", message: "Please fill in all the fields.", type: "error" });
-        // customAlert("Bạn chưa nhập đủ thông tin sản phẩm", "warning");
         return false;
     }
 
-    // Tạo đối tượng sản phẩm mới
-    const newProduct = {
-        id: id,
+    const productData = {
         name: name,
         price: price,
         category: category,
         brand: brand,
         sex: sex,
         image: image,
-        size: sizeValues,
-        isDeleted: false,
+        size: sizeValues
     };
 
-    products.push(newProduct);
-    // Lưu lại vào localStorage
-    localStorage.setItem("products", JSON.stringify(products));
+    const response = await fetchData("add_product", "POST", productData);
+    console.log(response);
     toastMsg({ title: "SUCCESS", message: "Product added successfully!", type: "success" });
-    // customAlert("Sản phẩm đã được thêm thành công!", "success");
     resetForm();
-    showProductList(0, PRODUCTS);
+    showProductList();
 }
 
 function resetForm() {
@@ -252,8 +204,12 @@ function click() {
     });
 }
 
-document.addEventListener("DOMContentLoaded", click);
-
+document.addEventListener("DOMContentLoaded", () => {
+    showProductList();
+    renderAccounts();
+    renderOrders();
+    click();
+});
 // đổi loại sản phẩm sang kid thì đổi size
 function changeSize() {
     const productCategory = document.querySelector("#productCategory");
@@ -312,41 +268,22 @@ document.querySelectorAll("#normal input[name=size]").forEach((checkbox) => {
 /* hết thêm sản phẩm */
 
 //Xóa sản phẩm
-function deleteproduct(productiddelete) {
-    let products = JSON.parse(localStorage.getItem("products")) || [];
-    let vitri;
-    for (let i = 0; i < products.length; i++) {
-        if (products[i].id == productiddelete) {
-            if (confirm("Deletet this product?")) {
-                products[i].isDeleted = true;
-            }
-            vitri = Math.floor(i / PRODUCT_PER_PAGE) * PRODUCT_PER_PAGE;
-        }
-    }
-
-    localStorage.setItem("products", JSON.stringify(products));
-    const newProducts = validData ? JSON.parse(validData).filter (product => product.isDeleted === false) : [];
-
-    showProductList(vitri, newProducts);
+async function deleteProduct(id) {
+    if (!confirm("Delete this product?")) return;
+    
+    const response = await fetchData("delete_product", "PUT", { id });
+    console.log(response);
+    toastMsg({ title: "SUCCESS", message: "Product deleted successfully!", type: "success" });
+    showProductList();
 }
 
-function restoreproduct(id) {
-    let products = JSON.parse(localStorage.getItem("products")) || [];
-    let vitri;
-    for (let i = 0; i < products.length; i++) {
-        if (products[i].id == id) {
-            if (confirm("Restore this product?")) {
-                products[i].isDeleted = false;
-            }
-            vitri = Math.floor(i / PRODUCT_PER_PAGE) * PRODUCT_PER_PAGE;
-        }
-    }
-
-    localStorage.setItem("products", JSON.stringify(products));
-    const validData = localStorage.getItem("products");
-    const newProducts = validData ? JSON.parse(validData).filter (product => product.isDeleted === true) : [];
-
-    showProductList(vitri, newProducts);
+async function restoreProduct(id) {
+    if (!confirm("Restore this product?")) return;
+    
+    const response = await fetchData("restore_product", "PUT", { id });
+    console.log(response);
+    toastMsg({ title: "SUCCESS", message: "Product restored successfully!", type: "success" });
+    showProductList();
 }
 
 document.getElementById("showProducts").addEventListener("input", filterProducts);
@@ -459,58 +396,48 @@ function editProduct(id) {
 }
 
 // Cập nhật sản phẩm
-function updateProduct(id) {
-    const products = JSON.parse(localStorage.getItem("products")) || [];
-    const productIdx = products.findIndex(product => product.id === id);
-    const originalProduct = products[productIdx];
-
+async function updateProduct(id) {
     const name = document.querySelector("#productName").value;
     const price = document.querySelector("#productPrice").value;
     const category = document.querySelector("#productCategory").value;
     const brand = document.querySelector("#productBrand").value;
     const sex = document.querySelector("#sex").value;
-    const image = document.getElementById("productImage").files[0]
-        ? ".view/layout/asset/img/catalogue/" +
-        document.getElementById("productImage").files[0].name
-        : originalProduct.image; // Giữ lại hình ảnh cũ nếu không chọn mới
+    const imageInput = document.getElementById("productImage");
+    const image = imageInput.files[0] ? ".view/layout/asset/img/catalogue/" + imageInput.files[0].name : null;
 
+    // Lấy danh sách size đã chọn
     const selectedSizes = document.querySelectorAll("input[name='size']:checked");
-    const sizeValues = Array.from(selectedSizes).map((checkbox) =>
-        Number(checkbox.value)
-    );
+    const sizeValues = Array.from(selectedSizes).map(checkbox => Number(checkbox.value));
 
     if (!name || !price || !category) {
-        // customAlert("Bạn chưa nhập đủ thông tin sản phẩm", "warning");
-        toastMsg({ title: "SUCCESS", message: "Please fill in the fields.", type: "error" });
+        toastMsg({ title: "ERROR", message: "Please fill in all the fields.", type: "error" });
         return false;
     }
 
-    const updatedProduct = {
+    const productData = {
+        id: id,
         name: name,
         price: price,
         category: category,
         brand: brand,
         sex: sex,
         image: image,
-        size: sizeValues,
+        size: sizeValues
     };
 
-    // Cập nhật vào mảng sản phẩm
-    products[productIdx] = { ...originalProduct, ...productupdatedProduct };
-
-    // Lưu lại vào localStorage
-    localStorage.setItem("products", JSON.stringify(products));
-
-    toastMsg({ title: "SUCCESS", message: "Product edited successfully!", type: "success" });
-    // customAlert("Sản phẩm đã được chỉnh sửa thành công!", "success");
-
-    // Reset form và thay đổi lại nút
+    const response = await fetchData("update_product", "PUT", productData);
+    console.log(response);
+    toastMsg({ title: "SUCCESS", message: "Product updated successfully!", type: "success" });
     resetForm();
+    showProductList();
+    
+    // Reset lại form và nút
     document.querySelector(".add h2").textContent = "ADD NEW PRODUCT";
     document.querySelector("#form").textContent = "ADD";
     document.querySelector(".form-group img").src = ".view/layout/asset/img/temp.jpg";
-    document.querySelector("#form").onclick = addProduct; // Gán lại sự kiện cho nút
+    document.querySelector("#form").onclick = addProduct;
 }
+
 // Tìm kiếm sản phẩm
 
 /*CUSTOM ALERT BOX*/
@@ -1226,7 +1153,7 @@ function displayHomepageStatistic() {
 
 function logOut() {
     localStorage.removeItem("currentuser");
-    window.location.href = "index.html";
+    window.location.href = "index.php";
 }
 
 // HOMEPAGE - END DEFINE ///////////////////////////////////////////////

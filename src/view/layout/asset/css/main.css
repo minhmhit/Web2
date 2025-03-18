@@ -835,16 +835,17 @@ header {
 
 .banner {
     position: relative;
-    width: 97%;
-    height: 100%; /* Set your preferred height */
-    overflow: hidden; /* Hide anything that overflows the container */
-    margin-top: 10px;
+    width: 98%;
+    height: 670px; /* Set your preferred height */
+    overflow: hidden; /* 0Hide anything that overflows the container */
+    margin-bottom: 60px;
 }
 
 .banner-images {
     display: flex;
     transition: transform 1s ease;
     will-change: transform; /* Thêm tối ưu hóa */
+    object-fit: cover;
 }
 
 .banner-img {
@@ -1004,7 +1005,7 @@ header {
 }
 
 .main-container .details-search {
-    flex: 0 0 30%;
+    flex: 0 0 34%;
     position: sticky;
     top: 3rem;
     height: 20rem;
@@ -1130,7 +1131,7 @@ header {
 
 /* PRODUCTS BOX */
 .shoes-box-container {
-    flex: 0 0 70%;
+    flex: 0 0 66%;
     border-top: none;
 }
 

@@ -28,6 +28,7 @@
                 <div class="header-container-mid hide-on-mobile">
                     <ul class="menu-list category-menu">
                         <li><a class="filter-category active" data-filter="Home">HOME</a></li>
+                        <li><a class="filter-category" data-filter="Product">PRODUCTS</a></li>
                         <li><a class="filter-category" data-filter="Sneaker">SNEAKERS</a></li>
                         <li><a class="filter-category" data-filter="Sandal">SANDALS</a></li>
                         <li><a class="filter-category" data-filter="Kid">KIDS</a></li>
