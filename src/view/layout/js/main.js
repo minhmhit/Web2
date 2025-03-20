@@ -1016,21 +1016,6 @@ function displayList(productAll, perPage, currentPage) {
     displayProducts(productShow);
 }
 
-function showHomeProduct(products) {
-    const filters = getFilterOption();
-
-    console.group("Filtered products");
-    let filteredProducts = filterProducts(products, filters);
-    console.groupEnd();
-
-    filteredProducts = sortProducts(filteredProducts, filters.sortbyOption);
-    let displayCatalogueAmount = document.getElementById("display-catalogue-amount");
-    displayCatalogueAmount.textContent = filteredProducts.length + " ";
-
-    displayList(filteredProducts, perPage, currentPage);
-    setupPagination(filteredProducts, perPage);
-    window.scrollTo({ top: 700 });
-}
 
 function setupPagination(productAll, perPage) {
     const pageNav = document.querySelector('.page-nav'); // Get the pagination container
