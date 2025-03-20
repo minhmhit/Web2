@@ -4,7 +4,6 @@ include_once("controller/db_controller/api.php");
 include_once("view/header.php");
 
 
-
 if(isset($_GET['pg'])&&($_GET['pg'])!=""){
 
     switch ($_GET['pg']) {
@@ -15,6 +14,7 @@ if(isset($_GET['pg'])&&($_GET['pg'])!=""){
             // có thể chuyển trang bằng get php
             // include product
             include_once("view/home.php");
+            
             break;
         case 'products' :
         case 'sandals' :

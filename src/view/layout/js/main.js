@@ -859,60 +859,76 @@ function decreasingNumber(e) {
 
 function detailProduct(id) {
     let modal = document.querySelector('.modal.product-detail');
-    let products = JSON.parse(localStorage.getItem('products'));
-    event.preventDefault();
-    let infoProduct = products.find(sp => {
-        return sp.id === id;
-    })
-    const sizeButtonsHTML = infoProduct.size.map(size => `
-        <button class="size-button">${size}</button>
-    `).join("");
-    let modalHtml = `
-    <div class="img-container">
-        <img src="${infoProduct.image}" alt="" onerror="this.src='./asset/img/catalogue/coming-soon.jpg'">
-    </div>
-    <div class="modal-body">
-        <h2 class="product-title">${infoProduct.name}</h2>
-        <div class="product-control">
-            <div class="priceBox">
-                <span class="current-price">${vnd(infoProduct.price)}</span>
-            </div>
-             <div class="buttons_added">
-                <button class="minus is-form" type="button" value="-" onclick="decreasingNumber(this)">
-                    <i class="fa-solid fa-minus"></i>
-                </button>
-                <input class="input-qty" max="100" min="1" name="" type="number" value="1">
-                <button class="plus is-form" type="button" value="+" onclick="increasingNumber(this)">
-                    <i class="fa-solid fa-plus"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-    <div class="size-container">${sizeButtonsHTML}</div>
-    <div class="modal-footer">
-        <div class="price-total">
-            <span class="thanhtien">Total</span>
-            <span class="price">${vnd(infoProduct.price)}</span>
-        </div>
-        <div class="modal-footer-control">
-            <button class="checkout-btn" data-product="${infoProduct.id}">Buy now</button>
-            <button class="button-dat" id="add-cart"><i class="fa-solid fa-cart-shopping "></i></button>
-        </div>
-    </div>`;
-    document.querySelector('#product-detail-content').innerHTML = modalHtml;
-    modal.classList.add('open');
-    body.style.overflow = "hidden";
+    let body = document.body;
 
-    //Cap nhat gia tien khi tang so luong san pham
-    let tgbtn = document.querySelectorAll('.is-form');
-    let qty = document.querySelector('.product-control .input-qty');
-    let priceText = document.querySelector('.price');
-    tgbtn.forEach(element => {
-        element.addEventListener('click', () => {
-            let price = infoProduct.price * parseInt(qty.value.trim());
-            priceText.innerHTML = vnd(price);
-        });
-    });
+    event.preventDefault(); // Ngăn chặn hành vi mặc định
+
+    // Gọi API để lấy chi tiết sản phẩm
+    fetch(`controller/db_controller/get_product_detail.php?id=${id}`)
+        .then(response => response.json())
+        .then(infoProduct => {
+            if (!infoProduct) {
+                console.error("Không tìm thấy sản phẩm");
+                return;
+            }
+
+            // Tạo nút chọn size
+            const sizeButtonsHTML = infoProduct.size
+                ? infoProduct.size.map(size => `<button class="size-button">${size}</button>`).join("")
+                : "";
+
+            // Tạo nội dung modal
+            let modalHtml = `
+                <div class="img-container">
+                    <img src="${infoProduct.Image}" alt="" onerror="this.src='./asset/img/catalogue/coming-soon.jpg'">
+                </div>
+                <div class="modal-body">
+                    <h2 class="product-title">${infoProduct.ProductName}</h2>
+                    <div class="product-control">
+                        <div class="priceBox">
+                            <span class="current-price">${vnd(infoProduct.Price)}</span>
+                        </div>
+                        <div class="buttons_added">
+                            <button class="minus is-form" type="button" value="-" onclick="decreasingNumber(this)">
+                                <i class="fa-solid fa-minus"></i>
+                            </button>
+                            <input class="input-qty" max="100" min="1" type="number" value="1">
+                            <button class="plus is-form" type="button" value="+" onclick="increasingNumber(this)">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="size-container">${sizeButtonsHTML}</div>
+                <div class="modal-footer">
+                    <div class="price-total">
+                        <span class="thanhtien">Total</span>
+                        <span class="price">${vnd(infoProduct.Price)}</span>
+                    </div>
+                    <div class="modal-footer-control">
+                        <button class="checkout-btn" data-product="${infoProduct.ProductID}">Buy now</button>
+                        <button class="button-dat" id="add-cart"><i class="fa-solid fa-cart-shopping"></i></button>
+                    </div>
+                </div>`;
+
+            document.querySelector('#product-detail-content').innerHTML = modalHtml;
+            modal.classList.add('open');
+            body.style.overflow = "hidden";
+
+            // Cập nhật giá tiền khi thay đổi số lượng sản phẩm
+            let qty = document.querySelector('.product-control .input-qty');
+            let priceText = document.querySelector('.price');
+
+            document.querySelectorAll('.is-form').forEach(button => {
+                button.addEventListener('click', () => {
+                    let price = infoProduct.Price * parseInt(qty.value.trim());
+                    priceText.innerHTML = vnd(price);
+                });
+            });
+
+        })
+        .catch(error => console.error("Lỗi khi tải chi tiết sản phẩm:", error));
+}
 
     // Select a shoes size
     let selectedSize;
@@ -960,32 +976,33 @@ function detailProduct(id) {
 
 }
 
-function displayProducts(productShow) {
+function displayProducts() {
     const productContainer = document.getElementById("home-product");
-    productContainer.innerHTML = ""; // Clear current content
+    productContainer.innerHTML = ""; // Xóa nội dung cũ
 
-    let productHTML = ""; // Create HTML string
-    if (productShow.length !== 0) {
-        productShow.forEach(product => {
-            if (product.isDeleted) return;
+    fetch("controller/db_controller/get_products.php") // Gọi API lấy dữ liệu sản phẩm
+        .then(response => response.json())
+        .then(products => {
+            let productHTML = "";
 
-            productHTML += `
-            <div class="product-box" onclick="detailProduct('${product.id}')">
-                <div class="img-container">
-                    <img src="${product.image}" alt="${product.name}" onerror="this.src='./asset/img/catalogue/coming-soon.jpg'" />
-                </div>
-                <div class="shoes-name">${product.name}</div>
-                <div class="shoes-price">${vnd(product.price)}</div>
-            </div>
-        `;
-        });
+            if (products.length !== 0) {
+                products.forEach(product => {
+                    productHTML += `
+                    <div class="product-box" onclick="detailProduct('${product.ProductID}')">
+                        <div class="img-container">
+                            <img src="${product.Image}" alt="${product.ProductName}" onerror="this.src='view/layout/asset/img/catalogue/coming-soon.jpg'" />
+                        </div>
+                        <div class="shoes-name">${product.ProductName}</div>
+                        <div class="shoes-price">${product.Price} VND</div>
+                    </div>`;
+                });
 
-        productContainer.innerHTML = productHTML;
-    } else {
-        // No products to show
-        productContainer.style.display = "flex"; // Ensure the container is visible
-        displayWhenEmpty("#home-product", displayEmptyHTML_catalogue);
-    }
+                productContainer.innerHTML = productHTML;
+            } else {
+                productContainer.innerHTML = "<p>Không có sản phẩm nào.</p>";
+            }
+        })
+        .catch(error => console.error("Lỗi khi tải sản phẩm:", error));
 }
 
 
@@ -1061,6 +1078,7 @@ function paginationChange(page, productAll, currentPage) {
 
 window.onload = () => {
     window.scrollTo({ top: 0 });
+    displayProducts();
     initializeProvinces();
 }
 
