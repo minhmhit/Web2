@@ -8,7 +8,7 @@ include_once("view/header.php");
 if(isset($_GET['pg'])&&($_GET['pg'])!=""){
 
     switch ($_GET['pg']) {
-        case 'product':
+        case 'home':
             // if ((isset($_GET['catalog']))&&($_GET['catalog']>0)) {
             //     $catalogname = "";
             // }
@@ -16,6 +16,10 @@ if(isset($_GET['pg'])&&($_GET['pg'])!=""){
             // include product
             include_once("view/home.php");
             break;
+        case 'products' :
+        case 'sandals' :
+        case 'sneakers' :
+        case 'kids' :
         case 'admin':
 
 

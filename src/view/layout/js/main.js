@@ -482,14 +482,6 @@ filterOptions.forEach(option => {
     });
 });
 
-// Toggle sortby
-document.querySelector(".sortby .float-dropdown .menu-list").addEventListener("click", (event) => {
-    if (event.target.tagName === "A") {
-        sortbyDisplay.innerText = event.target.innerText.trim();
-        window.scrollTo({ top: 700, behavior: 'smooth' });
-        showHomeProduct(JSON.parse(localStorage.getItem("products")))
-    }
-});
 
 // Toggle & display products by category
 document.querySelectorAll(".filter-category").forEach(category => {
@@ -523,112 +515,7 @@ document.getElementById("search-bar").addEventListener("keyup", () => {
 
 })
 
-// Reset all filter & sortby options
-function resetFilter() {
-    const filterOptions = document.querySelectorAll(".filter-option");
-    filterOptions.forEach(option => {
-        option.classList.remove("active");
-        option.value = "";
-    });
-    window.scrollTo({ top: 700 });
-    sortbyDisplay.textContent = "None";
-    showHomeProduct(JSON.parse(localStorage.getItem("products")));
-    scrollTo(top);
-}
 
-function getFilterOption() {
-    const brandOption = Array.from(document.querySelectorAll(".filter-brand.active")).map(option => option.getAttribute("data-filter"));
-    const sizeOption = Array.from(document.querySelectorAll(".filter-size.active")).map(option => option.getAttribute("data-filter"));
-    const genderOption = Array.from(document.querySelectorAll(".filter-gender.active")).map(option => option.getAttribute("data-filter"));
-
-    // Check if user is on mobile based on the display style if the details-search-bar
-    const isMobile = window.getComputedStyle(document.querySelector(".details-search-bar.show-on-mobile.hide-on-pc")).display !== "none";
-    console.log("Is mobile device: ", isMobile);
-
-    let categoryOption = document.querySelector(".filter-category.active").getAttribute("data-filter");
-    if (categoryOption == "Home")
-        categoryOption = ["Sneaker", "Sandal", "Kid"];
-    else
-        categoryOption = [document.querySelector(".filter-category.active").getAttribute("data-filter")];
-
-    const nameOption = document.getElementById("search-bar").value.trim();
-    const sortbyOption = document.getElementById("sortby-mode-display").innerText.trim();
-
-    // Read from field based on isMobile
-    let minprice = isMobile ? parseInt(document.getElementById("price-lowerbound-sidebar").value.trim()) || 0 : parseInt(document.getElementById("price-lowerbound").value.trim()) || 0;
-    let maxprice = isMobile ? parseInt(document.getElementById("price-upperbound-sidebar").value.trim()) || Infinity : parseInt(document.getElementById("price-upperbound").value.trim()) || Infinity;
-
-    console.log("Filter options:", brandOption, sizeOption, genderOption, sortbyOption, nameOption, categoryOption, minprice, maxprice);
-
-    return { brandOption, sizeOption, genderOption, sortbyOption, nameOption, categoryOption, minprice, maxprice };
-}
-
-function filterProducts(products, filters) {
-    return products.filter(product => {
-        // If the product is marked "deleted" with attribute isDeleted = true
-        if (product.isDeleted) return false;
-
-        // Check matching name
-        if (
-            filters.nameOption &&
-            !product.name.toLowerCase().includes(filters.nameOption.toLowerCase())
-        ) {
-            return false;
-        }
-
-        // Check price range
-        if (product.price < filters.minprice || product.price > filters.maxprice) {
-            return false;
-        }
-
-        // Check category
-        if (!filters.categoryOption.includes(product.category)) {
-            return false;
-        }
-
-        // Check brand
-        if (filters.brandOption.length > 0 && !filters.brandOption.includes(product.brand)) {
-            return false;
-        }
-
-        // Check gender
-        if (filters.genderOption.length > 0 && !filters.genderOption.includes(product.sex)) {
-            return false;
-        }
-
-        // Check size (at least one matching size is required)
-        if (
-            filters.sizeOption.length > 0 &&
-            !filters.sizeOption.every(size => product.size.includes(Number(size)))
-        ) {
-            return false;
-        }
-
-        console.log(product.id, product.name);
-        return true;
-    });
-}
-
-function sortProducts(products, sortbyOption) {
-    if (sortbyOption === "Alphabetically, A-Z") {
-        return products.sort((a, b) => a.name.localeCompare(b.name));
-    } else if (sortbyOption === "Alphabetically, Z-A") {
-        return products.sort((a, b) => b.name.localeCompare(a.name));
-    } else if (sortbyOption === "Price, low to high") {
-        return products.sort((a, b) => a.price - b.price);
-    } else if (sortbyOption === "Price, high to low") {
-        return products.sort((a, b) => b.price - a.price);
-    }
-    return products;
-}
-
-// Start filter if clicked the Apply Filter button
-document.querySelectorAll(".apply-filter-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-        window.scrollTo({ top: 700 });
-        showHomeProduct(JSON.parse(localStorage.getItem("products")));
-    });
-});
 
 // CATALOGUE - FILTER - END DEFINE /////////////////////////////////////////////////////
 
@@ -1174,16 +1061,7 @@ function paginationChange(page, productAll, currentPage) {
 
 window.onload = () => {
     window.scrollTo({ top: 0 });
-    createProduct(); // Ensure products are created in localStorage
-    createBetaAccount();
-    createBetaOrder();
-
-    let products = JSON.parse(localStorage.getItem('products')); // Fetch the products from localStorage
-    showHomeProduct(products); // Display products after initialization
-
     initializeProvinces();
-
-    updateMenuVisibility();
 }
 
 // CATALOGUE - PRODUCTS - END DEFINE /////////////////////////////////////////////////////

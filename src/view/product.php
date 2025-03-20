@@ -550,3 +550,4 @@
                 </div>
             </div>
         </main>
+        <script src="view/layout/js/product.js"> </script>
