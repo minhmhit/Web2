@@ -1,538 +1,3 @@
-//Khoi tao danh sach san pham
-function createProduct() {
-    if (localStorage.getItem('products') == null) {
-        let products = [{
-            id: ID_TYPE[1] + 1,
-            name: "70 COURT CANVAS HI",
-            price: "2000000",
-            image: "./asset/img/catalogue/70-COURT-CANVAS-HI.jpg",
-            category: "Sneaker",
-            brand: "Converse",
-            sex: "U",
-            size: [36, 37, 38, 41, 42],
-            isDeleted: false
-        },
-        {
-            id: ID_TYPE[1] + 2,
-            name: "AIR FLIGHT 89 (GS)",
-            price: "2400000",
-            image: "./asset/img/catalogue/AIR-FLIGHT-89-(GS).jpg",
-            category: "Sneaker",
-            brand: "Nike",
-            sex: "M",
-            size: [41, 42, 43],
-            isDeleted: false
-        },
-        {
-            id: ID_TYPE[1] + 3,
-            name: "AIR FORCE 1 LV8-3 (GS)",
-            price: "3200000",
-            image: "./asset/img/catalogue/AIR-FORCE-1-LV8-3-(GS).jpg",
-            category: "Sneaker",
-            brand: "Nike",
-            sex: "U",
-            size: [36, 37, 38, 41, 42],
-            isDeleted: false
-        },
-        {
-            id: ID_TYPE[1] + 4,
-            name: "AIR FORCE 1'07",
-            price: "3500000",
-            image: "./asset/img/catalogue/AIR-FORCE-1'07.jpg",
-            category: "Sneaker",
-            brand: "Nike",
-            sex: "U",
-            size: [36, 37, 38, 41, 42],
-            isDeleted: false
-        },
-        {
-            id: ID_TYPE[1] + 5,
-            name: "AIR MAX 90 LTR",
-            price: "4600000",
-            image: "./asset/img/catalogue/AIR-MAX-90-LTR.jpg",
-            category: "Sneaker",
-            brand: "Nike",
-            sex: "M",
-            size: [41, 42, 43],
-            isDeleted: false
-        },
-        {
-            id: ID_TYPE[1] + 6,
-            name: "AIR TERRRA HUMARA",
-            price: "3200000",
-            image: "./asset/img/catalogue/AIR-TERRA-HUMARA.jpg",
-            category: "Sneaker",
-            brand: "Nike",
-            sex: "M",
-            size: [41, 42, 43],
-            isDeleted: false
-        },
-        {
-            id: ID_TYPE[1] + 7,
-            name: "AIRIZONA VEG THYME",
-            price: "3500000",
-            image: "./asset/img/catalogue/AIRIZONA-VEG-THYME.jpg",
-            category: "Sandal",
-            brand: "BirkenStock",
-            sex: "M",
-            size: [41, 42, 43],
-            isDeleted: false
-        },
-        {
-            id: ID_TYPE[1] + 8,
-            name: "ARIZONA BLACKBIRKO FLOR SFB",
-            price: "3200000",
-            image: "./asset/img/catalogue/ARIZONA-BLACKBIRKO-FLOR-SFB.jpg",
-            category: "Sandal",
-            brand: "BirkenStock",
-            sex: "M",
-            size: [41, 42, 43],
-            isDeleted: false
-        },
-        {
-            id: ID_TYPE[1] + 9,
-            name: "ARIZONA TOBACCO BROWN OILDED LEATHER",
-            price: "4000000",
-            image: "./asset/img/catalogue/ARIZONA-TOBACCO-BROWN-OILED-LEATHER.jpg",
-            category: "Sandal",
-            brand: "BirkenStock",
-            sex: "M",
-            size: [41, 42, 43],
-            isDeleted: false
-        },
-        {
-            id: ID_TYPE[1] + 10,
-            name: "CHUCK 70 SEASONAL",
-            price: "1650000",
-            image: "./asset/img/catalogue/CHUCK-70-SEASONAL.jpg",
-            category: "Sneaker",
-            brand: "Converse",
-            sex: "M",
-            size: [41, 42, 43],
-            isDeleted: false
-        },
-        {
-            id: ID_TYPE[1] + 11,
-            name: "DUNK LOW (W)",
-            price: "3500000",
-            image: "./asset/img/catalogue/DUNK-LOW-(W).jpg",
-            category: "Sneaker",
-            brand: "Nike",
-            sex: "M",
-            size: [41, 42, 43],
-            isDeleted: false
-        },
-        {
-            id: ID_TYPE[1] + 12,
-            name: "FASTBREAK PRO SUEDE MID",
-            price: "2800000",
-            image: "./asset/img/catalogue/FASTBREAK-PRO-SUEDE-MID.jpg",
-            category: "Sneaker",
-            brand: "Converse",
-            sex: "M",
-            size: [41, 42, 43],
-            isDeleted: false
-        },
-        {
-            id: ID_TYPE[1] + 13,
-            name: "FENG CHENG WANG QS",
-            price: "4200000",
-            image: "./asset/img/catalogue/FENG-CHENG-WANG-QS.jpg",
-            category: "Sneaker",
-            brand: "Converse",
-            sex: "U",
-            size: [36, 37, 38, 41, 42],
-            isDeleted: false
-        },
-        {
-            id: ID_TYPE[1] + 14,
-            name: "GAZELLE (PS)",
-            price: "1800000",
-            image: "./asset/img/catalogue/GAZELLE-(PS).jpg",
-            category: "Kid",
-            brand: "Adidas",
-            sex: "U",
-            size: [20, 21, 22, 23, 24],
-            isDeleted: false
-        },
-        {
-            id: ID_TYPE[1] + 15,
-            name: "GAZELLE INDOOR (W)",
-            price: "2800000",
-            image: "./asset/img/catalogue/GAZELLE-INDOOR-(W).jpg",
-            category: "Sneaker",
-            brand: "Adidas",
-            sex: "F",
-            size: [36, 37, 38, 39],
-            isDeleted: false
-        },
-        {
-            id: ID_TYPE[1] + 16,
-            name: "HANDBALL SPEZIAL (W)",
-            price: "2500000",
-            image: "./asset/img/catalogue/HANDBALL-SPEZIAL-(W).jpg",
-            category: "Sneaker",
-            brand: "Adidas",
-            sex: "F",
-            size: [36, 37, 38, 39],
-            isDeleted: false
-        },
-        {
-            id: ID_TYPE[1] + 17,
-            name: "NIKE CALM BEIGE (W)",
-            price: "2349000",
-            image: "./asset/img/catalogue/Nike_Calm_Be(w).jpg",
-            category: "Sandal",
-            brand: "Nike",
-            sex: "F",
-            size: [36, 37, 38, 39],
-            isDeleted: false
-        },
-        {
-            id: ID_TYPE[1] + 18,
-            name: "NMD S1",
-            price: "3000000",
-            image: "./asset/img/catalogue/NMD_S1.jpg",
-            category: "Sneaker",
-            brand: "Adidas",
-            sex: "M",
-            size: [41, 42, 43],
-            isDeleted: false
-        },
-        {
-            id: ID_TYPE[1] + 19,
-            name: "RUN STAR HIKE HI",
-            price: "3200000",
-            image: "./asset/img/catalogue/RUN-STAR-HIKE-HI.jpg",
-            category: "Sneaker",
-            brand: "Converse",
-            sex: "U",
-            size: [36, 37, 38, 41, 42],
-            isDeleted: false
-        },
-        {
-            id: ID_TYPE[1] + 20,
-            name: "SAMBA OG",
-            price: "2500000",
-            image: "./asset/img/catalogue/SAMBA-OG.jpg",
-            category: "Sneaker",
-            brand: "Adidas",
-            sex: "U",
-            size: [36, 37, 38, 41, 42],
-            isDeleted: false
-        },
-        {
-            id: ID_TYPE[1] + 21,
-            name: "SABA XLG",
-            price: "3500000", image: "./asset/img/catalogue/SAMBA-XLG.jpg",
-            category: "Sneaker",
-            brand: "Adidas",
-            sex: "M",
-            size: [41, 42, 43],
-            isDeleted: false
-        },
-        {
-            id: ID_TYPE[1] + 22,
-            name: "SL72 RS (PS)",
-            price: "2000000",
-            image: "./asset/img/catalogue/SL-72-RS-(PS).jpg",
-            category: "Kid",
-            brand: "Adidas",
-            sex: "U",
-            size: [20, 21, 22, 23, 24],
-            isDeleted: false
-        },
-        {
-            id: ID_TYPE[1] + 23,
-            name: "SL72 RS (TD)",
-            price: "1800000",
-            image: "./asset/img/catalogue/SL72-RS-(TD).jpg",
-            category: "Kid",
-            brand: "Adidas",
-            sex: "U",
-            size: [20, 21, 22, 23, 24],
-            isDeleted: false
-        },
-        {
-            id: ID_TYPE[1] + 24,
-            name: "SL72 RS",
-            price: "2500000",
-            image: "./asset/img/catalogue/SL72-RS.jpg",
-            category: "Sneaker",
-            brand: "Adidas",
-            sex: "M",
-            size: [41, 42, 43],
-            isDeleted: false
-        },
-        {
-            id: ID_TYPE[1] + 25,
-            name: "STAN SMITH (TD)",
-            price: "1500000",
-            image: "./asset/img/catalogue/STAN-SMITH-(TD).jpg",
-            category: "Kid",
-            brand: "Adidas",
-            sex: "U",
-            size: [20, 21, 22, 23, 24],
-            isDeleted: false
-        },
-        {
-            id: ID_TYPE[1] + 26,
-            name: "SUPERSTAR",
-            price: "2500000",
-            image: "./asset/img/catalogue/SUPERSTAR.jpg",
-            category: "Sneaker",
-            brand: "Adidas",
-            sex: "M",
-            size: [41, 42, 43],
-            isDeleted: false
-        },
-        {
-            id: ID_TYPE[1] + 27,
-            name: "TEVA HURRICANE DRIFT (M)",
-            price: "990000",
-            image: "./asset/img/catalogue/Teva_Hurricane_Drift(m)-990k.jpg",
-            category: "Sandal",
-            brand: "Teva",
-            sex: "M",
-            size: [41, 42, 43],
-            isDeleted: false
-        },
-        {
-            id: ID_TYPE[1] + 28,
-            name: "TEVA TERRA FI 5 UNIVERSAL",
-            price: "2099000",
-            image: "./asset/img/catalogue/Teva_Terra_Fi_5_Universal-2099k.jpg",
-            category: "Sandal",
-            brand: "Teva",
-            sex: "M",
-            size: [41, 42, 43],
-            isDeleted: false
-        },
-        {
-            id: ID_TYPE[1] + 29,
-            name: "TEVA VOYA STRAPPY (W)",
-            price: "845000",
-            image: "./asset/img/catalogue/Teva_Voya_Strappy(w)-845k.jpg",
-            category: "Sandal",
-            brand: "Teva",
-            sex: "F",
-            size: [36, 37, 38, 39],
-            isDeleted: false
-        },
-        {
-            id: ID_TYPE[1] + 30,
-            name: "TEVA ZYMIC (W)",
-            price: "1600000",
-            image: "./asset/img/catalogue/Teva_Zymic-1600k(w).jpg",
-            category: "Sandal",
-            brand: "Teva",
-            sex: "F",
-            size: [36, 37, 38, 39],
-            isDeleted: false
-        },
-        {
-            id: ID_TYPE[1] + 31,
-            name: "TEVA SANDALS HURRICANE (W)",
-            price: "1900000",
-            image: "./asset/img/catalogue/TevaSandalsHunrricane(w).jpg",
-            category: "Sandal",
-            brand: "Teva",
-            sex: "F",
-            size: [36, 37, 38, 39],
-            isDeleted: false
-        },
-        {
-            id: ID_TYPE[1] + 32,
-            name: "UNISEX FILA PONG SD (W)",
-            price: "1595000",
-            image: "./asset/img/catalogue/Unisex_Fila_Pong_Sd-1595k(w).jpg",
-            category: "Sandal",
-            brand: "Fila",
-            sex: "F",
-            size: [36, 37, 38, 39],
-            isDeleted: false
-        },
-        {
-            id: ID_TYPE[1] + 33,
-            name: "UNISEX FILA TORI (M)",
-            price: "1995000",
-            image: "./asset/img/catalogue/unisex_fila_tori-1995k(m).jpg",
-            category: "Sandal",
-            brand: "Fila",
-            sex: "M",
-            size: [41, 42, 43],
-            isDeleted: false
-        },
-
-        ]
-        localStorage.setItem('products', JSON.stringify(products));
-    }
-}
-
-// Create beta accounts for testing purposes 
-function createBetaAccount() {
-    let accounts = localStorage.getItem("accounts");
-    if (!accounts) {
-        accounts = [];
-
-        // Admin account
-        accounts.push({
-            id: ID_TYPE[0] + (accounts.length + 1),
-            username: "mrhw36",
-            fullname: "Hauser Wasly",
-            phone: "0123456789",
-            address: "Grandville",
-            email: "mrhw36@example.com",
-            password: "12345",
-            join: "2023/10/21",
-            cart: [],
-            isAdmin: 1,
-            status: 1
-        });
-
-        // Adding 10 non-admin accounts with spread-out join dates
-        const nonAdminAccounts = [
-            { username: "jessica_smith", fullname: "Jessica Smith", phone: "0123456701", address: "120 Elm St, Grandville", email: "jessica.smith@example.com", join: "2023/11/10" },
-            { username: "john_doe", fullname: "John Doe", phone: "0123456702", address: "456 Maple Rd, Grandville", email: "john.doe@example.com", join: "2023/11/25" },
-            { username: "sarah_jones", fullname: "Sarah Jones", phone: "0123456703", address: "789 Oak Ave, Grandville", email: "sarah.jones@example.com", join: "2023/12/05" },
-            { username: "mike_williams", fullname: "Mike Williams", phone: "0123456704", address: "101 Pine St, Grandville", email: "mike.williams@example.com", join: "2023/12/20" },
-            { username: "emily_brown", fullname: "Emily Brown", phone: "0123456705", address: "202 Birch Ln, Grandville", email: "emily.brown@example.com", join: "2024/01/10" },
-            { username: "david_miller", fullname: "David Miller", phone: "0123456706", address: "303 Cedar Dr, Grandville", email: "david.miller@example.com", join: "2024/01/25" },
-            { username: "laura_davis", fullname: "Laura Davis", phone: "0123456707", address: "404 Willow Way, Grandville", email: "laura.davis@example.com", join: "2024/02/10" },
-            { username: "chris_martin", fullname: "Chris Martin", phone: "0123456708", address: "505 Fir Blvd, Grandville", email: "chris.martin@example.com", join: "2024/02/20" },
-            { username: "katie_thompson", fullname: "Katie Thompson", phone: "0123456709", address: "606 Pinecrest Rd, Grandville", email: "katie.thompson@example.com", join: "2024/03/05" },
-            { username: "brian_clark", fullname: "Brian Clark", phone: "0123456710", address: "707 Redwood St, Grandville", email: "brian.clark@example.com", join: "2024/03/15" },
-        ];
-
-        // Adding non-admin accounts to the list
-        nonAdminAccounts.forEach(account => {
-            accounts.push({
-                id: ID_TYPE[0] + (accounts.length + 1),
-                username: account.username,
-                fullname: account.fullname,
-                phone: account.phone,
-                address: account.address,
-                email: account.email,
-                password: "12345",  // Same password for simplicity
-                join: account.join,
-                cart: [],
-                isAdmin: 0,
-                status: 1
-            });
-        });
-
-        // Saving accounts to localStorage
-        localStorage.setItem('accounts', JSON.stringify(accounts));
-    }
-}
-
-// Create orders for testing purposes
-function createBetaOrder() {
-    let orders = localStorage.getItem("orders");
-    if (!orders) {
-        orders = [];
-        const betaOrders = [
-            {
-                id: "ORD1",
-                customerId: "ACC1",
-                cart: [{ id: "PRD1", quantity: 1, size: 41, originalPrice: 2000000 }],
-                address: { fullAddress: "120 Elm St, Grandville", region: { province: "Hồ Chí Minh", district: "Quận 3", ward: "Phường 10" }},
-                payment: { method: "Cash" },
-                orderDate: "2023-03-12T16:16:29Z",
-                status: "2",
-                total: 2030000
-            },
-            {
-                id: "ORD2",
-                customerId: "ACC3",
-                cart: [{ id: "PRD10", quantity: 2, size: 43, originalPrice: 1650000 },
-                        { id: "PRD25", quantity: 1, size: 21, originalPrice: 1500000 }
-                ],
-                address: { fullAddress: "789 Oak Ave, Grandville", region: { province: "Cần Thơ", district: "Quận Ninh Kiều", ward: "Phường Tân An" }},
-                payment: { method: "Cash" },
-                orderDate: "2023-03-12T16:16:29Z",
-                status: "3",
-                total: 3180000
-            },
-            {
-                id: "ORD3",
-                customerId: "ACC10",
-                cart: [{ id: "PRD22", quantity: 1, size: 20, originalPrice: 2000000 },
-                    { id: "PRD2", quantity: 1, size: 41, originalPrice: 2400000 },
-                    { id: "PRD9", quantity: 1, size: 43, originalPrice: 4000000 }
-                ],
-                address: { fullAddress: "707 Redwood St, Grandville", region: { province: "Đà Nẵng", district: "Quận Hải Châu", ward: "Phường Hòa Thuận" }},
-                payment: { method: "Card", cardOwner: "BRIAN", cvv: "123", cardNumber: "123456789123" },
-                orderDate: "2023-03-22T19:09:22Z",
-                status: "2",
-                total: 8430000
-            },
-            {
-                id: "ORD4",
-                customerId: "ACC1",
-                cart: [{ id: "PRD18", quantity: 1, size: 42, originalPrice: 3000000 },
-                    { id: "PRD11", quantity: 1, size: 43, originalPrice: 3500000 }
-                ],
-                address: { fullAddress: "120 Elm St, Grandville", region: { province: "Hồ Chí Minh", district: "Quận 3", ward: "Phường 10" }},
-                payment: { method: "Card", cardOwner: "JESSICA", cvv: "200", cardNumber: "987654321987"},
-                orderDate: "2023-07-20T15:45:30Z",
-                status: "2",
-                total: 6530000
-            },
-            {
-                id: "ORD5",
-                customerId: "ACC6",
-                cart: [{ id: "PRD13", quantity: 1, size: 36, originalPrice: 4200000 },
-                    { id: "PRD16", quantity: 1, size: 37, originalPrice: 2500000 }
-                ],
-                address: { fullAddress: "303 Cedar Dr, Grandville", region: { province: "Huế", district: "Thành phố Huế", ward: "Phường Thuận Hòa" }},
-                payment: { method: "Card", cardOwner: "DAVID", cvv: "999", cardNumber: "275283894150" },
-                orderDate: "2024-05-20T17:21:02Z",
-                status: "3",
-                total: 6730000
-            },
-            {
-                id: "ORD6",
-                customerId: "ACC7",
-                cart: [{ id: "PRD9", quantity: 1, size: 41, originalPrice: 4000000 },
-                    { id: "PRD10", quantity: 1, size: 42, originalPrice: 1650000 }
-                ],
-                address: { fullAddress: "404 Willow Way, Grandville", region: { province: "Hồ Chí Minh", district: "Thành phố Thủ Đức", ward: "Phường Bình Chiểu" }},
-                payment: { method: "Card", cardOwner: "LAURA", cvv: "235", cardNumber: "423515034900" },
-                orderDate: "2024-08-11T19:19:01Z",
-                status: "1",
-                total: 5680000
-            },
-            {
-                id: "ORD7",
-                customerId: "ACC9",
-                cart: [{ id: "PRD27", quantity: 1, size: 41, originalPrice: 990000 },
-                    { id: "PRD29", quantity: 1, size: 37, originalPrice: 845000 }
-                ],
-                address: { fullAddress: "606 Pinecrest Rd, Grandville", region: { province: "Hà Nội", district: "Quận Hoàn Kiếm", ward: "Phường Hàng Bông" }},
-                payment: { method: "Cash" },
-                orderDate: "2024-10-21T07:16:31Z",
-                status: "2",
-                total: 1865000
-            },
-            {
-                id: "ORD8",
-                customerId: "ACC3",
-                cart: [{ id: "PRD28", quantity: 1, size: 41, originalPrice: 2099000 },
-                    { id: "PRD28", quantity: 1, size: 42, originalPrice: 2099000 }
-                ],
-                address: { fullAddress: "789 Oak Ave, Grandville", region: { province: "Cần Thơ", district: "Quận Ninh Kiều", ward: "Phường Tân An" }},
-                payment: { method: "Cash" },
-                orderDate: "2024-11-20T07:16:31Z",
-                status: "1",
-                total: 4228000
-            },
-        ];
-        // Saving accounts to localStorage
-        localStorage.setItem('orders', JSON.stringify(betaOrders));
-    }
-}
-
 const locations = {
     "Hà Nội": {
         "Quận Ba Đình": ["Phường Liễu Giai", "Phường Ngọc Khánh", "Phường Quán Thánh", "Phường Cống Vị", "Phường Điện Biên"],
@@ -815,21 +280,69 @@ function closeModal() {
 }
 
 
-function getProduct(item) {
-    const products = JSON.parse(localStorage.getItem("products")) || [];
-    let infoCartItem = products.find(sp => item.id == sp.id);
-    let cartItem = {
-        ...infoCartItem,
-        ...item
+async function getProduct(item) {
+    try {
+        let response = await fetch(`api.php?action=get_products`);
+        let products = await response.json();
+
+        if (products.error) {
+            console.error(products.error);
+            return null;
+        }
+
+        let product = products.find(sp => sp.id == item.id);
+        if (!product) {
+            console.error("Không tìm thấy sản phẩm trong database!");
+            return null;
+        }
+
+        let cartItem = {
+            ...product,
+            ...item
+        };
+
+        return cartItem;
+    } catch (error) {
+        console.error("Lỗi khi lấy sản phẩm từ database:", error);
+        return null;
     }
-    return cartItem;
 }
 
-function getAccount(id) {
-    const accounts = JSON.parse(localStorage.getItem("accounts")) || [];
-    const user = accounts.find(account => account.id == id);
-    return user;
+
+async function getAccounts() {
+    try {
+        let response = await fetch(`api.php?action=get_accounts`);
+        let accounts = await response.json();
+
+        if (accounts.error) {
+            console.error(accounts.error);
+            return [];
+        }
+
+        return accounts;
+    } catch (error) {
+        console.error("Lỗi khi lấy danh sách tài khoản:", error);
+        return [];
+    }
 }
+
+async function getOrders() {
+    try {
+        let response = await fetch(`api.php?action=get_orders`);
+        let orders = await response.json();
+
+        if (orders.error) {
+            console.error(orders.error);
+            return [];
+        }
+
+        return orders;
+    } catch (error) {
+        console.error("Lỗi khi lấy danh sách đơn hàng:", error);
+        return [];
+    }
+}
+
 
 function formatDate(date) {
     date = new Date(date); // To make sure.
@@ -846,14 +359,14 @@ function vnd(price) {
     }).format(price);
 }
 
-// function createId(arr) {
-//     const idSet = new Set(arr.map((item) => item.id));
-//     let id = 0;
-//     while (idSet.has(id)) {
-//         id++;
-//     }
-//     return id;
-// }
+function createId(arr) {
+    const idSet = new Set(arr.map((item) => item.id));
+    let id = 0;
+    while (idSet.has(id)) {
+        id++;
+    }
+    return id;
+}
 
 
 function displayWhenEmpty(selector, innerhtml) {

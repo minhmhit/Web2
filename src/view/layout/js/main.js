@@ -261,6 +261,7 @@ function signOut() {
     location.reload();
 }
 
+
 // Load user info to My Account after user has logged in
 function loadUserInfo() {
     event.preventDefault();
@@ -482,14 +483,6 @@ filterOptions.forEach(option => {
     });
 });
 
-// Toggle sortby
-document.querySelector(".sortby .float-dropdown .menu-list").addEventListener("click", (event) => {
-    if (event.target.tagName === "A") {
-        sortbyDisplay.innerText = event.target.innerText.trim();
-        window.scrollTo({ top: 700, behavior: 'smooth' });
-        showHomeProduct(JSON.parse(localStorage.getItem("products")))
-    }
-});
 
 // Toggle & display products by category
 document.querySelectorAll(".filter-category").forEach(category => {
@@ -523,112 +516,7 @@ document.getElementById("search-bar").addEventListener("keyup", () => {
 
 })
 
-// Reset all filter & sortby options
-function resetFilter() {
-    const filterOptions = document.querySelectorAll(".filter-option");
-    filterOptions.forEach(option => {
-        option.classList.remove("active");
-        option.value = "";
-    });
-    window.scrollTo({ top: 700 });
-    sortbyDisplay.textContent = "None";
-    showHomeProduct(JSON.parse(localStorage.getItem("products")));
-    scrollTo(top);
-}
 
-function getFilterOption() {
-    const brandOption = Array.from(document.querySelectorAll(".filter-brand.active")).map(option => option.getAttribute("data-filter"));
-    const sizeOption = Array.from(document.querySelectorAll(".filter-size.active")).map(option => option.getAttribute("data-filter"));
-    const genderOption = Array.from(document.querySelectorAll(".filter-gender.active")).map(option => option.getAttribute("data-filter"));
-
-    // Check if user is on mobile based on the display style if the details-search-bar
-    const isMobile = window.getComputedStyle(document.querySelector(".details-search-bar.show-on-mobile.hide-on-pc")).display !== "none";
-    console.log("Is mobile device: ", isMobile);
-
-    let categoryOption = document.querySelector(".filter-category.active").getAttribute("data-filter");
-    if (categoryOption == "Home")
-        categoryOption = ["Sneaker", "Sandal", "Kid"];
-    else
-        categoryOption = [document.querySelector(".filter-category.active").getAttribute("data-filter")];
-
-    const nameOption = document.getElementById("search-bar").value.trim();
-    const sortbyOption = document.getElementById("sortby-mode-display").innerText.trim();
-
-    // Read from field based on isMobile
-    let minprice = isMobile ? parseInt(document.getElementById("price-lowerbound-sidebar").value.trim()) || 0 : parseInt(document.getElementById("price-lowerbound").value.trim()) || 0;
-    let maxprice = isMobile ? parseInt(document.getElementById("price-upperbound-sidebar").value.trim()) || Infinity : parseInt(document.getElementById("price-upperbound").value.trim()) || Infinity;
-
-    console.log("Filter options:", brandOption, sizeOption, genderOption, sortbyOption, nameOption, categoryOption, minprice, maxprice);
-
-    return { brandOption, sizeOption, genderOption, sortbyOption, nameOption, categoryOption, minprice, maxprice };
-}
-
-function filterProducts(products, filters) {
-    return products.filter(product => {
-        // If the product is marked "deleted" with attribute isDeleted = true
-        if (product.isDeleted) return false;
-
-        // Check matching name
-        if (
-            filters.nameOption &&
-            !product.name.toLowerCase().includes(filters.nameOption.toLowerCase())
-        ) {
-            return false;
-        }
-
-        // Check price range
-        if (product.price < filters.minprice || product.price > filters.maxprice) {
-            return false;
-        }
-
-        // Check category
-        if (!filters.categoryOption.includes(product.category)) {
-            return false;
-        }
-
-        // Check brand
-        if (filters.brandOption.length > 0 && !filters.brandOption.includes(product.brand)) {
-            return false;
-        }
-
-        // Check gender
-        if (filters.genderOption.length > 0 && !filters.genderOption.includes(product.sex)) {
-            return false;
-        }
-
-        // Check size (at least one matching size is required)
-        if (
-            filters.sizeOption.length > 0 &&
-            !filters.sizeOption.every(size => product.size.includes(Number(size)))
-        ) {
-            return false;
-        }
-
-        console.log(product.id, product.name);
-        return true;
-    });
-}
-
-function sortProducts(products, sortbyOption) {
-    if (sortbyOption === "Alphabetically, A-Z") {
-        return products.sort((a, b) => a.name.localeCompare(b.name));
-    } else if (sortbyOption === "Alphabetically, Z-A") {
-        return products.sort((a, b) => b.name.localeCompare(a.name));
-    } else if (sortbyOption === "Price, low to high") {
-        return products.sort((a, b) => a.price - b.price);
-    } else if (sortbyOption === "Price, high to low") {
-        return products.sort((a, b) => b.price - a.price);
-    }
-    return products;
-}
-
-// Start filter if clicked the Apply Filter button
-document.querySelectorAll(".apply-filter-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-        window.scrollTo({ top: 700 });
-        showHomeProduct(JSON.parse(localStorage.getItem("products")));
-    });
-});
 
 // CATALOGUE - FILTER - END DEFINE /////////////////////////////////////////////////////
 
@@ -951,155 +839,110 @@ function showOrderHistory() {
 
 // CATALOGUE - ORDER HISTORY - END DEFINE /////////////////////////////////////////////////////
 
-// CATALOGUE - PRODUCTS - BEGIN DEFINE /////////////////////////////////////////////////////
+// CATALOGUE - PRODUCTS - BEGIN DEFINE ////////////////////////////////////////////////////////
+
+
 function increasingNumber(e) {
     let qty = e.parentNode.querySelector('.input-qty');
-    if (parseInt(qty.value) < qty.max) {
+    let priceElement = document.querySelector('.current-price');
+    let totalElement = document.querySelector('.price-total .price');
+
+    if (parseInt(qty.value) < parseInt(qty.max)) {
         qty.value = parseInt(qty.value) + 1;
     } else {
         qty.value = qty.max;
     }
+
+    updateTotalPrice(qty.value, priceElement, totalElement);
 }
 
 function decreasingNumber(e) {
     let qty = e.parentNode.querySelector('.input-qty');
-    if (qty.value > qty.min) {
+    let priceElement = document.querySelector('.current-price');
+    let totalElement = document.querySelector('.price-total .price');
+
+    if (parseInt(qty.value) > parseInt(qty.min)) {
         qty.value = parseInt(qty.value) - 1;
     } else {
         qty.value = qty.min;
     }
+
+    updateTotalPrice(qty.value, priceElement, totalElement);
 }
+
+function updateTotalPrice(quantity, priceElement, totalElement) {
+    let price = parseInt(priceElement.textContent.replace(/\D/g, ""));
+    let totalPrice = price * quantity;
+    totalElement.textContent = new Intl.NumberFormat("vi-VN").format(totalPrice) + " ₫";
+}
+
 
 function detailProduct(id) {
     let modal = document.querySelector('.modal.product-detail');
-    let products = JSON.parse(localStorage.getItem('products'));
-    event.preventDefault();
-    let infoProduct = products.find(sp => {
-        return sp.id === id;
-    })
-    const sizeButtonsHTML = infoProduct.size.map(size => `
-        <button class="size-button">${size}</button>
-    `).join("");
-    let modalHtml = `
-    <div class="img-container">
-        <img src="${infoProduct.image}" alt="" onerror="this.src='./asset/img/catalogue/coming-soon.jpg'">
-    </div>
-    <div class="modal-body">
-        <h2 class="product-title">${infoProduct.name}</h2>
-        <div class="product-control">
-            <div class="priceBox">
-                <span class="current-price">${vnd(infoProduct.price)}</span>
-            </div>
-             <div class="buttons_added">
-                <button class="minus is-form" type="button" value="-" onclick="decreasingNumber(this)">
-                    <i class="fa-solid fa-minus"></i>
-                </button>
-                <input class="input-qty" max="100" min="1" name="" type="number" value="1">
-                <button class="plus is-form" type="button" value="+" onclick="increasingNumber(this)">
-                    <i class="fa-solid fa-plus"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-    <div class="size-container">${sizeButtonsHTML}</div>
-    <div class="modal-footer">
-        <div class="price-total">
-            <span class="thanhtien">Total</span>
-            <span class="price">${vnd(infoProduct.price)}</span>
-        </div>
-        <div class="modal-footer-control">
-            <button class="checkout-btn" data-product="${infoProduct.id}">Buy now</button>
-            <button class="button-dat" id="add-cart"><i class="fa-solid fa-cart-shopping "></i></button>
-        </div>
-    </div>`;
-    document.querySelector('#product-detail-content').innerHTML = modalHtml;
-    modal.classList.add('open');
-    body.style.overflow = "hidden";
+    let body = document.body;
 
-    //Cap nhat gia tien khi tang so luong san pham
-    let tgbtn = document.querySelectorAll('.is-form');
-    let qty = document.querySelector('.product-control .input-qty');
-    let priceText = document.querySelector('.price');
-    tgbtn.forEach(element => {
-        element.addEventListener('click', () => {
-            let price = infoProduct.price * parseInt(qty.value.trim());
-            priceText.innerHTML = vnd(price);
-        });
-    });
-
-    // Select a shoes size
-    let selectedSize;
-    document.querySelector(".size-container").addEventListener("click", (event) => {
-        if (event.target.tagName === "BUTTON") {
-            document.querySelectorAll(".size-container button").forEach(button => {
-                button.classList.remove("active");
-            });
-
-            event.target.classList.add("active");
-            selectedSize = event.target.textContent.trim();
-            console.log("Selected size: " + selectedSize);
-        }
-    });
-
-    modal.querySelector('.button-dat').addEventListener('click', () => {
-        if (!selectedSize) {
-            toastMsg({ title: "REMINDER", message: "Please chose a shoe size first!", type: "warning" });
-            return;
-        }
-
-        if (localStorage.getItem('currentuser')) {
-            addCart(infoProduct.id, selectedSize, parseInt(qty.value), infoProduct.price);
-        } else {
-            toastMsg({ title: "REMINDER", message: "Please login first!", type: "warning" });
-            closeModal();
-        }
-    });
-
-    modal.querySelector(".checkout-btn").addEventListener("click", () => {
-        if (!selectedSize) {
-            toastMsg({ title: "REMINDER", message: "Please chose a shoe size first!", type: "warning" });
-            return;
-        }
-
-        if (localStorage.getItem('currentuser')) {
-            addCart(infoProduct.id, selectedSize, parseInt(qty.value), infoProduct.price);
-            showCartCheckout();
-            toggleModal("checkout-page");
-        } else {
-            toastMsg({ title: "REMINDER", message: "Please login first!", type: "warning" });
-            closeModal();
-        }
-    });
-
+    // Gọi API để lấy chi tiết sản phẩm từ `productdetail.php`
+    fetch(`view/productdetail.php?id=${id}`)
+        .then(response => response.text()) // Lấy HTML từ productdetail.php
+        .then(html => {
+            document.querySelector('#product-detail-content').innerHTML = html;
+            modal.classList.add('open'); // Hiện modal
+            body.style.overflow = "hidden"; // Ẩn scroll của body
+        })
+        .catch(error => console.error("Lỗi khi tải sản phẩm:", error));
 }
 
-function displayProducts(productShow) {
-    const productContainer = document.getElementById("home-product");
-    productContainer.innerHTML = ""; // Clear current content
+// Đóng modal khi nhấn vào nút đóng
+document.querySelector('.modal-close').addEventListener('click', function () {
+    document.querySelector('.modal.product-detail').classList.remove('open');
+    document.body.style.overflow = "auto";
+});
 
-    let productHTML = ""; // Create HTML string
-    if (productShow.length !== 0) {
-        productShow.forEach(product => {
-            if (product.isDeleted) return;
 
-            productHTML += `
-            <div class="product-box" onclick="detailProduct('${product.id}')">
-                <div class="img-container">
-                    <img src="${product.image}" alt="${product.name}" onerror="this.src='./asset/img/catalogue/coming-soon.jpg'" />
-                </div>
-                <div class="shoes-name">${product.name}</div>
-                <div class="shoes-price">${vnd(product.price)}</div>
-            </div>
-        `;
-        });
+    // // Select a shoes size
+    // let selectedSize;
+    // document.querySelector(".size-container").addEventListener("click", (event) => {
+    //     if (event.target.tagName === "BUTTON") {
+    //         document.querySelectorAll(".size-container button").forEach(button => {
+    //             button.classList.remove("active");
+    //         });
 
-        productContainer.innerHTML = productHTML;
-    } else {
-        // No products to show
-        productContainer.style.display = "flex"; // Ensure the container is visible
-        displayWhenEmpty("#home-product", displayEmptyHTML_catalogue);
-    }
-}
+    //         event.target.classList.add("active");
+    //         selectedSize = event.target.textContent.trim();
+    //         console.log("Selected size: " + selectedSize);
+    //     }
+    // });
+
+    // modal.querySelector('.button-dat').addEventListener('click', () => {
+    //     if (!selectedSize) {
+    //         toastMsg({ title: "REMINDER", message: "Please chose a shoe size first!", type: "warning" });
+    //         return;
+    //     }
+
+    //     if (localStorage.getItem('currentuser')) {
+    //         addCart(infoProduct.id, selectedSize, parseInt(qty.value), infoProduct.price);
+    //     } else {
+    //         toastMsg({ title: "REMINDER", message: "Please login first!", type: "warning" });
+    //         closeModal();
+    //     }
+    // });
+
+    // modal.querySelector(".checkout-btn").addEventListener("click", () => {
+    //     if (!selectedSize) {
+    //         toastMsg({ title: "REMINDER", message: "Please chose a shoe size first!", type: "warning" });
+    //         return;
+    //     }
+
+    //     if (localStorage.getItem('currentuser')) {
+    //         addCart(infoProduct.id, selectedSize, parseInt(qty.value), infoProduct.price);
+    //         showCartCheckout();
+    //         toggleModal("checkout-page");
+    //     } else {
+    //         toastMsg({ title: "REMINDER", message: "Please login first!", type: "warning" });
+    //         closeModal();
+    //     }
+    // });
+
 
 
 // Phân trang 
@@ -1112,21 +955,6 @@ function displayList(productAll, perPage, currentPage) {
     displayProducts(productShow);
 }
 
-function showHomeProduct(products) {
-    const filters = getFilterOption();
-
-    console.group("Filtered products");
-    let filteredProducts = filterProducts(products, filters);
-    console.groupEnd();
-
-    filteredProducts = sortProducts(filteredProducts, filters.sortbyOption);
-    let displayCatalogueAmount = document.getElementById("display-catalogue-amount");
-    displayCatalogueAmount.textContent = filteredProducts.length + " ";
-
-    displayList(filteredProducts, perPage, currentPage);
-    setupPagination(filteredProducts, perPage);
-    window.scrollTo({ top: 700 });
-}
 
 function setupPagination(productAll, perPage) {
     const pageNav = document.querySelector('.page-nav'); // Get the pagination container
@@ -1174,16 +1002,7 @@ function paginationChange(page, productAll, currentPage) {
 
 window.onload = () => {
     window.scrollTo({ top: 0 });
-    createProduct(); // Ensure products are created in localStorage
-    createBetaAccount();
-    createBetaOrder();
-
-    let products = JSON.parse(localStorage.getItem('products')); // Fetch the products from localStorage
-    showHomeProduct(products); // Display products after initialization
-
     initializeProvinces();
-
-    updateMenuVisibility();
 }
 
 // CATALOGUE - PRODUCTS - END DEFINE /////////////////////////////////////////////////////
@@ -1192,9 +1011,9 @@ window.onload = () => {
 // BANNER - BEGIN /////////////////////////////////////////////////////
 
 const imageArray = [
-    'asset/img/banner/banner1.jpg',
-    'asset/img/banner/banner2.jpg',
-    'asset/img/banner/banner3.jpg'
+    '/Web2/src/view/layout/asset/img/banner/banner1.jpg',
+    '/Web2/src/view/layout/asset/img/banner/banner2.jpg',
+    '/Web2/src/view/layout/asset/img/banner/banner3.jpg'
 ];
 
 const bannerImagesContainer = document.querySelector('.banner-images');

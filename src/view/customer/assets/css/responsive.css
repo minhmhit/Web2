@@ -78,14 +78,7 @@
     .checkout-col-right {
         width: 100%;
     }
-
-    .banner {
-        width: 100%;
-        height: 100%; /* Set your preferred height */
-        margin-bottom: 20px;
-    }
 }
-
 
 /* FOR FOOTER-CONTAINER-INFO */
 @media screen and (max-width: 526px) {

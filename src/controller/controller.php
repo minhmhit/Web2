@@ -1,19 +1,27 @@
 <?php 
-
-// require header
+// require header;
+include_once("controller/db_controller/api.php");
 include_once("view/header.php");
+$productlist = getNewProduct();
 
 if(isset($_GET['pg'])&&($_GET['pg'])!=""){
 
     switch ($_GET['pg']) {
-        case 'product':
+        case 'home':
             // if ((isset($_GET['catalog']))&&($_GET['catalog']>0)) {
             //     $catalogname = "";
             // }
             // có thể chuyển trang bằng get php
             // include product
             include_once("view/home.php");
+            
             break;
+        case 'products' :
+        case 'sandals' :
+        case 'sneakers' :
+        case 'kids' :
+        case 'admin':
+
 
             
         
