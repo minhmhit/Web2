@@ -10,7 +10,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Sen:wght@400..800&display=swap');
     </style>
-    <link rel="icon" href="asset/img/logo.jpg" type="image/x-icon">
+    <link rel="icon" href="view/layout/asset/img/logo.jpg" type="image/x-icon">
     <link rel="stylesheet" href="view/layout/asset/css/main.css">
     <link rel="stylesheet" href="view/layout/asset/css/main-responsive.css">
     <link rel="stylesheet" href="view/layout/asset/css/toast-msg.css">
@@ -28,6 +28,7 @@
                 <div class="header-container-mid hide-on-mobile">
                     <ul class="menu-list category-menu">
                         <li><a class="filter-category active" data-filter="Home">HOME</a></li>
+                        <li><a class="filter-category" data-filter="Product">PRODUCTS</a></li>
                         <li><a class="filter-category" data-filter="Sneaker">SNEAKERS</a></li>
                         <li><a class="filter-category" data-filter="Sandal">SANDALS</a></li>
                         <li><a class="filter-category" data-filter="Kid">KIDS</a></li>

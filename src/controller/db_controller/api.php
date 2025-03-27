@@ -1,9 +1,64 @@
 <?php
-// api
-header('Content-Type: application/json');
+// header('Content-Type: application/json');
 require_once 'db_connect.php';
 
-// Lấy danh sách sản phẩm từ database
+/*************************** PRODUCT START ***************************/
+
+function getNewProduct() {
+    $sql = "
+        SELECT p.ProductID AS id, p.ProductName AS name, p.Price AS price, p.ImageURL AS image, 
+               c.CategoryName AS category, b.BrandName AS brand, p.Gender AS sex,
+               GROUP_CONCAT(ps.Size) AS size
+        FROM Product p
+        LEFT JOIN Categories c ON p.CategoryID = c.CategoryID
+        LEFT JOIN Brand b ON p.BrandID = b.BrandID
+        LEFT JOIN ProductSize ps ON p.ProductID = ps.ProductID
+        GROUP BY p.ProductID;
+    ";
+
+    $products = getAll($sql);
+
+    // Chuyển kích thước thành mảng và thêm thuộc tính isDeleted
+    foreach ($products as &$product) {
+        $product['size'] = !empty($product['size']) ? explode(',', $product['size']) : [];
+        $product['isDeleted'] = false;
+    }
+
+    return $products;
+}
+
+
+function getProductDetail($idProduct) {
+    $sql = "
+        SELECT p.ProductID AS id, p.ProductName AS name, p.Price AS price, p.ImageURL AS image, 
+               c.CategoryName AS category, b.BrandName AS brand, p.Gender AS sex,
+               GROUP_CONCAT(DISTINCT ps.Size ORDER BY ps.Size ASC) AS size
+        FROM Product p
+        LEFT JOIN Categories c ON p.CategoryID = c.CategoryID
+        LEFT JOIN Brand b ON p.BrandID = b.BrandID
+        LEFT JOIN ProductSize ps ON p.ProductID = ps.ProductID
+        WHERE p.ProductID = $idProduct
+        GROUP BY p.ProductID;
+    ";
+
+    $product = getOne($sql); // Không cần truyền tham số
+
+    if ($product) {
+        $product['size'] = !empty($product['size']) ? explode(',', $product['size']) : [];
+    }
+
+    return $product;
+}
+
+
+
+// function getIDCatalog ($idCatalog) {
+//     $sql = "SELECT CategoryID FROM categories WHERE CategoryID =".$idCatalog;
+//     $getone = getOne ($sql);
+//     extract($getone);
+//     return $CategoryID;
+// }
+
 function getProducts($pdo)
 {
     $stmt = $pdo->prepare("
@@ -50,6 +105,8 @@ function getEmployees($pdo)
 
     return $employees;
 }
+
+
 function getCarts($pdo)
 {
     $stmt = $pdo->prepare("
@@ -62,6 +119,8 @@ function getCarts($pdo)
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+
+
 function getProductSizes($pdo)
 {
     $stmt = $pdo->prepare("
@@ -73,18 +132,22 @@ function getProductSizes($pdo)
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
+
 function getBrands($pdo)
 {
     $stmt = $pdo->prepare("SELECT BrandID AS id, BrandName AS name FROM Brand");
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+
+
 function getCategories($pdo)
 {
     $stmt = $pdo->prepare("SELECT CategoryID AS id, CategoryName AS name FROM Categories");
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+
 
 // Lấy danh sách tài khoản
 function getAccounts($pdo)
@@ -106,6 +169,7 @@ function getAccounts($pdo)
 
     return $accounts;
 }
+
 
 // Lấy danh sách đơn hàng
 function getOrders($pdo)
@@ -151,7 +215,7 @@ function getOrders($pdo)
                 'originalPrice' => $row['originalPrice']
             ];
             // Tính tổng tiền
-            $orders[$orderId]['total'] += $row['quantity'] * $row['originalPrice'];
+            $orders[$orderId]['total'] += $row['quantity'] * $row['originalPrice'] + 30000;
         }
     }
 
@@ -168,6 +232,12 @@ function getOrders($pdo)
 
     return array_values($orders);
 }
+
+
+
+
+
+/*************************** PRODUCT END ***************************/
 
 
 /*
