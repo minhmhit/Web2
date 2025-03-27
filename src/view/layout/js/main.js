@@ -899,79 +899,50 @@ document.querySelector('.modal-close').addEventListener('click', function () {
 });
 
 
-    // Select a shoes size
-    let selectedSize;
-    document.querySelector(".size-container").addEventListener("click", (event) => {
-        if (event.target.tagName === "BUTTON") {
-            document.querySelectorAll(".size-container button").forEach(button => {
-                button.classList.remove("active");
-            });
+    // // Select a shoes size
+    // let selectedSize;
+    // document.querySelector(".size-container").addEventListener("click", (event) => {
+    //     if (event.target.tagName === "BUTTON") {
+    //         document.querySelectorAll(".size-container button").forEach(button => {
+    //             button.classList.remove("active");
+    //         });
 
-            event.target.classList.add("active");
-            selectedSize = event.target.textContent.trim();
-            console.log("Selected size: " + selectedSize);
-        }
-    });
+    //         event.target.classList.add("active");
+    //         selectedSize = event.target.textContent.trim();
+    //         console.log("Selected size: " + selectedSize);
+    //     }
+    // });
 
-    modal.querySelector('.button-dat').addEventListener('click', () => {
-        if (!selectedSize) {
-            toastMsg({ title: "REMINDER", message: "Please chose a shoe size first!", type: "warning" });
-            return;
-        }
+    // modal.querySelector('.button-dat').addEventListener('click', () => {
+    //     if (!selectedSize) {
+    //         toastMsg({ title: "REMINDER", message: "Please chose a shoe size first!", type: "warning" });
+    //         return;
+    //     }
 
-        if (localStorage.getItem('currentuser')) {
-            addCart(infoProduct.id, selectedSize, parseInt(qty.value), infoProduct.price);
-        } else {
-            toastMsg({ title: "REMINDER", message: "Please login first!", type: "warning" });
-            closeModal();
-        }
-    });
+    //     if (localStorage.getItem('currentuser')) {
+    //         addCart(infoProduct.id, selectedSize, parseInt(qty.value), infoProduct.price);
+    //     } else {
+    //         toastMsg({ title: "REMINDER", message: "Please login first!", type: "warning" });
+    //         closeModal();
+    //     }
+    // });
 
-    modal.querySelector(".checkout-btn").addEventListener("click", () => {
-        if (!selectedSize) {
-            toastMsg({ title: "REMINDER", message: "Please chose a shoe size first!", type: "warning" });
-            return;
-        }
+    // modal.querySelector(".checkout-btn").addEventListener("click", () => {
+    //     if (!selectedSize) {
+    //         toastMsg({ title: "REMINDER", message: "Please chose a shoe size first!", type: "warning" });
+    //         return;
+    //     }
 
-        if (localStorage.getItem('currentuser')) {
-            addCart(infoProduct.id, selectedSize, parseInt(qty.value), infoProduct.price);
-            showCartCheckout();
-            toggleModal("checkout-page");
-        } else {
-            toastMsg({ title: "REMINDER", message: "Please login first!", type: "warning" });
-            closeModal();
-        }
-    });
+    //     if (localStorage.getItem('currentuser')) {
+    //         addCart(infoProduct.id, selectedSize, parseInt(qty.value), infoProduct.price);
+    //         showCartCheckout();
+    //         toggleModal("checkout-page");
+    //     } else {
+    //         toastMsg({ title: "REMINDER", message: "Please login first!", type: "warning" });
+    //         closeModal();
+    //     }
+    // });
 
-
-function displayProducts() {
-    const productContainer = document.getElementById("home-product");
-    productContainer.innerHTML = ""; // Xóa nội dung cũ
-
-    fetch("controller/db_controller/get_products.php") // Gọi API lấy dữ liệu sản phẩm
-        .then(response => response.json())
-        .then(products => {
-            let productHTML = "";
-
-            if (products.length !== 0) {
-                products.forEach(product => {
-                    productHTML += `
-                    <div class="product-box" onclick="detailProduct('${product.ProductID}')">
-                        <div class="img-container">
-                            <img src="${product.Image}" alt="${product.ProductName}" onerror="this.src='view/layout/asset/img/catalogue/coming-soon.jpg'" />
-                        </div>
-                        <div class="shoes-name">${product.ProductName}</div>
-                        <div class="shoes-price">${product.Price} VND</div>
-                    </div>`;
-                });
-
-                productContainer.innerHTML = productHTML;
-            } else {
-                productContainer.innerHTML = "<p>Không có sản phẩm nào.</p>";
-            }
-        })
-        .catch(error => console.error("Lỗi khi tải sản phẩm:", error));
-}
 
 
 // Phân trang 
@@ -1031,7 +1002,6 @@ function paginationChange(page, productAll, currentPage) {
 
 window.onload = () => {
     window.scrollTo({ top: 0 });
-    displayProducts();
     initializeProvinces();
 }
 
