@@ -1,4 +1,7 @@
-<?php require_once("header.php"); ?>
+<?php 
+require_once("header.php"); 
+require_once "./controller/controller.php";
+?>
 
 <main>
             <!-- TOAST -->
@@ -217,6 +220,21 @@
                     <!-- DISPLAY PRODUCTS -->
                     <div class="shoes-box-container show-on-mobile">
                         <div class="product-box-container" id="home-product">
+                            <?php
+                           $kq = "";
+                           foreach ($productlist as $item) {
+                               extract($item);
+                               $kq .= '
+                               <div class="product-box" onclick= "detailProduct('. $id .')">
+                                   <div class="img-container">
+                                       <img src="' . $image . '" alt="' . $name . '" onerror="this.src=\'view/layout/asset/img/catalogue/coming-soon.jpg\'" />
+                                   </div>
+                                   <div class="shoes-name">' . $name . '</div>
+                                   <div class="shoes-price">' . number_format($price, 0, ',', '.') . ' ₫</div>
+                               </div>';
+                           }
+                           echo $kq;                           
+                            ?>
                         </div>
                         <div class="page-nav">
                             <ul class="page-nav-list">

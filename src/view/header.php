@@ -10,7 +10,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Sen:wght@400..800&display=swap');
     </style>
-    <link rel="icon" href="asset/img/logo.jpg" type="image/x-icon">
+    <link rel="icon" href="view/layout/asset/img/logo.jpg" type="image/x-icon">
     <link rel="stylesheet" href="view/layout/asset/css/main.css">
     <link rel="stylesheet" href="view/layout/asset/css/main-responsive.css">
     <link rel="stylesheet" href="view/layout/asset/css/toast-msg.css">

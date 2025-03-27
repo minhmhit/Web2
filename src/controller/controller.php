@@ -2,7 +2,7 @@
 // require header;
 include_once("controller/db_controller/api.php");
 include_once("view/header.php");
-
+$productlist = getNewProduct();
 
 if(isset($_GET['pg'])&&($_GET['pg'])!=""){
 

@@ -288,8 +288,8 @@ async function restoreProduct(id) {
 
 document.getElementById("showProducts").addEventListener("input", filterProducts);
 
-function filterProducts() {
-    let result = JSON.parse(localStorage.getItem("products")) || [];
+async function filterProducts() {
+    let result = await getProducts();
 
     let search = document.getElementById("form-search-product").value.trim().toLowerCase();
     let status = document.getElementById("status-product").value;
@@ -299,21 +299,15 @@ function filterProducts() {
     let minprice = parseInt(document.getElementById("minprice-product").value) || 0;
     let maxprice = parseInt(document.getElementById("maxprice-product").value) || Infinity;
 
-    // Filter by options
     result = result.filter(item => {
         let match = true;
 
         if (search && !item.name.toLowerCase().includes(search)) match = false;
-
         if (status === "1" && item.isDeleted === true) match = false;
         else if (status === "0" && item.isDeleted === false) match = false;
-
         if (category !== "0" && item.category.toLowerCase() !== category) match = false;
-
         if (brand !== "0" && item.brand.toLowerCase() !== brand) match = false;
-
         if (gender !== "0" && item.sex.toLowerCase() !== gender) match = false;
-
         if (parseInt(item.price) < minprice) match = false;
         if (parseInt(item.price) > maxprice) match = false;
 
@@ -323,6 +317,7 @@ function filterProducts() {
     console.log("filterProducts(): ", result);
     showProductList(0, result);
 }
+
 
 function resetFilterProducts() {
     document.getElementById("form-search-product").value = "";
@@ -478,38 +473,18 @@ function openModal() {
 
 document.getElementById("bill").addEventListener("input", filterOrders);
 
-function renderOrders(arr = JSON.parse(localStorage.getItem("orders")) || []) {
-    const accounts = JSON.parse(localStorage.getItem("accounts")) || [];
-    const content = document.getElementById("show-orders");
-    content.innerHTML = "";
-
-    if (arr.length === 0) {
-        displayWhenEmpty("#bill .display-when-empty", displayEmptyHTML_nodata);
-        return;
-    } else document.querySelector("#bill .display-when-empty").innerHTML = "";
-
-    let tableHTML = "";
-    arr.forEach((order, orderIdx) => {
-        const account = accounts.find(acc => acc.id == order.customerId);
-        tableHTML += `
-          <tr>
-            <td>${orderIdx + 1}</td>
+async function renderOrders() {
+    let orders = await getOrders();
+    document.getElementById("show-orders").innerHTML = orders.map((order, index) => `
+        <tr>
+            <td>${index + 1}</td>
             <td>${order.id}</td>
             <td>${order.customerId}</td>
-            <td>${account.phone}</td>
-            <td>${formatDate(order.orderDate)}</td>
-            <td>${vnd(order.total)}</td>
-            <td>
-              <span class="order-status" style="background-color: var(${order_statusColor[order.status]})">
-                ${order_statusTitle[order.status]}
-                <i class="${order_statusIcon[order.status]}"></i>
-              </span>
-            </td>
-            <td><button class="details-btn" onclick="showOrderDetail(${orderIdx})"><i class="fa-solid fa-eye"></i>Details</button></td>
-          </tr>`;
-    });
-
-    content.innerHTML = tableHTML;
+            <td>${order.orderDate}</td>
+            <td>${order.total}</td>
+            <td><button class="details-btn" onclick="showOrderDetail(${index})"><i class="fa-solid fa-eye"></i>Details</button></td>
+        </tr>
+    `).join("");
 }
 
 function filterOrders() {
@@ -1159,9 +1134,9 @@ function logOut() {
 // HOMEPAGE - END DEFINE ///////////////////////////////////////////////
 
 // STATISTIC - BEGIN DEFINE ///////////////////////////////////////////////
-let filteredOrders_global = JSON.parse(localStorage.getItem("orders")) || [];
-let filteredAccounts_global = JSON.parse(localStorage.getItem("accounts")) || [];
-let filteredProducts_global = JSON.parse(localStorage.getItem("products")) || [];
+// let filteredOrders_global = JSON.parse(localStorage.getItem("orders")) || [];
+// let filteredAccounts_global = JSON.parse(localStorage.getItem("accounts")) || [];
+// let filteredProducts_global = JSON.parse(localStorage.getItem("products")) || [];
 
 document.getElementById("statistical").addEventListener("input", filterStat);
 // STATISTIC  - STATS - BEGIN DEFINE

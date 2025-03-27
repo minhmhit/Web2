@@ -96,7 +96,7 @@ function updateMenuVisibility() {
 }
 
 // For signup form
-function handleSignupForm() {
+function handleSignupForm(event) {
     event.preventDefault();
 
     let username = document.getElementById("username-signup").value.trim();
@@ -260,6 +260,7 @@ function signOut() {
     updateMenuVisibility();
     location.reload();
 }
+
 
 // Load user info to My Account after user has logged in
 function loadUserInfo() {
@@ -838,97 +839,65 @@ function showOrderHistory() {
 
 // CATALOGUE - ORDER HISTORY - END DEFINE /////////////////////////////////////////////////////
 
-// CATALOGUE - PRODUCTS - BEGIN DEFINE /////////////////////////////////////////////////////
+// CATALOGUE - PRODUCTS - BEGIN DEFINE ////////////////////////////////////////////////////////
+
+
 function increasingNumber(e) {
     let qty = e.parentNode.querySelector('.input-qty');
-    if (parseInt(qty.value) < qty.max) {
+    let priceElement = document.querySelector('.current-price');
+    let totalElement = document.querySelector('.price-total .price');
+
+    if (parseInt(qty.value) < parseInt(qty.max)) {
         qty.value = parseInt(qty.value) + 1;
     } else {
         qty.value = qty.max;
     }
+
+    updateTotalPrice(qty.value, priceElement, totalElement);
 }
 
 function decreasingNumber(e) {
     let qty = e.parentNode.querySelector('.input-qty');
-    if (qty.value > qty.min) {
+    let priceElement = document.querySelector('.current-price');
+    let totalElement = document.querySelector('.price-total .price');
+
+    if (parseInt(qty.value) > parseInt(qty.min)) {
         qty.value = parseInt(qty.value) - 1;
     } else {
         qty.value = qty.min;
     }
+
+    updateTotalPrice(qty.value, priceElement, totalElement);
 }
+
+function updateTotalPrice(quantity, priceElement, totalElement) {
+    let price = parseInt(priceElement.textContent.replace(/\D/g, ""));
+    let totalPrice = price * quantity;
+    totalElement.textContent = new Intl.NumberFormat("vi-VN").format(totalPrice) + " ₫";
+}
+
 
 function detailProduct(id) {
     let modal = document.querySelector('.modal.product-detail');
     let body = document.body;
 
-    event.preventDefault(); // Ngăn chặn hành vi mặc định
-
-    // Gọi API để lấy chi tiết sản phẩm
-    fetch(`controller/db_controller/get_product_detail.php?id=${id}`)
-        .then(response => response.json())
-        .then(infoProduct => {
-            if (!infoProduct) {
-                console.error("Không tìm thấy sản phẩm");
-                return;
-            }
-
-            // Tạo nút chọn size
-            const sizeButtonsHTML = infoProduct.size
-                ? infoProduct.size.map(size => `<button class="size-button">${size}</button>`).join("")
-                : "";
-
-            // Tạo nội dung modal
-            let modalHtml = `
-                <div class="img-container">
-                    <img src="${infoProduct.Image}" alt="" onerror="this.src='./asset/img/catalogue/coming-soon.jpg'">
-                </div>
-                <div class="modal-body">
-                    <h2 class="product-title">${infoProduct.ProductName}</h2>
-                    <div class="product-control">
-                        <div class="priceBox">
-                            <span class="current-price">${vnd(infoProduct.Price)}</span>
-                        </div>
-                        <div class="buttons_added">
-                            <button class="minus is-form" type="button" value="-" onclick="decreasingNumber(this)">
-                                <i class="fa-solid fa-minus"></i>
-                            </button>
-                            <input class="input-qty" max="100" min="1" type="number" value="1">
-                            <button class="plus is-form" type="button" value="+" onclick="increasingNumber(this)">
-                                <i class="fa-solid fa-plus"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="size-container">${sizeButtonsHTML}</div>
-                <div class="modal-footer">
-                    <div class="price-total">
-                        <span class="thanhtien">Total</span>
-                        <span class="price">${vnd(infoProduct.Price)}</span>
-                    </div>
-                    <div class="modal-footer-control">
-                        <button class="checkout-btn" data-product="${infoProduct.ProductID}">Buy now</button>
-                        <button class="button-dat" id="add-cart"><i class="fa-solid fa-cart-shopping"></i></button>
-                    </div>
-                </div>`;
-
-            document.querySelector('#product-detail-content').innerHTML = modalHtml;
-            modal.classList.add('open');
-            body.style.overflow = "hidden";
-
-            // Cập nhật giá tiền khi thay đổi số lượng sản phẩm
-            let qty = document.querySelector('.product-control .input-qty');
-            let priceText = document.querySelector('.price');
-
-            document.querySelectorAll('.is-form').forEach(button => {
-                button.addEventListener('click', () => {
-                    let price = infoProduct.Price * parseInt(qty.value.trim());
-                    priceText.innerHTML = vnd(price);
-                });
-            });
-
+    // Gọi API để lấy chi tiết sản phẩm từ `productdetail.php`
+    fetch(`view/productdetail.php?id=${id}`)
+        .then(response => response.text()) // Lấy HTML từ productdetail.php
+        .then(html => {
+            document.querySelector('#product-detail-content').innerHTML = html;
+            modal.classList.add('open'); // Hiện modal
+            body.style.overflow = "hidden"; // Ẩn scroll của body
         })
-        .catch(error => console.error("Lỗi khi tải chi tiết sản phẩm:", error));
+        .catch(error => console.error("Lỗi khi tải sản phẩm:", error));
 }
+
+// Đóng modal khi nhấn vào nút đóng
+document.querySelector('.modal-close').addEventListener('click', function () {
+    document.querySelector('.modal.product-detail').classList.remove('open');
+    document.body.style.overflow = "auto";
+});
+
 
     // Select a shoes size
     let selectedSize;
@@ -974,7 +943,6 @@ function detailProduct(id) {
         }
     });
 
-}
 
 function displayProducts() {
     const productContainer = document.getElementById("home-product");

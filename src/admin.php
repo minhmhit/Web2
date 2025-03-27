@@ -183,7 +183,7 @@
                             <table>
                                 <thead>
                                     <tr>
-                                        <th>INDEX</th>
+                                        <!-- <th>INDEX</th> -->
                                         <th>ID</th>
                                         <th>IMAGE</th>
                                         <th>NAME</th>
@@ -360,7 +360,7 @@
                             <table>
                                 <thead>
                                     <tr>
-                                        <th>INDEX</th>
+                                        <!-- <th>INDEX</th> -->
                                         <th>ID</th>
                                         <th>CUSTOMER</th>
                                         <th>PHONE</th>
@@ -420,7 +420,7 @@
                             <table>
                                 <thead>
                                     <tr>
-                                        <th>INDEX</th>
+                                        <!-- <th>INDEX</th> -->
                                         <th>ID</th>
                                         <th>FULL NAME</th>
                                         <th>USERNAME</th>
@@ -512,7 +512,7 @@
                             <table>
                                 <thead>
                                     <tr>
-                                        <th>INDEX</th>
+                                        <!-- <th>INDEX</th> -->
                                         <th>ID</th>
                                         <th>PRODUCT</th>
                                         <th>SOLD QUANTITY</th>
@@ -530,7 +530,7 @@
                             <table>
                                 <thead>
                                     <tr>
-                                        <th>INDEX</th>
+                                        <!-- <th>INDEX</th> -->
                                         <th>ID</th>
                                         <th>FULL NAME</th>
                                         <th>PHONE</th>
