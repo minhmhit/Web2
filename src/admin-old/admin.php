@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- icon -->
-    <link rel="icon" href="asset\img\logo.jpg" type="image/x-icon">
+    <link rel="icon" href=".\css\img\logo.jpg" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <script src="https://kit.fontawesome.com/e8d4a112b7.js" crossorigin="anonymous"></script>
     <!-- embed font -->
@@ -15,9 +15,9 @@
         @import url('https://fonts.googleapis.com/css2?family=Sen:wght@400..800&display=swap');
     </style>
     <!-- css -->
-    <link rel="stylesheet" href="view/layout/asset/css/admin.css" />
-    <link rel="stylesheet" href="view/layout/asset/css/admin-responsive.css" />
-    <link rel="stylesheet" href="view/layout/asset/css/toast-msg.css" />
+    <link rel="stylesheet" href="./css/admin.css" />
+    <link rel="stylesheet" href="./css/admin-responsive.css" />
+    <link rel="stylesheet" href="./css/toast-msg.css" />
     <title>Store Manager</title>
 </head>
 
@@ -31,7 +31,7 @@
         </div>
         <div class="admin-sidebar" id="admin-sidebar">
             <div class="admin-sidebar__top">
-                <a class="img-container" href=""><img class="header-logo" src="view/layout/asset/img/logo.jpg" alt="Bro Shoes"></a>
+                <a class="img-container" href=""><img class="header-logo" src="css/img/logo.jpg" alt="Bro Shoes"></a>
             </div>
             <aside class="admin-sidebar__content">
                 <ul>
@@ -82,7 +82,7 @@
                                 <div class="box">
                                     <h2 class="display-user-count">0</h2>
                                     <div class="on-box">
-                                        <img src="view/layout/asset/img/admin-homepage/users.png" alt="" style=" width: 200px;">
+                                        <img src="css/img/users.png" alt="" style=" width: 200px;">
                                         <h3>ACTIVE USERS</h3>
                                     </div>
                                 </div>
@@ -90,7 +90,7 @@
                             <div class="card-single">
                                 <div class="box">
                                     <div class="on-box">
-                                        <img src="view/layout/asset/img/admin-homepage/shopping.png" alt="" style=" width: 200px;">
+                                        <img src="css/img/shopping.png" alt="" style=" width: 200px;">
                                         <h2 class="display-product-count">0</h2>
                                         <h3>PRODUCTS ON SALE</h3>
                                     </div>
@@ -100,7 +100,7 @@
                                 <div class="box">
                                     <h2 class="display-total-income">0</h2>
                                     <div class="on-box">
-                                        <img src="view/layout/asset/img/admin-homepage/income.png" alt="" style=" width: 200px;">
+                                        <img src="css/img/income.png" alt="" style=" width: 200px;">
                                         <h3>TOTAL INCOME</h3>
                                     </div>
                                 </div>
@@ -547,9 +547,9 @@
             </section>
         </main>
     </section>
-    <script src="view/layout/js/initialization.js"></script>
-    <script src="view/layout/js/toast-msg.js"></script>
-    <script src="view/layout/js/admin.js"></script>
+    <script src="./js/initialization.js"></script>
+    <script src="./js/toast-msg.js"></script>
+    <script src="./js/admin.js"></script>
 </body>
 
 </html>
