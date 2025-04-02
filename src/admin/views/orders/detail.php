@@ -2,7 +2,7 @@
 <p>Khách hàng: <?= htmlspecialchars($order['UserFullname']) ?></p>
 <p>Tổng tiền: <?= number_format($order['Total'], 0, ',', '.') ?> VND</p>
 <form method="POST" action="admin.php?page=orders&action=update">
-    <input type="hidden" name="id" value="<?= $order['OrderID>'] ?>">
+    <input type="hidden" name="id" value="<?= $order['OrderID'] ?>">
     <label>Trạng thái: 
         <select name="status">
             <option value="Pending" <?= $order['PaymentStatus'] == 'Pending' ? 'selected' : '' ?>>Đang chờ</option>
