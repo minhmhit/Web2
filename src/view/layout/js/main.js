@@ -49,217 +49,51 @@ function togglePage(elementId) {
 
 // USER - BEGIN DEFINE /////////////////////////////////////////////////////
 // Change UI based on whether user has logged in or not
-function updateMenuVisibility() {
-    let isLoggedIn = !!localStorage.getItem("currentuser");
-    let currentuser = JSON.parse(localStorage.getItem("currentuser"));
+// function updateMenuVisibility() {
+//     let isLoggedIn = !!localStorage.getItem("currentuser");
+//     let currentuser = JSON.parse(localStorage.getItem("currentuser"));
 
-    // Show checkout-btn if user is logged in
-    let checkoutBtn = document.getElementById("cart-checkout-btn");
-    if (isLoggedIn) {
-        checkoutBtn.classList.add("active");
-        checkoutBtn.disabled = false;
-    } else {
-        checkoutBtn.classList.remove("active");
-        checkoutBtn.disabled = true;
-    }
+//     // Show checkout-btn if user is logged in
+//     let checkoutBtn = document.getElementById("cart-checkout-btn");
+//     if (isLoggedIn) {
+//         checkoutBtn.classList.add("active");
+//         checkoutBtn.disabled = false;
+//     } else {
+//         checkoutBtn.classList.remove("active");
+//         checkoutBtn.disabled = true;
+//     }
 
-    // Show cart, order-history if user is logged in
-    if (isLoggedIn) {
-        showCart();
-        updateCartTotalAmount();
-        updateCartTotalPrice();
-        showOrderHistory();
-    }
+//     // Show cart, order-history if user is logged in
+//     if (isLoggedIn) {
+//         showCart();
+//         updateCartTotalAmount();
+//         updateCartTotalPrice();
+//         showOrderHistory();
+//     }
 
-    // Show logged-in items, hide logged-out items if user is logged in
-    document.querySelectorAll(".logged-in").forEach(item => {
-        item.style.display = isLoggedIn ? "block" : "none";
-    });
-    document.querySelectorAll(".logged-out").forEach(item => {
-        item.style.display = isLoggedIn ? "none" : "block";
-    });
+//     // Show logged-in items, hide logged-out items if user is logged in
+//     document.querySelectorAll(".logged-in").forEach(item => {
+//         item.style.display = isLoggedIn ? "block" : "none";
+//     });
+//     document.querySelectorAll(".logged-out").forEach(item => {
+//         item.style.display = isLoggedIn ? "none" : "block";
+//     });
 
-    // Show admin features if account is admin
-    document.querySelectorAll(".isAdmin").forEach(item => {
-        item.style.display = isLoggedIn && currentuser.isAdmin ? "block" : "none";
-    });
+//     // Show admin features if account is admin
+//     document.querySelectorAll(".isAdmin").forEach(item => {
+//         item.style.display = isLoggedIn && currentuser.isAdmin ? "block" : "none";
+//     });
 
-    // Show username in specific places if user is logged in
-    document.querySelectorAll(".display-username").forEach(item => {
-        item.textContent = isLoggedIn ? currentuser.username : "";
-    });
+//     // Show username in specific places if user is logged in
+//     document.querySelectorAll(".display-username").forEach(item => {
+//         item.textContent = isLoggedIn ? currentuser.username : "";
+//     });
 
-    // Show address in specific places if user is logged in
-    document.querySelectorAll(".display-address").forEach(item => {
-        item.value = isLoggedIn ? currentuser.address : "";
-    });
-}
-
-// For signup form
-function handleSignupForm(event) {
-    event.preventDefault();
-
-    let username = document.getElementById("username-signup").value.trim();
-    let fullname = document.getElementById("fullname-signup").value.trim();
-    let phone = document.getElementById("phone-signup").value.trim();
-    let address = document.getElementById("address-signup").value.trim();
-    let password = document.getElementById("password-signup").value.trim();
-    let confirmPassword = document.getElementById("confirm-password-signup").value.trim();
-
-    let hasError = false;
-
-    // Reset form-msg-error classes
-    document.querySelectorAll(".signup-user .form-msg-error").forEach(msg => {
-        msg.textContent = "";
-    });
-
-
-
-    // Validate username
-    if (!username || username.length < 5 || /\W|\s/.test(username)) {
-        document.querySelector("#username-signup + .form-msg-error").innerText =
-            "Username must be at least 5 characters long, no spaces or special characters.";
-        hasError = true;
-    }
-
-    // Validate fullname
-    if (!fullname) {
-        document.querySelector("#fullname-signup + .form-msg-error").innerText =
-            "Full name cannot be empty.";
-        hasError = true;
-    }
-
-    // Validate phone
-    if (!phone || !/^\d{10}$/.test(phone)) {
-        document.querySelector("#phone-signup + .form-msg-error").innerText =
-            "Phone number must be exactly 10 digits.";
-        hasError = true;
-    }
-
-    // Validate address
-    if (!address) {
-        document.querySelector("#address-signup + .form-msg-error").innerText =
-            "Address cannot be empty.";
-        hasError = true;
-    }
-
-    // Validate password
-    if (!password || password.length < 5 || /\s/.test(password)) {
-        document.querySelector("#password-signup + .form-msg-error").innerText =
-            "Password must be at least 5 characters long and cannot contain spaces.";
-        hasError = true;
-    }
-
-    // Validate confirm password
-    if (password !== confirmPassword) {
-        document.querySelector("#confirm-password-signup + .form-msg-error").innerText =
-            "Passwords do not match.";
-        hasError = true;
-    }
-
-    if (hasError) {
-        toastMsg({ title: "ERROR", message: "Please fill in the form correctly.", type: "error" });
-        return;
-    }
-
-
-    // If no error messages, proceed with saving to local storage
-    let accounts = JSON.parse(localStorage.getItem("accounts")) || [];
-    let user = {
-        id: ID_TYPE[0] + (accounts.length + 1),
-        username: username,
-        fullname: fullname,
-        phone: phone,
-        address: address,
-        password: password,
-        join: new Date(),
-        cart: [],
-        isAdmin: 0,
-        status: 1
-    };
-
-    // Check for duplicate / trung username/phone
-    let containsDuplicate = accounts.some(account => {
-        return account.phone === user.phone || account.username === user.username;
-    });
-
-
-    if (!containsDuplicate) {
-        accounts.push(user);
-        localStorage.setItem("accounts", JSON.stringify(accounts));
-        localStorage.setItem("currentuser", JSON.stringify(user));
-        console.log("handleSignupForm(): Signed up");
-        updateMenuVisibility();
-        toggleModal("signup-user");
-        document.getElementById("signup-form").reset();
-        toastMsg({ title: "SUCCESS", message: "Account created successfully!", type: "success" });
-    } else {
-        toastMsg({ title: "ERROR", message: "Account with username and/or phone number already existed!", type: "error" });
-    }
-};
-
-// For login form
-function handleLoginForm() {
-    event.preventDefault();
-
-    let usernameOrPhone = document.getElementById("username-login").value.trim();
-    let password = document.getElementById("password-login").value.trim();
-    let userMsgError = document.querySelector("#username-login + .form-msg-error");
-    let passMsgError = document.querySelector("#password-login + .form-msg-error");
-
-    // Ensure accounts exist in local storage
-    let accounts = JSON.parse(localStorage.getItem("accounts")) || [];
-
-    // Reset form-msg-error classes
-    document.querySelectorAll(".login-user .form-msg-error").forEach(msg => {
-        msg.textContent = "";
-    });
-
-    if (!usernameOrPhone || !password) {
-        userMsgError.innerText = "Both fields are required";
-        passMsgError.innerText = "Both fields are required";
-        toastMsg({ title: "ERROR", message: "Please fill in the form correctly.", type: "error" });
-        return;
-    }
-
-    let userIdx = accounts.findIndex(account => (account.phone === usernameOrPhone || account.username === usernameOrPhone));
-
-    if (userIdx === -1) {
-        userMsgError.innerText = "Account with this username or phone number does not exist.";
-    } else if (accounts[userIdx].password === password) {
-        if (accounts[userIdx].status === 0) {
-            userMsgError.innerText = "This account has been locked.";
-        } else {
-            localStorage.setItem("currentuser", JSON.stringify(accounts[userIdx]));
-            toastMsg({ title: "SUCCESS", message: "Login successful!", type: "success" });
-            console.log("handleLoginForm(): Signed up");
-            updateMenuVisibility();
-            toggleModal("login-user");
-            document.getElementById("login-form").reset();
-        }
-    } else {
-        passMsgError.innerText = "Password is incorrect.";
-    }
-}
-
-// To sign out
-function signOut() {
-    let accounts = JSON.parse(localStorage.getItem("accounts"));
-    let user = JSON.parse(localStorage.getItem("currentuser"));
-    let idx = accounts.findIndex(item => item.phone == user.phone);
-
-    //Save cart when logged in again
-    accounts[idx].cart.length = 0;
-    for (let i = 0; i < user.cart.length; i++) {
-        accounts[idx].cart[i] = user.cart[i];
-    }
-
-    localStorage.setItem("accounts", JSON.stringify(accounts));
-    localStorage.removeItem("currentuser");
-    console.log("signOut(): Signed out.");
-    updateMenuVisibility();
-    location.reload();
-}
+//     // Show address in specific places if user is logged in
+//     document.querySelectorAll(".display-address").forEach(item => {
+//         item.value = isLoggedIn ? currentuser.address : "";
+//     });
+// }
 
 
 // Load user info to My Account after user has logged in
@@ -520,201 +354,6 @@ document.getElementById("search-bar").addEventListener("keyup", () => {
 
 // CATALOGUE - FILTER - END DEFINE /////////////////////////////////////////////////////
 
-// CATALOGUE - CART - BEGIN DEFINE /////////////////////////////////////////////////////
-
-//Get product from the the "products" array
-
-function getCartTotalAmount() {
-    let currentuser = JSON.parse(localStorage.getItem("currentuser"));
-    let amount = 0;
-    currentuser.cart.forEach(element => {
-        amount += parseInt(element.quantity);
-    });
-    return amount;
-}
-
-function updateCartTotalAmount() {
-    if (!localStorage.getItem("currentuser")) {
-        console.log("updateCartTotalAmount(): Not logged in.");
-        return;
-    }
-
-    let amount = getCartTotalAmount();
-    document.querySelectorAll(".display-cart-total-amount").forEach(ele => ele.innerText = amount);
-    console.log("updateCartTotalAmount(): ", amount);
-}
-
-// Display/update the totalprice of the cart
-function updateCartTotalPrice() {
-    const total = vnd(getCartTotalPrice());
-    document.querySelectorAll(".display-totalprice").forEach(ele => {
-        ele.innerText = total;
-    });
-    document.querySelectorAll(".display-totalorder").forEach(ele => {
-        ele.innerText = vnd(getCartTotalPrice() + DELIVERY_FEE);
-    })
-}
-
-// Get the totalprice of the cart
-function getCartTotalPrice() {
-    let currentuser = JSON.parse(localStorage.getItem("currentuser"));
-    let totalprice = 0;
-    if (currentuser != null || currentuser.cart.length) {
-        currentuser.cart.forEach(item => {
-            totalprice += (parseInt(item.quantity) * parseInt(item.originalPrice));
-        });
-    }
-    return totalprice;
-}
-
-// Update total cart amount when changing cartItem quantity
-function updateCartAll(id, size, ele) {
-    let currentuser = JSON.parse(localStorage.getItem("currentuser"));
-    let parent = ele.parentNode;
-    console.log("updateCartAll(): ", parent);
-    let quantity = parseInt(parent.querySelector(".input-qty").value.trim());
-    console.log("updateCartAll(): ", quantity);
-    let idx = currentuser.cart.findIndex(item => item.id == id && item.size == size);
-    if (idx == -1) {
-        console.log("updateCartAll(): Error findIndex()");
-        return;
-    }
-    currentuser.cart[idx].quantity = quantity;
-    localStorage.setItem("currentuser", JSON.stringify(currentuser));
-    updateCartTotalAmount();
-    updateCartTotalPrice();
-    // saveCartInfo();
-}
-
-//Reset the cart
-function resetCart() {
-    let accounts = JSON.parse(localStorage.getItem("accounts"));
-    let currentuser = JSON.parse(localStorage.getItem("currentuser"));
-    currentuser.cart = [];
-    localStorage.setItem("currentuser", JSON.stringify(currentuser));
-
-    let userIdx = accounts.findIndex(user => user.phone === currentuser.phone);
-    if (userIdx != -1) {
-        accounts[userIdx] = currentuser;
-        localStorage.setItem("accounts", JSON.stringify(accounts));
-    }
-    updateCartTotalAmount();
-    updateCartTotalPrice();
-    updateMenuVisibility();
-}
-
-//Add cart item to cart[]
-function addCart(id, size, quantity, price) {
-    if (!localStorage.getItem("currentuser")) {
-        console.log(-1);
-        return;
-    }
-
-    let currentuser = JSON.parse(localStorage.getItem("currentuser"));
-
-    let cartItem = {
-        id: id,
-        quantity: quantity,
-        size: parseInt(size),
-        originalPrice: parseInt(price)
-    }
-
-    console.log("Cart item:", cartItem);
-
-    let idx = currentuser.cart.findIndex(item => item.id == cartItem.id && item.size == cartItem.size);
-    if (idx === -1) {
-        currentuser.cart.push(cartItem);
-    } else {
-        currentuser.cart[idx].quantity += cartItem.quantity;
-    }
-
-    localStorage.setItem("currentuser", JSON.stringify(currentuser));
-    updateCartTotalAmount();
-    updateCartTotalPrice();
-    showCart();
-    closeModal();
-}
-
-//Delete the cart item
-function deleteCartItem(id, size, ele) {
-    const checkoutBtn = document.getElementById("cart-checkout-btn");
-    let cartParent = ele.parentNode.parentNode;
-    cartParent.remove();
-    let currentuser = JSON.parse(localStorage.getItem("currentuser"));
-    let idx = currentuser.cart.findIndex(item => item.id == id && item.size == size)
-    currentuser.cart.splice(idx, 1);
-
-    if (currentuser.cart.length == 0) {
-        displayWhenEmpty(".cart .cart-body", displayEmptyHTML_cart);
-        checkoutBtn.classList.remove(".active");
-        checkoutBtn.disabled = true;
-    }
-    localStorage.setItem("currentuser", JSON.stringify(currentuser));
-    updateCartTotalPrice();
-    updateCartTotalAmount();
-    console.log("Deleted item cart ID = ", id, ", size = ", size);
-    console.log("Updated cart:", currentuser.cart);
-}
-
-function showCart() {
-    if (!localStorage.getItem("currentuser")) {
-        displayWhenEmpty(".cart .cart-body", displayEmptyHTML_cart);
-        return;
-    }
-    let currentuser = JSON.parse(localStorage.getItem("currentuser"));
-    const cartBody = document.querySelector(".cart .cart-body");
-    const checkoutBtn = document.getElementById("cart-checkout-btn");
-
-    cartBody.innerHTML = "";
-
-    if (currentuser.cart.length !== 0) {
-        // Show the checkout button and generate cart items HTML
-        checkoutBtn.classList.add("active");
-        checkoutBtn.disabled = false;
-
-        let cartItemhtml = "";
-        currentuser.cart.forEach(item => {
-            let product = getProduct(item);
-            cartItemhtml += `
-                    <div class="modal-container cart-item" data-productID="${product.id}">
-                        <div class="img-container">
-                            <img src="${product.image}" onerror="this.src='./asset/img/catalogue/coming-soon.jpg'">
-                        </div>
-                        <div class="cart-item-info">
-                            <p class="display-product-name">${product.name}</p>
-                            <p>Brand: <span class="display-product-brand">${product.brand}</span></p>
-                            <p>Size: <span class="display-product-size">${product.size}</span></p>
-                            <p class="display-product-price">${vnd(item.originalPrice)}</p>
-                        </div>
-                        <div class="cart-item-control">
-                            <a onclick="deleteCartItem('${product.id}', ${product.size}, this)">
-                                <i class="fa-regular fa-circle-xmark"></i>
-                            </a>
-                            <div class="cart-item-amount">
-                                <button class="minus is-form" onclick="decreasingNumber(this); updateCartAll('${product.id}',${product.size}, this)">
-                                    <i class="fa-solid fa-minus"></i>
-                                </button>
-                                <input class="input-qty" max="100" min="1" name="" type="number" value="${product.quantity}" onkeyup="updateCartAll('${product.id}',${product.size}, this)">
-                                <button class="plus is-form" onclick="increasingNumber(this); updateCartAll('${product.id}',${product.size}, this)">
-                                    <i class="fa-solid fa-plus"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-        });
-        // Inject cart items into cart body
-        cartBody.innerHTML = cartItemhtml;
-    } else {
-        // If the cart is empty, show the empty message and hide checkout button
-        checkoutBtn.classList.remove("active");
-        checkoutBtn.disabled = true;
-        displayWhenEmpty(".cart .cart-body", displayEmptyHTML_cart);
-    }
-
-}
-
-// CATALOGUE - CART - END DEFINE /////////////////////////////////////////////////////
 
 // CATALOGUE - ORDER HISTORY - BEGIN DEFINE /////////////////////////////////////////////////////
 

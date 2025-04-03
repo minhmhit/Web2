@@ -409,10 +409,7 @@ header {
 } */
 
 /* LOGIN & SIGN-UP */
-.modal.login-user {
-    padding: 1rem;
-    overflow-y: auto;
-}
+
 
 .main-login {
     width: fit-content;
@@ -424,9 +421,9 @@ header {
     padding: 1rem;
     row-gap: 1rem;
     position: relative;
-    border-radius: 16px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
     background-color: var(--bg-main-color);
+    margin-top: 10px;
+    margin-bottom: 200px;
 }
 
 .form-close {
@@ -459,7 +456,7 @@ header {
 }
 
 .main-login-body .login-form .form-input-bar {
-    width: 100%;
+    width: 450px;
     margin-top: 16px;
 }
 
@@ -470,12 +467,13 @@ header {
     background-color: var(--theme-color-2);
     color: var(--text-color);
     outline: 2px solid var(--border-color);
-    border-radius: 0.5rem;
+    border-radius: 1.5rem;
     padding: 0.5rem;
-    margin-top: 16px;
+    margin-top: 45px;
 }
 
 .main-login-footer a {
+    margin-top: 10px;
     text-decoration: underline;
     font-style: italic;
     cursor: pointer;

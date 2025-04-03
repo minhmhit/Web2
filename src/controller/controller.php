@@ -17,11 +17,18 @@ if(isset($_GET['pg'])&&($_GET['pg'])!=""){
             
             break;
         case 'products' :
+            include_once("view/product.php");
+            break;
         case 'sandals' :
         case 'sneakers' :
         case 'kids' :
         case 'admin':
-
+        case 'login':
+            include_once("view/login.php");
+            break;
+        case 'register':
+            include_once("view/register.php");
+            break;
 
             
         

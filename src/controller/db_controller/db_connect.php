@@ -38,4 +38,13 @@
         return $arrproduct;
     }
 
+    function executeQuery($sql, $params = []) {
+        $pdo = connectdb();
+        $stmt = $pdo->prepare($sql);
+        $success = $stmt->execute($params);
+        $pdo = null;
+        return $success;
+    }
+    
+
 ?>

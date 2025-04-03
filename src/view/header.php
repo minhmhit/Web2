@@ -1,3 +1,9 @@
+<?php
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -27,8 +33,8 @@
                 </div>
                 <div class="header-container-mid hide-on-mobile">
                     <ul class="menu-list category-menu">
-                        <li><a class="filter-category active" data-filter="Home">HOME</a></li>
-                        <li><a class="filter-category" data-filter="Product">PRODUCTS</a></li>
+                        <li><a class="filter-category active" data-filter="Home" href="index.php?pg=home">HOME</a></li>
+                        <li><a class="filter-category" data-filter="Product" href="index.php?pg=products">PRODUCTS</a></li>
                         <li><a class="filter-category" data-filter="Sneaker">SNEAKERS</a></li>
                         <li><a class="filter-category" data-filter="Sandal">SANDALS</a></li>
                         <li><a class="filter-category" data-filter="Kid">KIDS</a></li>
@@ -39,27 +45,37 @@
                         <li><label for="search-bar"><a><i class="fa-solid fa-magnifying-glass"></i></label></a>
                         </li>
                         <li class="hide-on-mobile">
-                            <!-- ACCOUNT FLOAT DROPDOWN -->
-                            <a><i class="fa-regular fa-user"></i><span class="display-username"></span></a>
-                            <div class="container float-dropdown" id="account-drop-list">
-                                <ul class="menu-list" id="login-dropdown">
-                                    <li class="logged-out"><a onclick="toggleModal('login-user')"><i
-                                                class="fa-solid fa-right-to-bracket"></i><span>Log in</span></a></li>
-                                    <li class="logged-out"><a onclick="toggleModal('signup-user')"><i
-                                                class="fa-solid fa-user-plus"></i><span>Sign up</span></a></li>
-                                    <li class="logged-in isAdmin"><a href="admin.html"><i
-                                                class="fa-solid fa-screwdriver-wrench"></i><span>Manage*</span></a></li>
-                                    <li class="logged-in"><a onclick="togglePage('account-user'); loadUserInfo()"><i
-                                                class="fa-solid fa-circle-user"></i><span>My Account</span></a></li>
-                                    <li class="logged-in"><a onclick="togglePage('order-history')"><i
-                                                class="fa-solid fa-basket-shopping"></i><span>My
-                                                Order</span></a></li>
-                                    <li class="logged-in"><a onclick="signOut()"><i
-                                                class="fa-solid fa-right-from-bracket"></i><span>Sign Out</span></a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
+                <!-- ACCOUNT FLOAT DROPDOWN -->
+                <a><i class="fa-regular fa-user"></i> 
+                    <span class="display-username">
+                    <?php echo isset($_SESSION['user']) ? htmlspecialchars($_SESSION['user']['Username']) : 'Guest'; ?>
+                    </span>
+                </a>
+                <div class="container float-dropdown" id="account-drop-list">
+                    <ul class="menu-list" id="login-dropdown">
+                        <?php if (isset($_SESSION['user'])): ?>  
+                            <!-- Nếu đã đăng nhập -->
+                            <li class="logged-in"><a onclick="togglePage('account-user'); loadUserInfo()">
+                                <i class="fa-solid fa-circle-user"></i><span>My Account</span></a>
+                            </li>
+                            <li class="logged-in"><a onclick="togglePage('order-history')">
+                                <i class="fa-solid fa-basket-shopping"></i><span>My Order</span></a>
+                            </li>
+                            <li class="logged-in"><a href="view/logout.php">
+                                <i class="fa-solid fa-right-from-bracket"></i><span>Sign Out</span></a>
+                            </li>
+                        <?php else: ?>
+                            <!-- Nếu chưa đăng nhập -->
+                            <li class="logged-out"><a href="index.php?pg=login">
+                                <i class="fa-solid fa-right-to-bracket"></i><span>Log in</span></a>
+                            </li>
+                            <li class="logged-out"><a href="index.php?pg=register">
+                                <i class="fa-solid fa-user-plus"></i><span>Sign up</span></a>
+                            </li>
+                        <?php endif; ?>
+                    </ul>
+                </div>
+            </li>
                         <li class="hide-on-mobile"><a onclick="toggleModal('cart')"><i
                                     class="fa-solid fa-cart-shopping "></i>(<span
                                     class="display-cart-total-amount">0</span>)</a></li>
@@ -74,7 +90,7 @@
                     <div class="sidebar-main mdl-cnt">
                         <ul class="menu-list category-menu">
                             <li>Hi there <span class="display-username"></span>!</li>
-                            <li><a class="filter-category active" data-filter="Home">HOME</a></li>
+                            <li><a class="filter-category active" data-filter="Home" href="index.php?pg=home">HOME</a></li>
                             <li><a class="filter-category" data-filter="Sneaker">SNEAKERS</a></li>
                             <li><a class="filter-category" data-filter="Sandal">SANDALS</a></li>
                             <li><a class="filter-category" data-filter="Kid">KIDS</a></li>
@@ -84,9 +100,9 @@
                                         class="fa-solid fa-chevron-down"></i></a>
                                 <div class="container account-dropdown hidden" id="account-drop-list-sidebar">
                                     <ul class="menu-list" id="login-dropdown">
-                                        <li class="logged-out"><a onclick="toggleModal('login-user')"><span>Log
+                                        <li class="logged-out"><a href="index.php?pg=login"><span>Log
                                                     in</span></a></li>
-                                        <li class="logged-out"><a onclick="toggleModal('signup-user')"><span>Sign
+                                        <li class="logged-out"><a href="index.php?pg=register"><span>Sign
                                                     up</span></a></li>
                                         <li class="logged-in isAdmin"><a href="admin.html"><span>Manage*</span></a></li>
                                         <li class="logged-in"><a
@@ -95,8 +111,11 @@
                                         <li class="logged-in"><a
                                                 onclick="togglePage('order-history'); toggleModal('header-sidebar')"><span>My
                                                     Order</span></a></li>
-                                        <li class="logged-in"><a
+                                        <!-- <li class="logged-in"><a 
                                                 onclick="signOut(); toggleModal('header-sidebar')"><span>Sign
+                                                    Out</span></a> -->
+                                        <li class="logged-in"><a 
+                                             href="view/logout.php"><span>Sign
                                                     Out</span></a>
                                         </li>
                                     </ul>

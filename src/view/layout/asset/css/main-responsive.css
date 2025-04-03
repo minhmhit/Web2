@@ -84,6 +84,11 @@
         height: 100%; /* Set your preferred height */
         margin-bottom: 20px;
     }
+
+    .main-login-body .login-form .form-input-bar {
+        width: 100%;
+        margin-top: 16px;
+    }
 }
 
 
