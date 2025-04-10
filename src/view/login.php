@@ -65,21 +65,53 @@ if (isset($_POST['btnlogin'])) {
 </div>
 
 <script>
-    window.onload = function() {
-        let toastData = <?php echo $toastMessage ?: "null"; ?>;
-        if (toastData) {
-            toastMsg({
-                title: toastData.title,
-                message: toastData.message,
-                type: toastData.type,
-                duration: 3000
-            });
+    // Hàm toastMsg nếu chưa có, nhớ khai báo trước nha
 
-            if (toastData.redirect) {
-                setTimeout(() => {
-                    window.location.href = toastData.redirect;
-                }, 1000);
-            }
+    function loadCartSummary(callback) {
+        fetch("controller/db_controller/cart.php?action=get_cart")
+            .then(res => res.json())
+            .then(data => {
+                let totalQty = 0;
+                let totalPrice = 0;
+                if (data.success) {
+                    data.cart.forEach(item => {
+                        totalQty += parseInt(item.Quantity);
+                        totalPrice += item.Quantity * item.Price;
+                    });
+                }
+                updateCartSummary(totalQty, totalPrice);
+                if (callback) callback();
+            })
+            .catch(err => {
+                console.error("Failed to load cart summary", err);
+                updateCartSummary(0, 0);
+                if (callback) callback();
+            });
+    }
+
+    function updateCartSummary(totalQty, totalPrice) {
+        const DELIVERY_FEE = 30000;
+        document.querySelectorAll(".display-cart-total-amount").forEach(el => el.innerText = totalQty);
+        document.querySelectorAll(".display-totalprice").forEach(el => el.innerText = vnd(totalPrice));
+        document.querySelectorAll(".display-totalorder").forEach(el => el.innerText = vnd(totalPrice + DELIVERY_FEE));
+    }
+
+    window.onload = function () {
+    let toastData = <?php echo $toastMessage ?: "null"; ?>;
+    if (toastData) {
+        toastMsg({
+            title: toastData.title,
+            message: toastData.message,
+            type: toastData.type,
+            duration: 3000
+        });
+
+        if (toastData.redirect) {
+            setTimeout(() => {
+                window.location.href = toastData.redirect + "?from=login";
+            }, 1000);
         }
-    };
+    }
+};
+
 </script>

@@ -48,53 +48,6 @@ function togglePage(elementId) {
 // VISIBILITY - END DEFINE /////////////////////////////////////////////////////
 
 // USER - BEGIN DEFINE /////////////////////////////////////////////////////
-// Change UI based on whether user has logged in or not
-// function updateMenuVisibility() {
-//     let isLoggedIn = !!localStorage.getItem("currentuser");
-//     let currentuser = JSON.parse(localStorage.getItem("currentuser"));
-
-//     // Show checkout-btn if user is logged in
-//     let checkoutBtn = document.getElementById("cart-checkout-btn");
-//     if (isLoggedIn) {
-//         checkoutBtn.classList.add("active");
-//         checkoutBtn.disabled = false;
-//     } else {
-//         checkoutBtn.classList.remove("active");
-//         checkoutBtn.disabled = true;
-//     }
-
-//     // Show cart, order-history if user is logged in
-//     if (isLoggedIn) {
-//         showCart();
-//         updateCartTotalAmount();
-//         updateCartTotalPrice();
-//         showOrderHistory();
-//     }
-
-//     // Show logged-in items, hide logged-out items if user is logged in
-//     document.querySelectorAll(".logged-in").forEach(item => {
-//         item.style.display = isLoggedIn ? "block" : "none";
-//     });
-//     document.querySelectorAll(".logged-out").forEach(item => {
-//         item.style.display = isLoggedIn ? "none" : "block";
-//     });
-
-//     // Show admin features if account is admin
-//     document.querySelectorAll(".isAdmin").forEach(item => {
-//         item.style.display = isLoggedIn && currentuser.isAdmin ? "block" : "none";
-//     });
-
-//     // Show username in specific places if user is logged in
-//     document.querySelectorAll(".display-username").forEach(item => {
-//         item.textContent = isLoggedIn ? currentuser.username : "";
-//     });
-
-//     // Show address in specific places if user is logged in
-//     document.querySelectorAll(".display-address").forEach(item => {
-//         item.value = isLoggedIn ? currentuser.address : "";
-//     });
-// }
-
 
 // Load user info to My Account after user has logged in
 function loadUserInfo() {
@@ -354,7 +307,6 @@ document.getElementById("search-bar").addEventListener("keyup", () => {
 
 // CATALOGUE - FILTER - END DEFINE /////////////////////////////////////////////////////
 
-
 // CATALOGUE - ORDER HISTORY - BEGIN DEFINE /////////////////////////////////////////////////////
 
 function showOrderDetail(orderID) {
@@ -527,6 +479,9 @@ function detailProduct(id) {
             document.querySelector('#product-detail-content').innerHTML = html;
             modal.classList.add('open'); // Hiện modal
             body.style.overflow = "hidden"; // Ẩn scroll của body
+
+            // Đăng ký sự kiện chọn size và xử lý add-to-cart sau khi modal được mở
+            setupEventListeners();
         })
         .catch(error => console.error("Lỗi khi tải sản phẩm:", error));
 }
@@ -538,113 +493,326 @@ document.querySelector('.modal-close').addEventListener('click', function () {
 });
 
 
-    // // Select a shoes size
-    // let selectedSize;
-    // document.querySelector(".size-container").addEventListener("click", (event) => {
-    //     if (event.target.tagName === "BUTTON") {
-    //         document.querySelectorAll(".size-container button").forEach(button => {
-    //             button.classList.remove("active");
-    //         });
-
-    //         event.target.classList.add("active");
-    //         selectedSize = event.target.textContent.trim();
-    //         console.log("Selected size: " + selectedSize);
-    //     }
-    // });
-
-    // modal.querySelector('.button-dat').addEventListener('click', () => {
-    //     if (!selectedSize) {
-    //         toastMsg({ title: "REMINDER", message: "Please chose a shoe size first!", type: "warning" });
-    //         return;
-    //     }
-
-    //     if (localStorage.getItem('currentuser')) {
-    //         addCart(infoProduct.id, selectedSize, parseInt(qty.value), infoProduct.price);
-    //     } else {
-    //         toastMsg({ title: "REMINDER", message: "Please login first!", type: "warning" });
-    //         closeModal();
-    //     }
-    // });
-
-    // modal.querySelector(".checkout-btn").addEventListener("click", () => {
-    //     if (!selectedSize) {
-    //         toastMsg({ title: "REMINDER", message: "Please chose a shoe size first!", type: "warning" });
-    //         return;
-    //     }
-
-    //     if (localStorage.getItem('currentuser')) {
-    //         addCart(infoProduct.id, selectedSize, parseInt(qty.value), infoProduct.price);
-    //         showCartCheckout();
-    //         toggleModal("checkout-page");
-    //     } else {
-    //         toastMsg({ title: "REMINDER", message: "Please login first!", type: "warning" });
-    //         closeModal();
-    //     }
-    // });
-
-
-
-// Phân trang 
-
-let currentPage = 1;
-function displayList(productAll, perPage, currentPage) {
-    let start = (currentPage - 1) * perPage;
-    let end = (currentPage - 1) * perPage + perPage;
-    let productShow = productAll.slice(start, end);
-    displayProducts(productShow);
-}
-
-
-function setupPagination(productAll, perPage) {
-    const pageNav = document.querySelector('.page-nav'); // Get the pagination container
-    const pageNavList = document.querySelector('.page-nav-list'); // Get the list inside pagination
-
-    // Clear previous pagination content
-    pageNavList.innerHTML = '';
-
-    // Handle case where no products are available
-    if (productAll.length === 0 || productAll.length <= perPage) {
-        pageNav.style.display = 'none'; // Hide pagination
-        return; // Exit the function early
-    }
-
-    // Show pagination if there are products
-    pageNav.style.display = 'flex'; // Ensure pagination is visible
-
-    // Calculate the number of pages
-    let page_count = Math.ceil(productAll.length / perPage);
-
-    // Generate pagination items
-    for (let i = 1; i <= page_count; i++) {
-        let li = paginationChange(i, productAll, currentPage);
-        pageNavList.appendChild(li);
-    }
-}
-
-function paginationChange(page, productAll, currentPage) {
-    let node = document.createElement(`li`);
-    node.classList.add('page-nav-item');
-    node.innerHTML = `<a href="javascript:;">${page}</a>`;
-    if (currentPage == page) node.classList.add('active');
-    node.addEventListener('click', function () {
-        currentPage = page;
-        displayList(productAll, perPage, currentPage);
-        let t = document.querySelectorAll('.page-nav-item.active');
-        for (let i = 0; i < t.length; i++) {
-            t[i].classList.remove('active');
+async function checkLogin() {
+    try {
+        const res = await fetch("/Web2/src/controller/db_controller/cart.php?action=check_login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" }
+        });
+        const data = await res.json();
+        if (!data.success) {
+            toastMsg({
+                title: data.title || "REMINDER",
+                message: data.message || "Please login first!",
+                type: data.type || "info"
+            });
+            return false;
         }
-        node.classList.add('active');
-        window.scrollTo({ top: 700, behavior: 'smooth' });
+        return true;
+    } catch (err) {
+        console.error("Login check error:", err);
+        return false;
+    }
+}
+
+
+// Đăng ký sự kiện chọn size và thêm vào giỏ hàng
+function setupEventListeners() {
+    let selectedSizeId = null;
+
+    // Kiểm tra xem phần tử size-container có tồn tại không
+    const sizeContainer = document.querySelector(".size-container");
+    if (!sizeContainer) {
+        console.error("Không tìm thấy phần tử size-container!");
+        return;
+    }
+
+    // Xử lý chọn size
+    sizeContainer.addEventListener("click", (event) => {
+        if (event.target.tagName === "BUTTON") {
+            // Loại bỏ active class từ tất cả các button
+            document.querySelectorAll(".size-container button").forEach(button => {
+                button.classList.remove("active");
+            });
+            event.target.classList.add("active");
+
+            // Lấy ProductSizeID từ data-sizeid
+            selectedSizeId = event.target.getAttribute('data-sizeid');
+            if (selectedSizeId) {
+                console.log("Selected ProductSizeID: " + selectedSizeId);
+            } else {
+                console.error("Không thể lấy ProductSizeID từ button!");
+            }
+        }
+    });
+
+    // Kiểm tra phần tử add-cart có tồn tại không trước khi đăng ký sự kiện
+    const addCartButton = document.querySelector('#add-cart');
+    if (!addCartButton) {
+        console.error("Không tìm thấy nút 'Add to Cart'!");
+        return;
+    }
+
+    // Sự kiện "Add to Cart"
+    addCartButton.addEventListener('click', async () => {
+        if (!selectedSizeId) {
+            toastMsg({ title: "REMINDER", message: "Please choose a size first!", type: "info" });
+            return;
+        }
+    
+        const isLoggedIn = await checkLogin();
+        if (!isLoggedIn) return;
+    
+        let quantityInput = document.querySelector(".input-qty");
+        let quantity = quantityInput ? parseInt(quantityInput.value) : 1;
+        let price = parseInt(document.querySelector(".current-price").dataset.price || 0);
+    
+        try {
+            const response = await fetch("/Web2/src/controller/db_controller/cart.php?action=add_to_cart", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ productsizeid: selectedSizeId, quantity, price })
+            });
+    
+            console.log("Response Status: ", response.status); // Log mã trạng thái HTTP
+            const textResponse = await response.text(); // Đọc phản hồi dưới dạng text
+    
+            console.log("Raw response: ", textResponse); // Log nội dung raw của phản hồi
+    
+            // Kiểm tra xem phản hồi có phải là JSON không
+            let data;
+            try {
+                data = JSON.parse(textResponse); // Cố gắng chuyển đổi nội dung thành JSON
+            } catch (error) {
+                console.error("Response is not valid JSON:", error);
+                toastMsg({ title: "ERROR", message: "Server response is not JSON", type: "error" });
+                return;
+            }
+    
+            if (data.success) {
+                toastMsg({ title: "SUCCESS", message: "Added successfully!", type: "success" });
+                // showCart();
+                document.querySelector('.modal.product-detail').classList.remove('open');
+                document.body.style.overflow = "auto";
+
+            } else {
+                toastMsg({ title: "ERROR", message: data.message || "Error occurred.", type: "error" });
+            }
+        } catch (err) {
+            console.error("Lỗi khi fetch:", err);
+        }
+    });
+    
+    
+
+    // Kiểm tra phần tử checkout-btn có tồn tại không trước khi đăng ký sự kiện
+    const checkoutButton = document.querySelector(".checkout-btn");
+    if (!checkoutButton) {
+        console.error("Không tìm thấy nút 'Buy Now'!");
+        return;
+    }
+
+    // Sự kiện "Buy Now"
+    checkoutButton.addEventListener("click", async () => {
+        if (!selectedSizeId) {
+            toastMsg({ title: "REMINDER", message: "Please choose a size first!", type: "info" });
+            return;
+        }
+    
+        const isLoggedIn = await checkLogin();
+        if (!isLoggedIn) return;
+    
+        let quantityInput = document.querySelector(".input-qty");
+        let quantity = quantityInput ? parseInt(quantityInput.value) : 1;
+        let price = parseInt(document.querySelector(".price").dataset.price || 0);
+    
+        fetch("../../src/controller/db_controller/cart.php?action=checkout", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ productsizeid: selectedSizeId, quantity, price })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                showCart();
+                toggleModal("checkout-page");
+            } else {
+                toastMsg({ title: "ERROR", message: data.message || "Error occurred.", type: "error" });
+            }
+        })
+        .catch(err => console.error("Lỗi:", err));
+    });
+}    
+
+
+// CART - BEGIN DEFINE /////////////////////////////////////////////
+
+
+// Cập nhật hiển thị tổng số lượng và giá tiền
+function updateCartSummary(totalQty, totalPrice) {
+    const DELIVERY_FEE = 30000;
+    document.querySelectorAll(".display-cart-total-amount").forEach(el => el.innerText = totalQty);
+    document.querySelectorAll(".display-totalprice").forEach(el => el.innerText = vnd(totalPrice));
+    document.querySelectorAll(".display-totalorder").forEach(el => el.innerText = vnd(totalPrice + DELIVERY_FEE));
+}
+
+// Load tóm tắt cart (dùng riêng cho header)
+function loadCartSummary(callback) {
+    fetch("controller/db_controller/cart.php?action=get_cart")
+        .then(res => res.json())
+        .then(data => {
+            let totalQty = 0;
+            let totalPrice = 0;
+            if (data.success) {
+                data.cart.forEach(item => {
+                    totalQty += parseInt(item.Quantity);
+                    totalPrice += item.Quantity * item.Price;
+                });
+            }
+            updateCartSummary(totalQty, totalPrice);
+            if (callback) callback();
+        })
+        .catch(err => {
+            console.error("Failed to load cart summary", err);
+            updateCartSummary(0, 0);
+            if (callback) callback();
+        });
+}
+
+// Xử lý cập nhật số lượng
+function updateCartAll(productSizeID, size, el) {
+    const parent = el.closest(".cart-item");
+    const input = parent.querySelector(".input-qty");
+    let quantity = parseInt(input.value);
+
+    if (quantity < 1) quantity = 1;
+    if (quantity > 100) quantity = 100;
+    input.value = quantity;
+
+    fetch("controller/db_controller/cart.php?action=update_cart", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productsizeid: productSizeID, quantity })
     })
-    return node;
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                toastMsg({ title: "Success", message: data.message, type: "success" });
+                showCart(); // reload cart
+            } else {
+                toastMsg({ title: "Error", message: data.message, type: "error" });
+            }
+        });
 }
 
-window.onload = () => {
-    window.scrollTo({ top: 0 });
-    initializeProvinces();
+// Xử lý xóa sản phẩm
+function deleteCartItem(productsizeid, el) {
+    fetch("controller/db_controller/cart.php?action=delete_cart_item", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productsizeid })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            toastMsg({ title: "Deleted", message: data.message, type: "info" });
+            showCart(); // reload cart
+        } else {
+            toastMsg({ title: "ERROR", message: data.message, type: "error" });
+        }
+    });
 }
 
-// CATALOGUE - PRODUCTS - END DEFINE /////////////////////////////////////////////////////
+
+// Hiển thị giỏ hàng
+function showCart() {
+    const cartBody = document.querySelector(".cart .cart-body");
+    const checkoutBtn = document.getElementById("cart-checkout-btn");
+
+    // Gọi API để lấy giỏ hàng từ DB
+    fetch("controller/db_controller/cart.php?action=get_cart")
+        .then(res => res.json())
+        .then(data => {
+            console.log(cartBody); 
+            cartBody.innerHTML = "";
+
+            // Nếu chưa login hoặc cart rỗng
+            if (!data.success || data.cart.length === 0) {
+                checkoutBtn.classList.remove("active");
+                checkoutBtn.disabled = true;
+                displayWhenEmpty(".cart .cart-body", displayEmptyHTML_cart);
+                updateCartSummary(0, 0);
+                return;
+            }
+
+            // Giỏ hàng có sản phẩm
+            checkoutBtn.classList.add("active");
+            checkoutBtn.disabled = false;
+
+            let cartItemhtml = "";
+            let totalQty = 0;
+            let totalPrice = 0;
+
+            data.cart.forEach(item => {
+                totalQty += parseInt(item.Quantity);
+                totalPrice += item.Quantity * item.Price;
+
+                cartItemhtml += `
+                    <div class="modal-container cart-item" data-productID="${item.ProductSizeID}">
+                        <div class="img-container">
+                            <img src="${item.product_image}" onerror="this.src='/assets/img/placeholder.jpg'">
+                        </div>
+                        <div class="cart-item-info">
+                            <p class="display-product-name">${item.product_name}</p>
+                            <p>Size: <span class="display-product-size">${item.Size}</span></p>
+                            <p class="display-product-price">${vnd(item.Price)}</p>
+                        </div>
+                        <div class="cart-item-control">
+                            <a onclick="deleteCartItem(${item.ProductSizeID}, this)">
+                                <i class="fa-regular fa-circle-xmark"></i>
+                            </a>
+                            <div class="cart-item-amount">
+                                <button class="minus is-form" 
+                                    onclick="decreasingNumber(this); updateCartAll(${item.ProductSizeID}, '${item.Size}', this.nextElementSibling)">
+                                    <i class="fa-solid fa-minus"></i>
+                                </button>
+                                <input class="input-qty" 
+                                    max="100" min="1" type="number" value="${item.Quantity}" 
+                                    onkeyup="updateCartAll(${item.ProductSizeID}, '${item.Size}', this)">
+                                <button class="plus is-form" 
+                                    onclick="increasingNumber(this); updateCartAll(${item.ProductSizeID}, '${item.Size}', this.previousElementSibling)">
+                                    <i class="fa-solid fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Gán HTML vào cart
+            cartBody.innerHTML = cartItemhtml;
+            console.log(data);
+
+            // Cập nhật tổng số lượng và tổng tiền
+            updateCartSummary(totalQty, totalPrice);
+        })
+        .catch(err => {
+            console.error("Failed to load cart:", err);
+            displayWhenEmpty(".cart .cart-body", "<p>Đã xảy ra lỗi khi tải giỏ hàng.</p>");
+            updateCartSummary(0, 0);
+        });
+}
+
+
+// Format tiền VNĐ
+function vnd(x) {
+    return x.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
+}
+
+
+// CATALOGUE - CART - END DEFINE /////////////////////////////////////////////////////
+
+
 // CATALOGUE - END DEFINE /////////////////////////////////////////////////////
 
 // BANNER - BEGIN /////////////////////////////////////////////////////

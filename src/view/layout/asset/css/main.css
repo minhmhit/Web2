@@ -1261,6 +1261,7 @@ header {
 
 .modal-container.product-detail-content {
     max-height: 100%;
+    pointer-events: auto !important;
     overflow-y: auto;
 }
 
@@ -1372,6 +1373,8 @@ h2.product-title {
     border: 1px solid var(--border-color);
     background-color: var(--bg-main-color);
     border-radius: 16px;
+    pointer-events: auto;
+    z-index:190;
 }
 
 .size-button.active {

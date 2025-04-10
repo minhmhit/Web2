@@ -8,14 +8,3 @@ include_once("controller/controller.php");
     else 
         $name ="";
 ?>
-
-<!-- <script>
-document.addEventListener("DOMContentLoaded", function() {
-    let urlParams = new URLSearchParams(window.location.search);
-    let productId = urlParams.get("id");
-
-    if (urlParams.get("pg") === "productdetail" && productId) {
-        openProductDetail(productId);
-    }
-});
-</script> -->

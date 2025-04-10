@@ -48,7 +48,7 @@
                 <!-- ACCOUNT FLOAT DROPDOWN -->
                 <a><i class="fa-regular fa-user"></i> 
                     <span class="display-username">
-                    <?php echo isset($_SESSION['user']) ? htmlspecialchars($_SESSION['user']['Username']) : 'Guest'; ?>
+                    <?php echo isset($_SESSION['user']) ? htmlspecialchars($_SESSION['user']['Username']) : ''; ?>
                     </span>
                 </a>
                 <div class="container float-dropdown" id="account-drop-list">
@@ -96,32 +96,26 @@
                             <li><a class="filter-category" data-filter="Kid">KIDS</a></li>
                             <li>
                                 <!-- SIDEBAR ACCOUNT DROPDOWN -->
-                                <a onclick="toggleSidebarDropdown('account-drop-list-sidebar')"><span>ACCOUNT</span> <i
-                                        class="fa-solid fa-chevron-down"></i></a>
+                                <a onclick="toggleSidebarDropdown('account-drop-list-sidebar')"><span>ACCOUNT</span> <i class="fa-solid fa-chevron-down"></i></a>
                                 <div class="container account-dropdown hidden" id="account-drop-list-sidebar">
                                     <ul class="menu-list" id="login-dropdown">
-                                        <li class="logged-out"><a href="index.php?pg=login"><span>Log
-                                                    in</span></a></li>
-                                        <li class="logged-out"><a href="index.php?pg=register"><span>Sign
-                                                    up</span></a></li>
-                                        <li class="logged-in isAdmin"><a href="admin.html"><span>Manage*</span></a></li>
-                                        <li class="logged-in"><a
-                                                onclick="loadUserInfo(); togglePage('account-user'); toggleModal('header-sidebar')"><span>My
-                                                    Account</span></a></li>
-                                        <li class="logged-in"><a
-                                                onclick="togglePage('order-history'); toggleModal('header-sidebar')"><span>My
-                                                    Order</span></a></li>
-                                        <!-- <li class="logged-in"><a 
-                                                onclick="signOut(); toggleModal('header-sidebar')"><span>Sign
-                                                    Out</span></a> -->
-                                        <li class="logged-in"><a 
-                                             href="view/logout.php"><span>Sign
-                                                    Out</span></a>
-                                        </li>
+                                        <?php if (isset($_SESSION['user'])): ?>
+                                            <!-- Đã đăng nhập -->
+                                            <?php if (isset($_SESSION['user']['Role']) && $_SESSION['user']['Role'] === 'admin'): ?>
+                                                <li class="logged-in isAdmin"><a href="admin.html"><span>Manage*</span></a></li>
+                                            <?php endif; ?>
+                                            <li class="logged-in"><a onclick="loadUserInfo(); togglePage('account-user'); toggleModal('header-sidebar')"><span>My Account</span></a></li>
+                                            <li class="logged-in"><a onclick="togglePage('order-history'); toggleModal('header-sidebar')"><span>My Order</span></a></li>
+                                            <li class="logged-in"><a href="view/logout.php"><span>Sign Out</span></a></li>
+                                        <?php else: ?>
+                                            <!-- Chưa đăng nhập -->
+                                            <li class="logged-out"><a href="index.php?pg=login"><span>Log in</span></a></li>
+                                            <li class="logged-out"><a href="index.php?pg=register"><span>Sign up</span></a></li>
+                                        <?php endif; ?>
                                     </ul>
                                 </div>
                             </li>
-                            <li><a onclick="toggleModal('cart');">CART (<span
+                            <li><a onclick="toggleModal('cart'); showCart();">CART (<span
                                         class="display-cart-total-amount">0</span>)</a>
                             </li>
                         </ul>

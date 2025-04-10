@@ -32,7 +32,7 @@ function getProductDetail($idProduct) {
     $sql = "
         SELECT p.ProductID AS id, p.ProductName AS name, p.Price AS price, p.ImageURL AS image, 
                c.CategoryName AS category, b.BrandName AS brand, p.Gender AS sex,
-               GROUP_CONCAT(DISTINCT ps.Size ORDER BY ps.Size ASC) AS size
+               GROUP_CONCAT(ps.ProductSizeID, '-', ps.Size ORDER BY ps.Size ASC) AS size
         FROM Product p
         LEFT JOIN Categories c ON p.CategoryID = c.CategoryID
         LEFT JOIN Brand b ON p.BrandID = b.BrandID
@@ -41,14 +41,18 @@ function getProductDetail($idProduct) {
         GROUP BY p.ProductID;
     ";
 
-    $product = getOne($sql); // Không cần truyền tham số
+    // Truyền tham số vào câu truy vấn
+    $product = getOne($sql,);
 
     if ($product) {
+        // Gán size vào mảng
         $product['size'] = !empty($product['size']) ? explode(',', $product['size']) : [];
     }
 
     return $product;
 }
+
+
 
 
 

@@ -55,21 +55,28 @@ if (isset($_POST['btnRegister'])) {
             ]);
 
             if ($inserted) {
-                // Lấy ID user vừa tạo
-                $userID = $pdo->lastInsertId();
-
-                // Lưu toàn bộ thông tin user vào session
+                // Lưu thông tin vào session ngay sau khi đăng ký thành công
                 $_SESSION['user'] = [
                     "Username" => $username,
                     "Fullname" => $fullname,
                     "PhoneNumber" => $phone,
-                    "Address" => $address
+                    "Address" => $address,
+                    "userID" => $pdo->lastInsertId() // Lưu userID mới vào session
                 ];
-
-                $toastMessage = json_encode(["title" => "Success", "message" => "Account created successfully! Redirecting...", "type" => "success", "redirect" => "index.php"]);
+            
+                $toastMessage = json_encode([
+                    "title" => "Success",
+                    "message" => "Account created successfully!",
+                    "type" => "success",
+                    "redirect" => "index.php" // Chuyển hướng đến trang chủ hoặc giỏ hàng
+                ]);
             } else {
-                $toastMessage = json_encode(["title" => "Error", "message" => "Registration failed, please try again!", "type" => "error"]);
-            }
+                $toastMessage = json_encode([
+                    "title" => "Error", 
+                    "message" => "Registration failed, please try again!", 
+                    "type" => "error"
+                ]);
+            }            
         }
     }
 }
