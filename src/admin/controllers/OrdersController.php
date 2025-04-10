@@ -17,7 +17,7 @@ if (isset($_GET['action'])) {
             include 'views/orders/detail.php';
             break;
         case 'update':
-            $id = $_POST['id'];
+            $id = $_GET['id'];
             $status = $_POST['status'];
             $orderModel->updateStatus($id, $status);
             header('Location: admin.php?page=orders&action=list');

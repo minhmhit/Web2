@@ -12,12 +12,10 @@ $orders = $orderModel->getAll();
 $products = $productModel->getAll();
 $accounts = $accountModel->getAll();
 
-// Tính tổng thu nhập
+// tính tổng thu nhập dựa trên order[total]
 $totalIncome = 0;
 foreach ($orders as $order) {
-    if (($order['payment_method'] == 'cash' && $order['status'] == 2) || ($order['payment_method'] == 'card' && $order['status'] == 1)) {
-        $totalIncome += $order['total'];
-    }
+    $totalIncome += $order['total'];
 }
 
 include 'views/statistics/index.php';
