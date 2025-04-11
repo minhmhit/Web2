@@ -499,7 +499,17 @@ async function checkLogin() {
             method: "POST",
             headers: { "Content-Type": "application/json" }
         });
+
+        // Kiểm tra phản hồi có hợp lệ và là JSON không
+        if (!res.ok) throw new Error("Network response was not ok");
+        
+        const contentType = res.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+            throw new Error("Expected JSON, got something else!");
+        }
+
         const data = await res.json();
+
         if (!data.success) {
             toastMsg({
                 title: data.title || "REMINDER",
@@ -508,13 +518,18 @@ async function checkLogin() {
             });
             return false;
         }
+
         return true;
     } catch (err) {
         console.error("Login check error:", err);
+        toastMsg({
+            title: "Lỗi",
+            message: "Không xác định được trạng thái đăng nhập!",
+            type: "error"
+        });
         return false;
     }
 }
-
 
 // Đăng ký sự kiện chọn size và thêm vào giỏ hàng
 function setupEventListeners() {
@@ -591,7 +606,8 @@ function setupEventListeners() {
     
             if (data.success) {
                 toastMsg({ title: "SUCCESS", message: "Added successfully!", type: "success" });
-                // showCart();
+                loadCartSummary(); 
+                if (quantityInput) quantityInput.value = 1;
                 document.querySelector('.modal.product-detail').classList.remove('open');
                 document.body.style.overflow = "auto";
 
@@ -697,8 +713,9 @@ function updateCartAll(productSizeID, size, el) {
         .then(res => res.json())
         .then(data => {
             if (data.success) {
-                toastMsg({ title: "Success", message: data.message, type: "success" });
+                // toastMsg({ title: "Success", message: data.message, type: "success" });
                 showCart(); // reload cart
+                loadCartSummary();
             } else {
                 toastMsg({ title: "Error", message: data.message, type: "error" });
             }
@@ -717,6 +734,7 @@ function deleteCartItem(productsizeid, el) {
         if (data.success) {
             toastMsg({ title: "Deleted", message: data.message, type: "info" });
             showCart(); // reload cart
+            loadCartSummary();
         } else {
             toastMsg({ title: "ERROR", message: data.message, type: "error" });
         }
@@ -729,23 +747,40 @@ function showCart() {
     const cartBody = document.querySelector(".cart .cart-body");
     const checkoutBtn = document.getElementById("cart-checkout-btn");
 
-    // Gọi API để lấy giỏ hàng từ DB
+    if (!cartBody || !checkoutBtn) return;
+
     fetch("controller/db_controller/cart.php?action=get_cart")
-        .then(res => res.json())
+        .then(res => {
+            if (!res.ok) throw new Error("Network response was not ok");
+
+            const contentType = res.headers.get("content-type");
+            if (!contentType || !contentType.includes("application/json")) {
+                throw new Error("Expected JSON, got something else!");
+            }
+
+            return res.json();
+        })
         .then(data => {
-            console.log(cartBody); 
             cartBody.innerHTML = "";
 
-            // Nếu chưa login hoặc cart rỗng
-            if (!data.success || data.cart.length === 0) {
+            // Case 1: Chưa đăng nhập
+            if (data.login_required === true) {
                 checkoutBtn.classList.remove("active");
                 checkoutBtn.disabled = true;
+                return;
+            }
+
+            // Case 2: Đã login nhưng giỏ trống
+            if (!data.success || !Array.isArray(data.cart) || data.cart.length === 0) {
+                checkoutBtn.classList.remove("active");
+                checkoutBtn.disabled = true;
+
                 displayWhenEmpty(".cart .cart-body", displayEmptyHTML_cart);
                 updateCartSummary(0, 0);
                 return;
             }
 
-            // Giỏ hàng có sản phẩm
+            // Case 3: Có sản phẩm trong giỏ
             checkoutBtn.classList.add("active");
             checkoutBtn.disabled = false;
 
@@ -789,11 +824,7 @@ function showCart() {
                 `;
             });
 
-            // Gán HTML vào cart
             cartBody.innerHTML = cartItemhtml;
-            console.log(data);
-
-            // Cập nhật tổng số lượng và tổng tiền
             updateCartSummary(totalQty, totalPrice);
         })
         .catch(err => {
@@ -877,3 +908,8 @@ setInterval(() => {
 
 
 // BANNER - END /////////////////////////////////////////////////////
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    loadCartSummary(); // gọi để update số lượng trong header khi trang vừa load
+});

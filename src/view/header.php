@@ -76,9 +76,9 @@
                     </ul>
                 </div>
             </li>
-                        <li class="hide-on-mobile"><a onclick="toggleModal('cart')"><i
+                        <li class="hide-on-mobile"><a onclick="toggleModal('cart'); showCart();"><i
                                     class="fa-solid fa-cart-shopping "></i>(<span
-                                    class="display-cart-total-amount">0</span>)</a></li>
+                                    class="display-cart-total-amount"><?= $_SESSION['cartQty'] ?? 0 ?></span>)</a></li>
                     </ul>
                 </div>
                 <div class="container hamburger-menu-button hide-on-pc show-on-mobile">
@@ -101,9 +101,6 @@
                                     <ul class="menu-list" id="login-dropdown">
                                         <?php if (isset($_SESSION['user'])): ?>
                                             <!-- Đã đăng nhập -->
-                                            <?php if (isset($_SESSION['user']['Role']) && $_SESSION['user']['Role'] === 'admin'): ?>
-                                                <li class="logged-in isAdmin"><a href="admin.html"><span>Manage*</span></a></li>
-                                            <?php endif; ?>
                                             <li class="logged-in"><a onclick="loadUserInfo(); togglePage('account-user'); toggleModal('header-sidebar')"><span>My Account</span></a></li>
                                             <li class="logged-in"><a onclick="togglePage('order-history'); toggleModal('header-sidebar')"><span>My Order</span></a></li>
                                             <li class="logged-in"><a href="view/logout.php"><span>Sign Out</span></a></li>
@@ -115,11 +112,11 @@
                                     </ul>
                                 </div>
                             </li>
-                            <li><a onclick="toggleModal('cart'); showCart();">CART (<span
-                                        class="display-cart-total-amount">0</span>)</a>
+                            <li><a onclick="toggleModal('cart'); showCart();">CART (<span class="display-cart-total-amount"><?= $_SESSION['cartQty'] ?? 0 ?></span>)</a>
                             </li>
                         </ul>
                     </div>
                 </div>
             </div>
         </header>
+

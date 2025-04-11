@@ -290,14 +290,14 @@ require_once "./controller/controller.php";
                                 <h3 class="checkout-content-label">Choose a region for delivery destination <i
                                         style="font-weight: normal;">(this will help us locate you faster)</i></h3>
                                 <div class="region-selector">
-                                    <select id="province" class="region-select" onchange="updateDistricts()">
-                                        <option value="">Province/City</option>
+                                    <select id="province" class="region-select">
+                                        <option value="" disabled selected hidden>Province/City</option>
                                     </select>
-                                    <select id="district" class="region-select" onchange="updateWards()">
-                                        <option value="">District</option>
+                                    <select id="district" class="region-select">
+                                        <option value="" disabled selected hidden>District</option>
                                     </select>
                                     <select id="ward" class="region-select">
-                                        <option value="">Ward/Commune</option>
+                                        <option value="" disabled selected hidden>Ward/Commune</option>
                                     </select>
                                 </div>
                                 <p class="form-msg-error"></p>

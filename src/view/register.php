@@ -8,6 +8,9 @@ if (isset($_POST['btnRegister'])) {
     $fullname = trim($_POST['fullname-signup']);
     $phone = trim($_POST['phone-signup']);
     $address = trim($_POST['address-signup']);
+    $provinceID = $_POST['province'];
+    $districtID = $_POST['district'];
+    $wardID = $_POST['ward'];
     $password = trim($_POST['password-signup']);
     $confirmPassword = trim($_POST['confirm-password-signup']);
 
@@ -43,14 +46,17 @@ if (isset($_POST['btnRegister'])) {
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
             // Lưu vào database
-            $sqlInsert = "INSERT INTO user (Username, Fullname, PhoneNumber, Email, Address, PasswordHash, CreatedAt, IsActivate) 
-                          VALUES (:username, :fullname, :phone, NULL, :address, :password, NOW(), 1)";
+            $sqlInsert = "INSERT INTO user (Username, Fullname, PhoneNumber, Email, Address, ProvinceID, DistrictID, WardID, PasswordHash, CreatedAt, IsActivate) 
+                          VALUES (:username, :fullname, :phone, NULL, :address, :provinceID, :districtID, :wardID, :password, NOW(), 1)";
             $stmt = $pdo->prepare($sqlInsert);
             $inserted = $stmt->execute([
                 'username' => $username,
                 'fullname' => $fullname,
                 'phone' => $phone,
                 'address' => $address,
+                'provinceID' => $provinceID,
+                'districtID' => $districtID,
+                'wardID' => $wardID,
                 'password' => $hashedPassword
             ]);
 
@@ -61,6 +67,9 @@ if (isset($_POST['btnRegister'])) {
                     "Fullname" => $fullname,
                     "PhoneNumber" => $phone,
                     "Address" => $address,
+                    'provinceID' => $provinceID,
+                    'districtID' => $districtID,
+                    'wardID' => $wardID,
                     "userID" => $pdo->lastInsertId() // Lưu userID mới vào session
                 ];
             
@@ -99,6 +108,21 @@ if (isset($_POST['btnRegister'])) {
             <p class="form-msg-error"></p>
 
             <input class="form-input-bar" type="text" id="address-signup" name="address-signup" placeholder="Address*" required>
+            <p class="form-msg-error"></p>
+
+            <div class="region-selector">
+            <select id="province" name="province" class="region-select" required>
+                <option value="" disabled selected hidden>Province/City</option>
+            </select>
+
+            <select id="district" name="district" class="region-select" required>
+                <option value="" disabled selected hidden>District</option>
+            </select>
+
+            <select id="ward" name="ward" class="region-select" required>
+                <option value="" disabled selected hidden>Ward/Commune</option>
+            </select>
+            </div>
             <p class="form-msg-error"></p>
 
             <input class="form-input-bar" type="password" id="password-signup" name="password-signup" placeholder="Password*" required>
