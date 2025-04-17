@@ -14,6 +14,7 @@ if (isset($_GET['action'])) {
         case 'detail':
             $id = $_GET['id'];
             $order = $orderModel->getById($id);
+            $orderDetails = $orderModel->getOrderDetails($id);
             include 'views/orders/detail.php';
             break;
         case 'update':

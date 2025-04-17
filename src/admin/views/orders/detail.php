@@ -9,8 +9,8 @@
                 </a>
             </div>
             <span class="px-3 py-1 rounded-full text-sm font-medium 
-                <?= $order['PaymentStatus'] == 'Processed' ? 'bg-green-100 text-green-800' : ($order['PaymentStatus'] == 'Cancelled' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800') ?>">
-                <?= $order['PaymentStatus'] == 'Processed' ? 'Đã xử lý' : ($order['PaymentStatus'] == 'Cancelled' ? 'Đã hủy' : 'Đang chờ') ?>
+                <?= $order['Status'] == 'Processed' ? 'bg-green-100 text-green-800' : ($order['Status'] == 'Cancelled' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800') ?>">
+                <?= $order['Status'] == 'Processed' ? 'Đã xử lý' : ($order['Status'] == 'Cancelled' ? 'Đã hủy' : 'Đang chờ') ?>
             </span>
         </div>
 
@@ -20,7 +20,7 @@
                 <h3 class="font-medium text-gray-700 mb-3">Thông tin khách hàng</h3>
                 <p class="text-gray-600 mb-2"><span class="font-medium">Tên:</span> <?= htmlspecialchars($order['UserFullname']) ?></p>
                 <p class="text-gray-600 mb-2"><span class="font-medium">Email:</span> <?= htmlspecialchars($order['UserEmail']) ?></p>
-                <p class="text-gray-600"><span class="font-medium">SĐT:</span> <?= htmlspecialchars($order['UserPhone']) ?></p>
+                <p class="text-gray-600"><span class="font-medium">SĐT:</span> <?= htmlspecialchars($order['UserPhoneNumber']) ?></p>
             </div>
 
             <div class="bg-gray-50 p-4 rounded-lg">
@@ -29,8 +29,16 @@
                 <p class="text-gray-600 mb-2"><span class="font-medium">Tổng tiền:</span>
                     <span class="font-bold text-blue-600"><?= number_format($order['Total'], 0, ',', '.') ?> ₫</span>
                 </p>
-                <p class="text-gray-600"><span class="font-medium">Phương thức:</span> <?= htmlspecialchars($order['PaymentMethod']) ?></p>
             </div>
+        </div>
+
+        <!-- Address section -->
+        <div class="mb-8 bg-gray-50 p-4 rounded-lg">
+            <h3 class="font-medium text-gray-700 mb-3">Thông tin giao hàng</h3>
+            <p class="text-gray-600 mb-2"><span class="font-medium">Địa chỉ:</span> <?= htmlspecialchars($order['ShippingAddress']) ?></p>
+            <p class="text-gray-600 mb-2"><span class="font-medium">ID Tỉnh/Thành:</span> <?= htmlspecialchars($order['ProvinceID']) ?></p>
+            <p class="text-gray-600 mb-2"><span class="font-medium">ID Quận/Huyện:</span> <?= htmlspecialchars($order['DistrictID']) ?></p>
+            <p class="text-gray-600"><span class="font-medium">ID Phường/Xã:</span> <?= htmlspecialchars($order['WardID']) ?></p>
         </div>
 
         <!-- Status update form -->
@@ -41,9 +49,9 @@
                 <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Cập nhật trạng thái</label>
                     <select name="status" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-                        <option value="Pending" <?= $order['PaymentStatus'] == 'Pending' ? 'selected' : '' ?>>Đang chờ</option>
-                        <option value="Processed" <?= $order['PaymentStatus'] == 'Processed' ? 'selected' : '' ?>>Đã xử lý</option>
-                        <option value="Cancelled" <?= $order['PaymentStatus'] == 'Cancelled' ? 'selected' : '' ?>>Đã hủy</option>
+                        <option value="Pending" <?= $order['Status'] == 'Pending' ? 'selected' : '' ?>>Đang chờ</option>
+                        <option value="Processed" <?= $order['Status'] == 'Processed' ? 'selected' : '' ?>>Đã xử lý</option>
+                        <option value="Cancelled" <?= $order['Status'] == 'Cancelled' ? 'selected' : '' ?>>Đã hủy</option>
                     </select>
                 </div>
 
@@ -64,7 +72,7 @@
                         <li class="p-4 hover:bg-gray-50">
                             <div class="flex items-center space-x-4">
                                 <div class="flex-shrink-0 w-16 h-16">
-                                    <img src="<?= htmlspecialchars($item['ImageURL']) ?>"
+                                    <img src="../../../.<?= htmlspecialchars($item['ImageURL']) ?>"
                                         alt="<?= htmlspecialchars($item['ProductName']) ?>"
                                         class="w-full h-full object-cover rounded-md">
                                 </div>
@@ -76,12 +84,12 @@
                                         Số lượng: <?= $item['Quantity'] ?>
                                     </p>
                                     <p class="text-sm text-gray-500">
-                                        Đơn giá: <?= number_format($item['Price'], 0, ',', '.') ?> ₫
+                                        Đơn giá: <?= number_format($item['UnitPrice'], 0, ',', '.') ?> ₫
                                     </p>
                                 </div>
                                 <div class="text-right">
                                     <p class="text-sm font-medium text-blue-600">
-                                        <?= number_format($item['Price'] * $item['Quantity'], 0, ',', '.') ?> ₫
+                                        <?= number_format($item['UnitPrice'] * $item['Quantity'], 0, ',', '.') ?> ₫
                                     </p>
                                 </div>
                             </div>

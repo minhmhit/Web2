@@ -1,6 +1,6 @@
 <?php
 $host = 'localhost';
-$dbname = 'bangiay_db';
+$dbname = 'bangiay';
 $username = 'root';
 $password = '';
 

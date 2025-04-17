@@ -29,7 +29,7 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <?php
-                                $statusClass = match ($order['PaymentStatus']) {
+                                $statusClass = match ($order['Status']) {
                                     'Đã thanh toán' => 'bg-green-100 text-green-800',
                                     'Chờ thanh toán' => 'bg-yellow-100 text-yellow-800',
                                     'Đã hủy' => 'bg-red-100 text-red-800',
@@ -37,7 +37,7 @@
                                 };
                                 ?>
                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <?= $statusClass ?>">
-                                    <?= htmlspecialchars($order['PaymentStatus']) ?>
+                                    <?= htmlspecialchars($order['Status']) ?>
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
