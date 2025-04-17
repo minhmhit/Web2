@@ -152,7 +152,6 @@ switch ($_SERVER['REQUEST_METHOD']) {
             exit();
         }
               
-
     case 'PUT':
         if ($_GET['action'] == 'update_cart') {
             if (empty($data->productsizeid) || empty($data->quantity)) {

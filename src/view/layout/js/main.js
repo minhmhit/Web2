@@ -636,7 +636,7 @@ function setupEventListeners() {
         const isLoggedIn = await checkLogin();
         if (!isLoggedIn) return;
     
-        let quantityInput = document.querySelector(".input-qty");
+        let quantityInput = document.querySelector(".product-detail .input-qty");
         let quantity = quantityInput ? parseInt(quantityInput.value) : 1;
         let price = parseInt(document.querySelector(".current-price").dataset.price || 0);
 
