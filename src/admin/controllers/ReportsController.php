@@ -15,5 +15,16 @@ if (isset($_GET['action']) && $_GET['action'] == 'summary') {
     // Số employee
     $employeeCount = $pdo->query("SELECT COUNT(*) as count FROM employee")->fetch()['count'];
 
+    // Số phiếu nhập
+    $importCount = $pdo->query("SELECT COUNT(*) as count FROM import")->fetch()['count'];
+
+    // Số đơn hàng
+    $orderCount = $pdo->query("SELECT COUNT(*) as count FROM orders")->fetch()['count'];
+
+    // Phân loại đơn hàng theo trạng thái
+    $pendingOrderCount = $pdo->query("SELECT COUNT(*) as count FROM orders WHERE Status = 'Pending'")->fetch()['count'];
+    $processedOrderCount = $pdo->query("SELECT COUNT(*) as count FROM orders WHERE Status = 'Processed'")->fetch()['count'];
+    $cancelledOrderCount = $pdo->query("SELECT COUNT(*) as count FROM orders WHERE Status = 'Cancelled'")->fetch()['count'];
+
     include 'views/reports/summary.php';
 }

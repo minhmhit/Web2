@@ -8,10 +8,16 @@
                     <i class="fas fa-arrow-left mr-1"></i> Quay lại danh sách đơn hàng
                 </a>
             </div>
-            <span class="px-3 py-1 rounded-full text-sm font-medium 
-                <?= $order['Status'] == 'Processed' ? 'bg-green-100 text-green-800' : ($order['Status'] == 'Cancelled' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800') ?>">
-                <?= $order['Status'] == 'Processed' ? 'Đã xử lý' : ($order['Status'] == 'Cancelled' ? 'Đã hủy' : 'Đang chờ') ?>
-            </span>
+            <div class="flex items-center space-x-3">
+                <span class="px-3 py-1 rounded-full text-sm font-medium 
+                    <?= $order['Status'] == 'Processed' ? 'bg-green-100 text-green-800' : ($order['Status'] == 'Processing' ? 'bg-blue-100 text-blue-800' : ($order['Status'] == 'Cancelled' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800')) ?>">
+                    <?= $order['Status'] == 'Processed' ? 'Đã giao hàng' : ($order['Status'] == 'Processing' ? 'Đang giao hàng' : ($order['Status'] == 'Cancelled' ? 'Đã hủy' : 'Chờ xác nhận')) ?>
+                </span>
+                <a href="admin.php?page=orders&action=update&id=<?= $order['OrderID'] ?>"
+                    class="px-3 py-1 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700">
+                    <i class="fas fa-edit mr-1"></i> Cập nhật
+                </a>
+            </div>
         </div>
 
         <!-- Order info section -->
@@ -41,23 +47,24 @@
             <p class="text-gray-600"><span class="font-medium">ID Phường/Xã:</span> <?= htmlspecialchars($order['WardID']) ?></p>
         </div>
 
-        <!-- Status update form -->
-        <form method="POST" action="admin.php?page=orders&action=update" class="border-t pt-6">
+        <!-- Quick status update form -->
+        <form method="POST" action="admin.php?page=orders&action=update" class="border-t pt-6 mb-8">
             <input type="hidden" name="id" value="<?= $order['OrderID'] ?>">
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
                 <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Cập nhật trạng thái</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Cập nhật nhanh trạng thái</label>
                     <select name="status" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-                        <option value="Pending" <?= $order['Status'] == 'Pending' ? 'selected' : '' ?>>Đang chờ</option>
-                        <option value="Processed" <?= $order['Status'] == 'Processed' ? 'selected' : '' ?>>Đã xử lý</option>
+                        <option value="Pending" <?= $order['Status'] == 'Pending' ? 'selected' : '' ?>>Chờ xác nhận</option>
+                        <option value="Processing" <?= $order['Status'] == 'Processing' ? 'selected' : '' ?>>Đang giao hàng</option>
+                        <option value="Processed" <?= $order['Status'] == 'Processed' ? 'selected' : '' ?>>Đã giao hàng</option>
                         <option value="Cancelled" <?= $order['Status'] == 'Cancelled' ? 'selected' : '' ?>>Đã hủy</option>
                     </select>
                 </div>
 
                 <div class="flex justify-end">
                     <button type="submit" class="w-full md:w-auto px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition">
-                        <i class="fas fa-sync-alt mr-2"></i> Cập nhật
+                        <i class="fas fa-sync-alt mr-2"></i> Cập nhật nhanh
                     </button>
                 </div>
             </div>
@@ -72,13 +79,16 @@
                         <li class="p-4 hover:bg-gray-50">
                             <div class="flex items-center space-x-4">
                                 <div class="flex-shrink-0 w-16 h-16">
-                                    <img src="../../../.<?= htmlspecialchars($item['ImageURL']) ?>"
+                                    <img src=".<?= htmlspecialchars($item['ImageURL']) ?>"
                                         alt="<?= htmlspecialchars($item['ProductName']) ?>"
                                         class="w-full h-full object-cover rounded-md">
                                 </div>
                                 <div class="flex-1 min-w-0">
                                     <p class="text-sm font-medium text-gray-900 truncate">
                                         <?= htmlspecialchars($item['ProductName']) ?>
+                                        <?php if (isset($item['size'])): ?>
+                                            <span class="text-gray-500">(Size: <?= htmlspecialchars($item['size']) ?>)</span>
+                                        <?php endif; ?>
                                     </p>
                                     <p class="text-sm text-gray-500">
                                         Số lượng: <?= $item['Quantity'] ?>
@@ -86,11 +96,15 @@
                                     <p class="text-sm text-gray-500">
                                         Đơn giá: <?= number_format($item['UnitPrice'], 0, ',', '.') ?> ₫
                                     </p>
+
                                 </div>
                                 <div class="text-right">
                                     <p class="text-sm font-medium text-blue-600">
-                                        <?= number_format($item['UnitPrice'] * $item['Quantity'], 0, ',', '.') ?> ₫
+                                        <?= number_format($item['Subtotal'], 0, ',', '.') ?> ₫
                                     </p>
+
+                                    <input type="hidden" class="subtotal-value" value="<?= $item['Subtotal'] ?>">
+                                    <input type="hidden" class="calculated-value" value="<?= $item['UnitPrice'] * $item['Quantity'] ?>">
                                 </div>
                             </div>
                         </li>
@@ -99,14 +113,43 @@
 
                 <!-- Order summary -->
                 <div class="bg-gray-50 px-4 py-4 sm:px-6">
-                    <div class="flex justify-end space-x-4">
-                        <span class="text-gray-600">Tổng cộng:</span>
-                        <span class="font-bold text-blue-600 text-lg">
-                            <?= number_format($order['Total'], 0, ',', '.') ?> ₫
-                        </span>
+                    <div class="flex flex-col justify-end space-y-2">
+                        <div class="flex justify-end space-x-4">
+                            <span class="text-gray-600">Tổng cộng:</span>
+                            <span class="font-bold text-blue-600 text-lg">
+                                <?= number_format($order['Total'], 0, ',', '.') ?> ₫
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Tính tổng tiền từ các giá trị subtotal trong database
+        let totalFromSubtotal = 0;
+        document.querySelectorAll('.subtotal-value').forEach(function(item) {
+            totalFromSubtotal += parseFloat(item.value) || 0;
+        });
+
+        // Tính tổng tiền bằng cách tính lại từ đơn giá và số lượng
+        let calculatedTotal = 0;
+        document.querySelectorAll('.calculated-value').forEach(function(item) {
+            calculatedTotal += parseFloat(item.value) || 0;
+        });
+
+        // Hiển thị kết quả
+        document.getElementById('calculatedTotal').textContent =
+            calculatedTotal.toLocaleString('vi-VN') + ' ₫';
+
+        document.getElementById('itemsTotal').textContent =
+            totalFromSubtotal.toLocaleString('vi-VN') + ' ₫';
+
+        // Log để debug
+        console.log('Total from Subtotal fields:', totalFromSubtotal);
+        console.log('Calculated Total:', calculatedTotal);
+    });
+</script>

@@ -22,7 +22,7 @@ class Order
     {
         $stmt = $this->pdo->prepare("SELECT o.*, u.Fullname AS UserFullname, u.Email AS UserEmail, u.PhoneNumber AS UserPhoneNumber,
                                    e.Fullname AS EmployeeFullname,
-                                   (SELECT SUM(od.UnitPrice * od.Quantity) FROM `orderdetail` od WHERE od.OrderID = o.OrderID) AS Total
+                                   (SELECT SUM(od.Subtotal) FROM `orderdetail` od WHERE od.OrderID = o.OrderID) AS Total
                                    FROM `orders` o 
                                    LEFT JOIN `user` u ON o.UserID = u.UserID 
                                    LEFT JOIN `employee` e ON o.SaleID = e.EmployeeID
@@ -45,7 +45,7 @@ class Order
             $data['SaleID'] ?? null,
             $data['WarehouseID'] ?? null,
             $data['ExportDate'] ?? null
-            
+
         ]);
         return $this->pdo->lastInsertId();
     }
@@ -54,15 +54,79 @@ class Order
     {
         $stmt = $this->pdo->prepare("UPDATE `orders` SET Status = ? WHERE OrderID = ?");
         $stmt->execute([$status, $id]);
+        return true;
+    }
+
+    public function updateOrderInfo($id, $status, $total = null)
+    {
+        try {
+            // Bắt đầu transaction để đảm bảo tính toàn vẹn dữ liệu
+            $this->pdo->beginTransaction();
+
+            // Nếu chỉ cập nhật trạng thái
+            if ($total === null) {
+                $stmt = $this->pdo->prepare("UPDATE `orders` SET Status = ? WHERE OrderID = ?");
+                $stmt->execute([$status, $id]);
+            }
+            // Nếu cập nhật cả trạng thái và tổng tiền
+            else {
+                $stmt = $this->pdo->prepare("UPDATE `orders` SET Status = ? WHERE OrderID = ?");
+                $stmt->execute([$status, $id]);
+
+                // Cập nhật tổng tiền bằng cách điều chỉnh subtotal của mỗi chi tiết đơn hàng
+                $details = $this->getOrderDetails($id);
+                if (!empty($details)) {
+                    // Tính tổng hiện tại
+                    $currentTotal = 0;
+                    foreach ($details as $detail) {
+                        $currentTotal += $detail['Subtotal'];
+                    }
+
+                    if ($currentTotal > 0) {
+                        // Tỷ lệ điều chỉnh
+                        $ratio = $total / $currentTotal;
+
+                        // Cập nhật mỗi chi tiết đơn hàng
+                        $updateDetailStmt = $this->pdo->prepare("UPDATE `orderdetail` SET Subtotal = ? WHERE OrderID = ? AND ProductSizeID = ?");
+                        foreach ($details as $detail) {
+                            $newSubtotal = $detail['Subtotal'] * $ratio;
+                            $updateDetailStmt->execute([$newSubtotal, $id, $detail['ProductSizeID']]);
+                        }
+                    }
+                }
+            }
+
+            $this->pdo->commit();
+            return true;
+        } catch (Exception $e) {
+            $this->pdo->rollBack();
+            return false;
+        }
     }
 
     public function getOrderDetails($orderId)
     {
-        $stmt = $this->pdo->prepare("SELECT od.*, p.ProductName, p.ImageURL 
-                                    FROM `orderdetail` od
-                                    JOIN `product` p ON od.ProductSizeID = p.ProductID
-                                    WHERE od.OrderID = ?");
+        // Kiểm tra và debug dữ liệu
+        $sql = "SELECT od.*, ps.size, p.ProductName, p.ImageURL 
+                FROM `orderdetail` od
+                JOIN `productsize` ps ON od.ProductSizeID = ps.ProductSizeID
+                JOIN `product` p ON ps.ProductID = p.ProductID
+                WHERE od.OrderID = ?";
+
+        $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$orderId]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Làm rõ giá trị Subtotal
+        foreach ($result as &$item) {
+            // Đảm bảo Subtotal là số thực
+            if (isset($item['Subtotal'])) {
+                $item['Subtotal'] = floatval($item['Subtotal']);
+                // Debug
+                // error_log("Subtotal for product " . $item['ProductName'] . ": " . $item['Subtotal']);
+            }
+        }
+
+        return $result;
     }
 }

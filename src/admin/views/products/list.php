@@ -13,6 +13,7 @@
                 <thead class="bg-gray-50">
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hình ảnh</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tên sản phẩm</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Danh mục</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thương hiệu</th>
@@ -24,6 +25,19 @@
                     <?php foreach ($products as $product): ?>
                         <tr class="hover:bg-gray-50">
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?= $product['ProductID'] ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="h-16 w-16 flex-shrink-0">
+                                    <?php if (!empty($product['ImageURL'])): ?>
+                                        <img src=".<?= htmlspecialchars($product['ImageURL']) ?>"
+                                            alt="<?= htmlspecialchars($product['ProductName']) ?>"
+                                            class="h-16 w-16 rounded-md object-cover">
+                                    <?php else: ?>
+                                        <div class="h-16 w-16 rounded-md bg-gray-200 flex items-center justify-center">
+                                            <i class="fas fa-image text-gray-400"></i>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?= htmlspecialchars($product['ProductName']) ?></td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?= htmlspecialchars($product['CategoryName']) ?></td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?= htmlspecialchars($product['BrandName']) ?></td>

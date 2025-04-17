@@ -8,26 +8,56 @@
             </a>
         </div>
 
-        <form method="POST" action="admin.php?page=products&action=edit&id=<?= $product['ProductID'] ?>" class="space-y-6">
+        <?php if (isset($error)): ?>
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                <strong>Lỗi!</strong> <?= $error ?>
+            </div>
+        <?php endif; ?>
+
+        <form method="POST" action="admin.php?page=products&action=edit&id=<?= $product['ProductID'] ?>" enctype="multipart/form-data" class="space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Cột 1 -->
                 <div class="space-y-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Tên sản phẩm <span class="text-red-500">*</span></label>
-                        <input type="text" name="ProductName" value="<?= $product['ProductName'] ?>" required
+                        <input type="text" name="ProductName" value="<?= htmlspecialchars($product['ProductName']) ?>" required
                             class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Danh mục <span class="text-red-500">*</span></label>
-                        <input type="number" name="CategoryID" value="<?= $product['CategoryID'] ?>" required
-                            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                        <div class="relative">
+                            <select name="CategoryID" required
+                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition appearance-none">
+                                <option value="">-- Chọn danh mục --</option>
+                                <?php foreach ($categories as $category): ?>
+                                    <option value="<?= $category['CategoryID'] ?>" <?= $product['CategoryID'] == $category['CategoryID'] ? 'selected' : '' ?>>
+                                        <?= htmlspecialchars($category['CategoryName']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Thương hiệu <span class="text-red-500">*</span></label>
-                        <input type="number" name="BrandID" value="<?= $product['BrandID'] ?>" required
-                            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                        <div class="relative">
+                            <select name="BrandID" required
+                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition appearance-none">
+                                <option value="">-- Chọn thương hiệu --</option>
+                                <?php foreach ($brands as $brand): ?>
+                                    <option value="<?= $brand['BrandID'] ?>" <?= $product['BrandID'] == $brand['BrandID'] ? 'selected' : '' ?>>
+                                        <?= htmlspecialchars($brand['BrandName']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -35,8 +65,18 @@
                 <div class="space-y-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Giới tính <span class="text-red-500">*</span></label>
-                        <input type="text" name="Gender" value="<?= $product['Gender'] ?>" required
-                            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                        <div class="relative">
+                            <select name="Gender" required
+                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition appearance-none">
+                                <option value="">-- Chọn giới tính --</option>
+                                <option value="Nam" <?= $product['Gender'] == 'Nam' ? 'selected' : '' ?>>Nam</option>
+                                <option value="Nữ" <?= $product['Gender'] == 'Nữ' ? 'selected' : '' ?>>Nữ</option>
+                                <option value="Unisex" <?= $product['Gender'] == 'Unisex' ? 'selected' : '' ?>>Unisex</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
                     </div>
 
                     <div>
@@ -46,9 +86,39 @@
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">URL hình ảnh <span class="text-red-500">*</span></label>
-                        <input type="text" name="ImageURL" value="<?= $product['ImageURL'] ?>" required
-                            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Hình ảnh sản phẩm</label>
+                        <div class="mt-1 flex items-center">
+                            <div class="w-full">
+                                <input type="file" name="product_image" id="product_image" accept="image/*"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                                <p class="mt-1 text-xs text-gray-500">
+                                    Để trống nếu không muốn thay đổi hình ảnh hiện tại
+                                </p>
+                                <input type="hidden" name="current_image" value="<?= htmlspecialchars($product['ImageURL']) ?>">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Xem trước ảnh -->
+            <div class="mt-4 flex space-x-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Hình ảnh hiện tại:</label>
+                    <div class="mt-1 w-40 h-40 border border-gray-300 rounded-md overflow-hidden bg-gray-100 flex items-center justify-center">
+                        <?php if (!empty($product['ImageURL'])): ?>
+                            <img src=".<?= htmlspecialchars($product['ImageURL']) ?>" alt="<?= htmlspecialchars($product['ProductName']) ?>" class="max-h-full max-w-full">
+                        <?php else: ?>
+                            <span class="text-gray-400 text-sm">Không có ảnh</span>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Xem trước ảnh mới:</label>
+                    <div class="mt-1 w-40 h-40 border border-gray-300 rounded-md overflow-hidden bg-gray-100 flex items-center justify-center">
+                        <img id="preview_image" src="#" alt="Xem trước ảnh" class="max-h-full max-w-full hidden">
+                        <span id="preview_placeholder" class="text-gray-400 text-sm">Chưa chọn ảnh mới</span>
                     </div>
                 </div>
             </div>
@@ -66,3 +136,25 @@
         </form>
     </div>
 </div>
+
+<script>
+    // Xem trước ảnh sau khi chọn
+    document.getElementById('product_image').addEventListener('change', function(event) {
+        const preview = document.getElementById('preview_image');
+        const placeholder = document.getElementById('preview_placeholder');
+        const file = event.target.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+            };
+            reader.readAsDataURL(file);
+        } else {
+            preview.classList.add('hidden');
+            placeholder.classList.remove('hidden');
+        }
+    });
+</script>
