@@ -5,30 +5,41 @@ include_once("./controller/db_controller/api.php");
 $toastMessage = "";
 
 if (isset($_POST['btnlogin'])) {
-    $user = trim($_POST['user']);
-    $password = $_POST['password'];
-
-    $sql = "SELECT UserID, PasswordHash FROM user WHERE Username = '$user'";
+    $sql = "SELECT UserID, PasswordHash, isActivate FROM user WHERE Username = '$user'";
     $userData = getOne($sql);
 
-    if ($userData && password_verify($password, $userData['PasswordHash'])) {
-        $_SESSION['user'] = [
-            'userID' => $userData['UserID'],
-            'Username' => $user
-        ];
+    if ($userData) {
+        if (!password_verify($password, $userData['PasswordHash'])) {
+            $toastMessage = json_encode([
+                "title" => "Error",
+                "message" => "Wrong username or password!",
+                "type" => "error"
+            ]);
+        } elseif ($userData['isActivate'] == 0) {
+            $toastMessage = json_encode([
+                "title" => "Account Locked",
+                "message" => "Your account has been deactivated.",
+                "type" => "error"
+            ]);
+        } else {
+            $_SESSION['user'] = [
+                'userID' => $userData['UserID'],
+                'Username' => $user
+            ];
 
-        // Cập nhật số lượng sản phẩm trong giỏ
-        $userID = $userData['UserID'];
-        $cartQtySql = "SELECT SUM(Quantity) as TotalQty FROM cart WHERE UserID = '$userID'";
-        $cartResult = getOne($cartQtySql);
-        $_SESSION['cartQty'] = $cartResult['TotalQty'] ?? 0;
+            // Cập nhật số lượng sản phẩm trong giỏ
+            $userID = $userData['UserID'];
+            $cartQtySql = "SELECT SUM(Quantity) as TotalQty FROM cart WHERE UserID = '$userID'";
+            $cartResult = getOne($cartQtySql);
+            $_SESSION['cartQty'] = $cartResult['TotalQty'] ?? 0;
 
-        $toastMessage = json_encode([
-            "title" => "Success",
-            "message" => "Login successful!",
-            "type" => "success",
-            "redirect" => "index.php"
-        ]);
+            $toastMessage = json_encode([
+                "title" => "Success",
+                "message" => "Login successful!",
+                "type" => "success",
+                "redirect" => "index.php"
+            ]);
+        }
     } else {
         $toastMessage = json_encode([
             "title" => "Error",
