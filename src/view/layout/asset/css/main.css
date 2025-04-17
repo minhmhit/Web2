@@ -1550,6 +1550,13 @@ h2.product-title {
 .checkout-col-right {
     width: 40%;
     height: fit-content;
+    max-height: 80vh;
+}
+
+.checkout-col-right .cart-body{
+    max-height: 297px;
+    overflow-y: auto;
+    padding-right: 0.5rem;
 }
 
 .checkout-col-title {
@@ -1563,9 +1570,19 @@ h2.product-title {
 
 .cardsthanhtoan {
     display: flex;
-    justify-content: flex-end;
-    column-gap: 8px;
+    align-items: center;
 }
+
+.card-icons {
+    display: flex;
+    column-gap: 8px;
+    margin-left: auto; 
+}
+
+.cardsthanhtoan .form-group {
+    margin: 0;
+}
+
 
 .checkout-col-left .img-container {
     border: none;
@@ -1605,9 +1622,10 @@ h2.product-title {
     gap: 16px;
 }
 
+
 .region-select {
     flex: 1;
-    width: 200px;
+    min-width: 200px;
     outline: 2px solid transparent;
     border: 1px solid var(--bg-footer-color);
     transition: all 0.25s linear;
@@ -1615,10 +1633,12 @@ h2.product-title {
     background-color: white;
 }
 
-.region-select:focus {
-    outline: 2px solid var(--theme-color-2);
-    outline-offset: 0px;
+.region-selector.sign-up-region {
+    width: 450px;
+    margin-top: 15px;
+    justify-content: space-between;
 }
+
 
 .price-row,
 .sum-bill {
@@ -1668,6 +1688,46 @@ h2.product-title {
     background-color: var(--theme-color-2);
 
 }
+
+
+.popup-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.popup-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    text-align: center;
+}
+
+.popup-actions {
+    margin-top: 20px;
+}
+
+.popup-actions button {
+    margin: 0 10px;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.popup-actions button:hover {
+    background-color: #45a049;
+}
+
 
 /* ///////////////////////////////// CHECKOUT - END ///////////////////////////////// */
 

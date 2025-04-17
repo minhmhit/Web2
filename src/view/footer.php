@@ -57,8 +57,8 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="view/layout/js/initialization.js"></script>
         <script src="view/layout/js/toast-msg.js" defer></script>
-        <!-- <script src="view/layout/js/main.js"></script>
-        <script src="view/layout/js/product.js"></script> -->
+        <script src="view/layout/js/main.js"></script>
+        <!-- <script src="view/layout/js/product.js"></script> -->
         <script src="view/layout/js/checkout.js"></script>
     </div>
 </body>

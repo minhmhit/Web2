@@ -14,8 +14,6 @@ function toggleModal(elementId) {
         if (modal.id !== elementId)
             modal.classList.remove("open");
     });
-
-
 }
 
 function togglePage(elementId) {
@@ -523,8 +521,8 @@ async function checkLogin() {
     } catch (err) {
         console.error("Login check error:", err);
         toastMsg({
-            title: "Lỗi",
-            message: "Không xác định được trạng thái đăng nhập!",
+            title: "ERROR",
+            message: "Can not detect the login status!",
             type: "error"
         });
         return false;
@@ -622,7 +620,7 @@ function setupEventListeners() {
     
 
     // Kiểm tra phần tử checkout-btn có tồn tại không trước khi đăng ký sự kiện
-    const checkoutButton = document.querySelector(".checkout-btn");
+    const checkoutButton = document.querySelector("#checkout-modal-btn");
     if (!checkoutButton) {
         console.error("Không tìm thấy nút 'Buy Now'!");
         return;
@@ -640,18 +638,25 @@ function setupEventListeners() {
     
         let quantityInput = document.querySelector(".input-qty");
         let quantity = quantityInput ? parseInt(quantityInput.value) : 1;
-        let price = parseInt(document.querySelector(".price").dataset.price || 0);
-    
-        fetch("../../src/controller/db_controller/cart.php?action=checkout", {
+        let price = parseInt(document.querySelector(".current-price").dataset.price || 0);
+
+        console.log("selectedSizeId:", selectedSizeId, "quantity:", quantity, "price:", price);
+
+        fetch("/Web2/src/controller/db_controller/cart.php?action=buy_now", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ productsizeid: selectedSizeId, quantity, price })
         })
-        .then(res => res.json())
+        .then(res => {
+            console.log("Response Status:", res.status);
+            return res.json();
+        })
         .then(data => {
             if (data.success) {
-                showCart();
+                window.checkoutMode = "buy_now";
+                toggleModal("product-detail");
                 toggleModal("checkout-page");
+                renderCheckoutUI();
             } else {
                 toastMsg({ title: "ERROR", message: data.message || "Error occurred.", type: "error" });
             }
@@ -660,6 +665,89 @@ function setupEventListeners() {
     });
 }    
 
+function handleReturnFromCheckout() {
+    console.log("checkoutMode hiện tại:", window.checkoutMode);
+    if (window.checkoutMode === "buy_now") {
+        // Gọi API xoá session checkout nếu đang trong chế độ 'buy now'
+        fetch("/Web2/src/controller/db_controller/cart.php?action=clear_checkout_session", {
+            method: "POST"
+        });
+    }
+
+    window.checkoutMode = null; // reset lại mode
+    toggleModal("checkout-page"); // đóng modal
+    document.body.style.overflow = "auto";
+}
+
+
+function renderCheckoutUI() {
+    console.log("checkoutMode trong renderCheckoutUI:", window.checkoutMode);
+    const checkoutBody = document.querySelector(".checkout-page .cart-body");
+    const totalPriceElem = document.querySelector(".checkout-page .display-totalprice");
+
+    // Kiểm tra phần tử có tồn tại không trước khi thao tác
+    if (!checkoutBody || !totalPriceElem) {
+        console.warn("Không tìm thấy .cart-body hoặc .display-totalprice trong checkout-page.");
+        return;
+    }
+
+    // Giả sử bạn đã lưu thông tin trong session, bây giờ fetch dữ liệu từ session
+    fetch("/Web2/src/controller/db_controller/cart.php?action=get_checkout_session", {method: "POST"})
+    .then(res => {
+        if (!res.ok) throw new Error("Lỗi khi fetch dữ liệu từ session.");
+            return res.json(); // Giờ chỗ này sẽ không lỗi nữa
+        })    
+        .then(data => {
+            if (!data.success || !data.product) {
+                checkoutBody.innerHTML = "<p>Không có sản phẩm nào trong session.</p>";
+                totalPriceElem.innerHTML = "0 VND";
+                document.querySelectorAll(".display-totalorder").forEach(el => el.innerText = "0 VND");
+                return;
+            }
+
+            // Lấy thông tin sản phẩm duy nhất từ session
+            const product = data.product;
+
+            // Hiển thị sản phẩm duy nhất vào giao diện
+            const checkoutHTML = `
+                <div class="modal-container cart-item" data-productID="${product.ProductSizeID}">
+                    <div class="img-container">
+                        <img src="${product.product_image}" onerror="this.src='/assets/img/placeholder.jpg'">
+                    </div>
+                    <div class="cart-item-info">
+                        <p class="display-product-name">${product.product_name}</p>
+                        <p>Size: <span class="display-product-size">${product.Size}</span></p>
+                        <p class="display-product-price" style="position: absolute; bottom: 1.5rem; right: 0;">${vnd(product.Price)}</p>
+                    </div>
+                    <div class="cart-item-amount">
+                        <p>x<span class="display-product-quantity">${product.Quantity}</span></p>
+                    </div>
+                </div>
+            `;
+
+            // Render sản phẩm vào body modal
+            checkoutBody.innerHTML = checkoutHTML;
+            // Hiển thị tổng giá (vì chỉ có một sản phẩm, tổng giá là giá sản phẩm * số lượng)
+            totalPriceElem.innerHTML = vnd(product.Price * product.Quantity);
+            updateBuyNowSummary(product);
+        })
+        .catch(err => {
+            console.error("Lỗi khi tải dữ liệu từ session:", err);
+            checkoutBody.innerHTML = "<p>Đã xảy ra lỗi khi tải dữ liệu từ session.</p>";
+            totalPriceElem.innerHTML = "0 VND";
+        });
+}
+
+function updateBuyNowSummary(product) {
+    const DELIVERY_FEE = 30000;
+    const totalPrice = product.Price * product.Quantity;
+    const totalOrder = totalPrice + DELIVERY_FEE;
+
+    document.querySelectorAll(".display-totalprice").forEach(el => el.innerText = vnd(totalPrice));
+    document.querySelectorAll(".display-totalorder").forEach(el => el.innerText = vnd(totalOrder));
+}
+
+
 
 // CART - BEGIN DEFINE /////////////////////////////////////////////
 
@@ -667,10 +755,15 @@ function setupEventListeners() {
 // Cập nhật hiển thị tổng số lượng và giá tiền
 function updateCartSummary(totalQty, totalPrice) {
     const DELIVERY_FEE = 30000;
+
     document.querySelectorAll(".display-cart-total-amount").forEach(el => el.innerText = totalQty);
     document.querySelectorAll(".display-totalprice").forEach(el => el.innerText = vnd(totalPrice));
-    document.querySelectorAll(".display-totalorder").forEach(el => el.innerText = vnd(totalPrice + DELIVERY_FEE));
+    document.querySelectorAll(".display-totalorder").forEach(el => {
+        const finalTotal = totalPrice + DELIVERY_FEE;
+        el.innerText = vnd(finalTotal);
+    });
 }
+
 
 // Load tóm tắt cart (dùng riêng cho header)
 function loadCartSummary(callback) {
@@ -829,7 +922,7 @@ function showCart() {
         })
         .catch(err => {
             console.error("Failed to load cart:", err);
-            displayWhenEmpty(".cart .cart-body", "<p>Đã xảy ra lỗi khi tải giỏ hàng.</p>");
+            displayWhenEmpty(".cart .cart-body", "<p>Error occured while loading cart.</p>");
             updateCartSummary(0, 0);
         });
 }

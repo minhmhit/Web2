@@ -4,24 +4,23 @@ header('Content-Type: application/json');
 
 include('api.php');
 
-// --- Trường hợp gọi để check login ---
+// --- Check login ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['action'] === 'check_login') {
     echo json_encode([
         'success' => isset($_SESSION['user']) && isset($_SESSION['user']['userID']),
-        'title' => 'Yêu cầu đăng nhập',
-        'message' => 'Bạn cần đăng nhập để tiếp tục.',
+        'title' => 'Login requested!',
+        'message' => 'Please login or sign up to purchase.',
         'type' => 'info'
     ]);
     exit();
 }
 
-// Nếu chưa login và chỉ gọi get_cart thì trả về cart rỗng
+// --- Nếu chưa login ---
 if (!isset($_SESSION['user']) || !isset($_SESSION['user']['userID'])) {
     if (isset($_GET['action']) && $_GET['action'] === 'get_cart') {
         echo json_encode(['login_required' => true]);
         exit();
     }
-
     echo json_encode(['success' => false, 'message' => 'Bạn chưa đăng nhập.']);
     exit();
 }
@@ -59,10 +58,10 @@ switch ($_SERVER['REQUEST_METHOD']) {
             ]);
             exit();
         }
-
         break;
 
     case 'POST':
+        // --- Add to cart ---
         if ($_GET['action'] == 'add_to_cart') {
             if (empty($data->productsizeid) || empty($data->quantity) || empty($data->price)) {
                 echo json_encode(['success' => false, 'message' => 'Vui lòng chọn size, số lượng và giá.']);
@@ -89,7 +88,70 @@ switch ($_SERVER['REQUEST_METHOD']) {
             echo json_encode(['success' => true, 'message' => 'Đã thêm vào giỏ hàng.']);
             exit();
         }
-        break;
+
+        if ($_GET['action'] == 'get_checkout_session') {
+            ob_clean(); // 💥 Dọn rác output
+            header('Content-Type: application/json'); // 👈 Đảm bảo header đúng
+        
+            if (isset($_SESSION['checkout_products'])) {
+                $product = $_SESSION['checkout_products'];
+                echo json_encode([
+                    'success' => true,
+                    'product' => $product
+                ]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Không có sản phẩm.']);
+            }
+            exit();
+        }
+        
+
+        if ($_GET['action'] == 'clear_checkout_session') {
+            unset($_SESSION['checkout_products']);
+            echo json_encode(['success' => true, 'message' => 'Đã xoá session checkout.']);
+            exit();
+        }
+        
+        
+        
+        // Case: BUY NOW
+        if ($_GET['action'] == 'buy_now') {
+            if (empty($data->productsizeid) || empty($data->quantity) || empty($data->price)) {
+                echo json_encode(['success' => false, 'message' => 'Thiếu thông tin sản phẩm.']);
+                exit();
+            }
+        
+            $productsizeid = $data->productsizeid;
+            $quantity = $data->quantity;
+            $price = $data->price;
+        
+            // Lấy thông tin sản phẩm từ database
+            $item = getOne("SELECT p.ProductName AS product_name, p.ImageURL AS product_image, ps.size AS Size
+                            FROM productsize ps
+                            JOIN product p ON ps.ProductID = p.ProductID
+                            WHERE ps.ProductSizeID = $productsizeid");
+        
+            // Tạo sản phẩm checkout
+            $checkout_item = [
+                'ProductSizeID' => $productsizeid,
+                'Quantity' => $quantity,
+                'Price' => $price,
+                'product_name' => $item['product_name'],
+                'product_image' => $item['product_image'],
+                'Size' => $item['Size']
+            ];
+        
+            // Chỉ lưu một sản phẩm duy nhất vào session
+            $_SESSION['checkout_products'] = $checkout_item;  
+
+            echo json_encode([
+                'success' => true,
+                'message' => 'Chuẩn bị mua ngay thành công.',
+                'data' => [$checkout_item]
+            ]);
+            exit();
+        }
+              
 
     case 'PUT':
         if ($_GET['action'] == 'update_cart') {

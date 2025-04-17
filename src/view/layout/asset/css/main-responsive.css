@@ -77,6 +77,15 @@
     .checkout-col-left,
     .checkout-col-right {
         width: 100%;
+        max-height: max-content;
+    }
+
+    .cardsthanhtoan {
+        display: block;      
+    }
+
+    .card-icons {
+        justify-content: center;
     }
 
     .banner {
@@ -89,6 +98,11 @@
         width: 100%;
         margin-top: 16px;
     }
+
+    .region-selector.sign-up-region {
+        width: 100%;
+    }
+
 }
 
 

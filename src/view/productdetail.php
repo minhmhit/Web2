@@ -53,7 +53,7 @@ if (!$product) {
             <span class="price" ><?= number_format($product['price'], 0, ',', '.') ?> ₫</span>
         </div>
         <div class="modal-footer-control">
-            <button class="checkout-btn">Buy now</button>
+            <button class="checkout-btn" id="checkout-modal-btn">Buy now</button>
             <button class="button-dat" id="add-cart"><i class="fa-solid fa-cart-shopping"></i></button>
         </div>
     </div>

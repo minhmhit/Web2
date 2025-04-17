@@ -9,7 +9,7 @@ if (isset($_POST['btnlogin'])) {
     $password = $_POST['password'];
 
     $sql = "SELECT UserID, PasswordHash FROM user WHERE Username = '$user'";
-    $userData = getOne($sql); // Giữ nguyên không đụng nè
+    $userData = getOne($sql);
 
     if ($userData && password_verify($password, $userData['PasswordHash'])) {
         $_SESSION['user'] = [
@@ -17,7 +17,7 @@ if (isset($_POST['btnlogin'])) {
             'Username' => $user
         ];
 
-        // 👉 Cập nhật số lượng sản phẩm trong giỏ
+        // Cập nhật số lượng sản phẩm trong giỏ
         $userID = $userData['UserID'];
         $cartQtySql = "SELECT SUM(Quantity) as TotalQty FROM cart WHERE UserID = '$userID'";
         $cartResult = getOne($cartQtySql);

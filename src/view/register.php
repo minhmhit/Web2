@@ -110,18 +110,17 @@ if (isset($_POST['btnRegister'])) {
             <input class="form-input-bar" type="text" id="address-signup" name="address-signup" placeholder="Address*" required>
             <p class="form-msg-error"></p>
 
-            <div class="region-selector">
-            <select id="province" name="province" class="region-select" required>
-                <option value="" disabled selected hidden>Province/City</option>
-            </select>
+            <div class="region-selector sign-up-region">
+                <select id="province" name="province" class="region-select" required>
+                    <option value="" disabled selected hidden>Province/City</option>
+                </select>
+                <select id="district" name="district" class="region-select" required>
+                    <option value="" disabled selected hidden>District</option>
+                </select>
 
-            <select id="district" name="district" class="region-select" required>
-                <option value="" disabled selected hidden>District</option>
-            </select>
-
-            <select id="ward" name="ward" class="region-select" required>
-                <option value="" disabled selected hidden>Ward/Commune</option>
-            </select>
+                <select id="ward" name="ward" class="region-select" required>
+                    <option value="" disabled selected hidden>Ward/Commune</option>
+                </select>
             </div>
             <p class="form-msg-error"></p>
 

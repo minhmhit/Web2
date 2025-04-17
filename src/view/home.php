@@ -177,7 +177,7 @@ require_once "./controller/controller.php";
                 <div class="sidebar-main mdl-cnt">
                     <div class="cart-header">
                         <p>YOUR CART</p>
-                        <a onclick="toggleModal('cart')">CLOSE</a>
+                        <a onclick="toggleModal('cart') ">CLOSE</a>
                     </div>
                     <div class="cart-body"></div>
                     <div class="cart-footer">
@@ -187,7 +187,7 @@ require_once "./controller/controller.php";
                         </div>
                         <div class="cart-btns">
                             <button onclick="toggleModal('cart')">CONTINUE SHOPPING</button>
-                            <button onclick="toggleModal('checkout-page'); showCartCheckout()" class="checkout-btn"
+                            <button onclick="window.checkoutMode = 'cart'; toggleModal('checkout-page'); showCartCheckout()" class="checkout-btn"
                                 id="cart-checkout-btn">TO CHECKOUT</button>
                         </div>
                     </div>
@@ -241,7 +241,7 @@ require_once "./controller/controller.php";
                             </ul>
                         </div>
                     </div>
-                    <div class="modal product-detail">
+                    <div class="modal product-detail" id="product-detail">
                         <button class="modal-close close-popup"><i class="fa-solid fa-xmark"
                                 style="color: white;"></i></button>
                         <div class="modal-container product-detail-content mdl-cnt" id="product-detail-content">
@@ -253,7 +253,7 @@ require_once "./controller/controller.php";
             <div class="checkout-page" id="checkout-page">
                 <div class="checkout-header">
                     <div class="checkout-return">
-                        <a onclick="toggleModal('checkout-page')"><i class="fa-solid fa-angle-left"></i></a>
+                        <a onclick="handleReturnFromCheckout()"><i class="fa-solid fa-angle-left"></i></a>
                     </div>
                     <h1 class="checkout-title">CHECKOUT</h1>
                 </div>
@@ -282,13 +282,12 @@ require_once "./controller/controller.php";
                                     </label>
                                     <div class="option-detail content-group" id="new-address">
                                         <input type="text" class="note-order form-input-bar"
-                                            placeholder="Enter new address (full)" id="checkout-address-new"></input>
+                                            placeholder="Enter new address" id="checkout-address-new"></input>
                                         <p class="form-msg-error"></p>
                                     </div>
                                 </div>
                                 <!-- Chọn vùng miền -->
-                                <h3 class="checkout-content-label">Choose a region for delivery destination <i
-                                        style="font-weight: normal;">(this will help us locate you faster)</i></h3>
+                                <h3 class="checkout-content-label">Choose a region for delivery destination</h3>
                                 <div class="region-selector">
                                     <select id="province" class="region-select">
                                         <option value="" disabled selected hidden>Province/City</option>
@@ -307,12 +306,12 @@ require_once "./controller/controller.php";
                                 <!-- Phần thanh toán bằng tiền mặt -->
                                 <div class="payment-option">
                                     <label for="cash" onclick="togglePaymentMethod('cash')">
-                                        <input class="checkout-option" type="radio" name="payment-method" id="cash"
-                                            value="cash" checked>
-                                        <span>Cash</span>
+                                        <input class="checkout-option" type="radio" name="payment-method" id="cod"
+                                            value="cod" checked>
+                                        <span>COD (cash on deivery)</span>
                                     </label>
                                     <div id="cash-option" class="option-detail" style="display:block">
-                                        <p><b><i>You will pay with cash.</i></b></p>
+                                        <p><b><i>You will pay with cash on delivery.</i></b></p>
                                     </div>
                                 </div>
                                 <!-- Phần thanh toán bằng thẻ -->
@@ -333,30 +332,38 @@ require_once "./controller/controller.php";
                                             </div>
                                             <div class="form-group">
                                                 <label for="cvv">CVV</label>
-                                                <input type="number" class="form-input-bar" placeholder="CVV"
+                                                <input type="password" class="form-input-bar" placeholder="CVV"
                                                     minlength="3" maxlength="3" id="cvv">
                                                 <p class="form-msg-error"></p>
                                             </div>
                                             <div class="form-group">
                                                 <label for="card-number">Card Number</label>
-                                                <input type="number" class="form-input-bar" placeholder="Card number"
-                                                    id="card-number" minlength="12">
+                                                <input type="text" class="form-input-bar" placeholder="Card number"
+                                                    id="card-number" minlength="16" maxlength="16">
                                                 <p class="form-msg-error"></p>
                                             </div>
                                             <div class="form-group">
                                                 <label for="card-expdate">Exp. date</label>
-                                                <input type="date" name="card-expdate" id="card-expdate">
+                                                <input type="month" name="card-expdate" id="card-expdate">
                                                 <p class="form-msg-error"></p>
                                             </div>
                                             <div class="cardsthanhtoan">
-                                                <div class="img-container">
-                                                    <img src="view/layout/asset/img/card/mc.png" alt="">
+                                                <div class="form-group">
+                                                <label>
+                                                    <input type="checkbox" id="save-card-checkbox">
+                                                    Save this card for future purchases
+                                                </label>
                                                 </div>
-                                                <div class="img-container">
-                                                    <img src="view/layout/asset/img/card/pp.png" alt="">
-                                                </div>
-                                                <div class="img-container">
-                                                    <img src="view/layout/asset/img/card/vi.png" alt="">
+                                                <div class="card-icons">
+                                                    <div class="img-container">
+                                                        <img src="view/layout/asset/img/card/mc.png" alt="">
+                                                    </div>
+                                                    <div class="img-container">
+                                                        <img src="view/layout/asset/img/card/pp.png" alt="">
+                                                    </div>
+                                                    <div class="img-container">
+                                                        <img src="view/layout/asset/img/card/vi.png" alt="">
+                                                    </div>
                                                 </div>
                                             </div>
                                         </form>
