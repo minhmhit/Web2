@@ -1,3 +1,23 @@
+<!-- PREFOOTER -->
+<div class="container prefooter" id="prefooter">
+                <div class="prefooter-div">
+                    <i class="fa-solid fa-certificate"></i>
+                    <span>100% AUTHENTIC</span>
+                </div>
+                <div class="prefooter-div">
+                    <i class="fa-solid fa-truck"></i>
+                    <span>EXPRESS DELIVERY</span>
+                </div>
+                <div class="prefooter-div">
+                    <i class="fa-solid fa-headset"></i>
+                    <span>24/7 CUSTOMER SERVICES</span>
+                </div>
+                <div class="prefooter-div">
+                    <i class="fa-solid fa-tags"></i>
+                    <span>REASONABLE PRICE</span>
+                </div>
+            </div>
+        </main>
 <footer>
             <div class="container" id="footer">
                 <h2 class="footer-title">JOIN OUR COMMUNITY</h2>
@@ -43,7 +63,7 @@
                         </div>
                     </div>
                 </div>
-                <h1 class="footer-logo"><a href="index.html">BRO SHOES</a></h1>
+                <h1 class="footer-logo"><a href="index.php?pg=home">BRO SHOES</a></h1>
                 <div class="footer-container-media" id="body-footer-media">
                     <ul class="menu-list">
                         <li><a href=""><i class="fa-brands fa-youtube"></i></a></li>
@@ -55,8 +75,8 @@
             </div>
         </footer>
         <script src="view/layout/js/initialization.js"></script>
-        <!-- <script src="view/layout/js/main.js"></script>
-        <script src="view/layout/js/product.js"></script> -->
+        <!-- <script src="view/layout/js/main.js"></script> -->
+        <!-- <script src="view/layout/js/products.js"></script> -->
         <script src="view/layout/js/checkout.js"></script>
         <script src="view/layout/js/toast-msg.js"></script>
     </div>

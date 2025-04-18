@@ -13,6 +13,7 @@
     --stat-delivering: #20dab8;
     --stat-received: #2af534;
 }
+
 *,
 *::before,
 *::after {
@@ -423,9 +424,9 @@ header {
     padding: 1rem;
     row-gap: 1rem;
     position: relative;
+    border-radius: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
     background-color: var(--bg-main-color);
-    margin-top: 10px;
-    margin-bottom: 200px;
 }
 
 .form-close {
@@ -458,7 +459,7 @@ header {
 }
 
 .main-login-body .login-form .form-input-bar {
-    width: 450px;
+    width: 100%;
     margin-top: 16px;
 }
 
@@ -469,13 +470,12 @@ header {
     background-color: var(--theme-color-2);
     color: var(--text-color);
     outline: 2px solid var(--border-color);
-    border-radius: 1.5rem;
+    border-radius: 0.5rem;
     padding: 0.5rem;
-    margin-top: 45px;
+    margin-top: 16px;
 }
 
 .main-login-footer a {
-    margin-top: 10px;
     text-decoration: underline;
     font-style: italic;
     cursor: pointer;
@@ -835,17 +835,16 @@ header {
 
 .banner {
     position: relative;
-    width: 98%;
-    height: 670px; /* Set your preferred height */
-    overflow: hidden; /* 0Hide anything that overflows the container */
-    margin-bottom: 60px;
+    width: 97%;
+    height: 100%; /* Set your preferred height */
+    overflow: hidden; /* Hide anything that overflows the container */
+    margin-top: 10px;
 }
 
 .banner-images {
     display: flex;
     transition: transform 1s ease;
     will-change: transform; /* Thêm tối ưu hóa */
-    object-fit: cover;
 }
 
 .banner-img {
@@ -997,23 +996,15 @@ header {
     color: var(--theme-color-2);
     transform: scale(1.1);
 }
-.product-page{
-    display: none;
-}
+
 .main-container {
-    display:flex;
     position: relative;
+    display: flex;
     width: 100%;
 }
-/*home page*/
-.main-container-home {
-    /* position: relative; */
-    display: none;
-    width: 100%;
-    overflow: hidden;
-}
+
 .main-container .details-search {
-    flex: 0 0 34%;
+    flex: 0 0 30%;
     position: sticky;
     top: 3rem;
     height: 20rem;
@@ -1136,106 +1127,13 @@ header {
     display: inline-block;
 }
 
-/* HOME PRODUCTS BOX */
-/* title for products */
-.new-products-header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 20px; /* Space between line and title */
-    margin-bottom: 20px;
-  }
-  
-.new-products-title {
-    font-family: "Audiowide", sans-serif;
-    font-size: 3vw;
-    font-style: italic;
-    white-space: nowrap;
-    color: #111; /* optional for contrast */
-  }
-  
-.line {
-    flex: 1;
-    height: 2px;
-    background-color: var(--theme-color-2);
-  }
-  
-.shoes-box-container-home {
-    /* display: flex;
-    border-top: none;
-    justify-content: center;
-    align-items: center; */
-    display: flex;
-    width: 100%;
-    white-space: nowrap;
-}
-
-.product-box-container-home {
-    padding: 40px 0;
-    display: block;
-    position: relative;
-    width: 100%;
-    height: 100%;
-}
-.product-box-home {
-    width: 25%;
-    background-color: var(--bg-main-color);
-    cursor: pointer;
-    text-align: center;
-    flex: 0 0 auto; 
-
-    /* flex: 0 0 auto;
-    width: 200px;
-    transition: transform 0.3s ease, opacity 0.3s ease;
-    opacity: 0.6;
-    transform: scale(0.9);
-    cursor: pointer;
-    text-align: center; */
-}
-
-
-/* .product-box-home:nth-child(3) {
-    transform: scale(1.1);
-    z-index: 2;
-  } */
-.product-box-home .img-container {
-    max-width: none;
-    overflow: hidden;
-}
-.product-box-home .img-container img {
-    transition: all 0.5s ease-in-out;
-}
-
-.product-box-home .img-container img:hover {
-    transform: scale(1.15);
-}
-
-/* Name and price styling */
-.product-box-home .shoes-name {
-    font-size: clamp(0.5rem, 5vw, 1.5rem);
-    font-weight: bold;
-    margin-bottom: 8px;
-}
-
-.product-box-home .shoes-price {
-    font-size: clamp(0.5rem, 5vw, 1.5rem);
-    color: var(--text-price-color);
-    margin-bottom: 20px;
-}
 
 /* PRODUCTS BOX */
 .shoes-box-container {
-    flex: 0 0 66%;
+    flex: 0 0 70%;
     border-top: none;
 }
 
-/* #product-container.shoes-box {
-    width: 100%;
-    float: left;
-    background-color: var(--bg-main-color);
-    display: flex;
-    flex-wrap: wrap;
-} */
 
 .product-box-container {
     width: 100%;
@@ -1469,9 +1367,7 @@ h2.product-title {
     background-color: var(--bg-main-color);
     border-radius: 16px;
 }
-.Active{
-    display: block;
-}
+
 .size-button.active {
     filter: invert(100%);
 }
@@ -1694,13 +1590,13 @@ h2.product-title {
     align-items: flex-start;
 }
 
-.region-selector , .region-select-address {
+.region-selector {
     display: flex;
     flex-wrap: wrap;
     gap: 16px;
 }
 
-.region-select , .region-select-address{
+.region-select {
     flex: 1;
     width: 200px;
     outline: 2px solid transparent;
@@ -1710,7 +1606,7 @@ h2.product-title {
     background-color: white;
 }
 
-.region-select:focus ,.region-select-address:focus{
+.region-select:focus {
     outline: 2px solid var(--theme-color-2);
     outline-offset: 0px;
 }
@@ -1889,96 +1785,4 @@ h2.product-title {
     border-radius: 50%;
 }
 
-/* myaccount page css */
-.address-group label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 8px;
-    font-size: 1.05rem;
-}
-
-.select-row {
-    max-width: 100%;
-    display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
-}
-
-.select-row select {
-    flex: 1;
-    padding: 10px;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
-    background-color: #fff;
-    font-size: 1rem;
-    transition: border-color 0.2s ease;
-}
-
-.select-row select:focus {
-    border-color: #ffbf00; /* soft yellow border when focused */
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(255, 191, 0, 0.2);
-}
-
-.form-group {
-    margin-bottom: 20px;
-}
-
-#address {
-    width: 100%;
-    padding: 10px;
-    border: none;
-    border-bottom: 2px solid #f1c40f;
-    font-size: 1rem;
-    background-color: transparent;
-    transition: border-color 0.3s;
-}
-
-#address:focus {
-    border-color: #e67e22;
-    outline: none;
-}
-
-.button-group {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    margin-top: 2rem;
-    flex-wrap: wrap;
-  }
-  
-  .myAccountBtnLabel {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    background-color: #4CAF50;
-    padding: 0.6rem 1.2rem;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    color: white;
-    font-weight: 500;
-  }
-  
-  .myAccountBtnLabel:hover {
-    background-color: #43a047;
-    transform: translateY(-2px);
-  }
-  
-  .myAccountBtnLabel i {
-    font-size: 1.1rem;
-  }
-  
-  .myAccountBtn {
-    background: transparent;
-    border: none;
-    color: white;
-    font: inherit;
-    cursor: pointer;
-    padding: 0;
-  }
-  
-  
-  
 /* ///////////////////////////////// FOOTER - END ///////////////////////////////// */

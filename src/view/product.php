@@ -1,174 +1,137 @@
-<?php require_once("header.php"); ?>
+<?php
+    $categoryname = strtoupper($catalogname);  
+    if($categoryname == ""){
+        $categoryname = "PRODUCTS";
+    }
+
+    $kq = "";
+    foreach ($productlist as $item) {
+        extract($item);
+        $kq .= '
+        <div class="product-box" onclick= "detailProduct('. $id .')">
+            <div class="img-container">
+                <img src="' . $image . '" alt="' . $name . '" onerror="this.src=\'view/layout/asset/img/catalogue/coming-soon.jpg\'" />
+            </div>
+            <div class="shoes-name">' . $name . '</div>
+            <div class="shoes-price">' . number_format($price, 0, ',', '.') . ' ₫</div>
+        </div>';
+    }
+?>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        let timeout = null;
+
+        $('#search-bar').on('input', function(){
+            clearTimeout(timeout);
+            const keyword = $(this).val().trim();
+
+            timeout = setTimeout(function(){
+                $.ajax({
+                    type: "GET",
+                    url: "http://localhost/Web2/src/controller/db_controller/xulySearchProduct.php",
+                    data: { tensp: keyword , catalogID:<?php 
+                                                            if((isset($_GET['idcatalog']))&&($_GET['idcatalog']>0))
+                                                                echo $_GET['idcatalog'];
+                                                            else echo 0; 
+                                                        ?>},
+                    success: function(result){
+                        if(result.trim() === ""){
+                            $('#home-product').html("<p>Không tìm thấy sản phẩm phù hợp.</p>");
+                        } else {
+                            $('#home-product').html(result);
+                        }
+                    }
+                });
+            }, 300); // delay 300ms sau khi ngưng gõ
+        });
+
+        $('.apply-filter-btn').click(function() {
+            clearTimeout(timeout);
+            const brands = $('.filter-option.filter-brand.active').map(function() {
+                return $(this).data('filter');
+            }).get();
+
+            const sizes = $('.filter-option.filter-size.active').map(function() {
+                return $(this).data('filter');
+            }).get();
+
+            const genders = $('.filter-option.filter-gender.active').map(function() {
+                return $(this).data('filter');
+            }).get();
+
+            const pricelowerbound = $('#price-lowerbound').val();
+            const priceupperbound = $('#price-upperbound').val();
+            // console.log(brands);
+            // console.log(sizes);
+            // console.log(genders);
+            timeout = setTimeout(function(){
+                $.ajax({
+                    type: "GET",
+                    url: "http://localhost/Web2/src/controller/db_controller/xulySearchProduct.php",
+                    data: {catalogID:<?php 
+                                                            if((isset($_GET['idcatalog']))&&($_GET['idcatalog']>0))
+                                                                echo $_GET['idcatalog'];
+                                                            else echo 0; 
+                                                        ?>,filterbrands: brands , filtersizes: sizes , filtergender: genders ,
+                                                        pricelowerbound: pricelowerbound, priceupperbound: priceupperbound},
+                    success: function(result){
+                        if(result.trim() === ""){
+                            $('#home-product').html("<p>Không tìm thấy sản phẩm phù hợp.</p>");
+                        } else {
+                            $('#home-product').html(result);
+                        }
+                    }
+                });
+            }, 300); // delay 300ms sau khi ngưng gõ
+        });
+
+        $('.apply-filter-btn').click(function() {
+            clearTimeout(timeout);
+            const brands = $('.filter-option.filter-brand.active').map(function() {
+                return $(this).data('filter');
+            }).get();
+
+            const sizes = $('.filter-option.filter-size.active').map(function() {
+                return $(this).data('filter');
+            }).get();
+
+            const genders = $('.filter-option.filter-gender.active').map(function() {
+                return $(this).data('filter');
+            }).get();
+
+            const pricelowerbound = $('#price-lowerbound').val();
+            const priceupperbound = $('#price-upperbound').val();
+            // console.log(brands);
+            // console.log(sizes);
+            // console.log(genders);
+            timeout = setTimeout(function(){
+                $.ajax({
+                    type: "GET",
+                    url: "http://localhost/Web2/src/controller/db_controller/xulySearchProduct.php",
+                    data: {catalogID:<?php 
+                                                            if((isset($_GET['idcatalog']))&&($_GET['idcatalog']>0))
+                                                                echo $_GET['idcatalog'];
+                                                            else echo 0; 
+                                                        ?>,filterbrands: brands , filtersizes: sizes , filtergender: genders ,
+                                                        pricelowerbound: pricelowerbound, priceupperbound: priceupperbound},
+                    success: function(result){
+                        if(result.trim() === ""){
+                            $('#home-product').html("<p>Không tìm thấy sản phẩm phù hợp.</p>");
+                        } else {
+                            $('#home-product').html(result);
+                        }
+                    }
+                });
+            }, 300); // delay 300ms sau khi ngưng gõ
+        });
+    });
+</script>
+
 
 <main>
             <!-- TOAST -->
             <div class="container toast" id="toast"></div>
-            <!-- LOG-IN -->
-            <div class="modal login-user" id="login-user">
-                <div class="main-login mdl-cnt">
-                    <i class="fa-regular fa-circle-xmark form-close" onclick="toggleModal('login-user')"></i>
-                    <div class="main-login-header">
-                        <h2>LOGIN</h2>
-                    </div>
-                    <div class="main-login-body">
-                        <form class="login-form" id="login-form">
-                            <input class="form-input-bar" type="text" id="username-login" name="username-login"
-                                placeholder="Username or Phone number*">
-                            <p class="form-msg-error"></p>
-                            <input class="form-input-bar" type="password" id="password-login" name="password-login"
-                                placeholder="Password*">
-                            <p class="form-msg-error"></p>
-                            <button onclick="handleLoginForm()">LOGIN</button>
-                        </form>
-                    </div>
-                    <div class="main-login-footer">
-                        <p>DON'T HAVE AN ACCOUNT? <span><a onclick="toggleModal('signup-user')">SIGN UP</a></span>
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <!-- SIGN-UP -->
-            <div class="modal login-user signup-user" id="signup-user">
-                <div class="main-login mdl-cnt">
-                    <i class="fa-regular fa-circle-xmark form-close" onclick="toggleModal('signup-user')"></i>
-                    <div class="main-login-header">
-                        <h2>SIGN UP</h2>
-                    </div>
-                    <div class="main-login-body">
-                        <form action="" class="login-form" id="signup-form">
-                            <input class="form-input-bar" type="text" id="username-signup" name="username-signup"
-                                placeholder="Username*" autocomplete="username">
-                            <p class="form-msg-error"></p>
-
-                            <input class="form-input-bar" type="text" id="fullname-signup" name="fullname-signup"
-                                placeholder="Full Name*" autocomplete="name">
-                            <p class="form-msg-error"></p>
-
-                            <input class="form-input-bar" type="number" id="phone-signup" name="phone-signup"
-                                placeholder="Phone number*" inputmode="tel">
-                            <p class="form-msg-error"></p>
-
-                            <input class="form-input-bar" type="text" id="address-signup" name="address-signup"
-                                placeholder="Address*">
-                            <p class="form-msg-error"></p>
-
-                            <input class="form-input-bar" type="password" id="password-signup" name="password-signup"
-                                placeholder="Password*">
-                            <p class="form-msg-error"></p>
-
-                            <input class="form-input-bar" type="password" id="confirm-password-signup"
-                                name="password-signup" placeholder="Confirm Password*">
-                            <p class="form-msg-error"></p>
-
-                            <button onclick="handleSignupForm()">SIGN UP</button>
-                        </form>
-                    </div>
-                    <div class="main-login-footer">
-                        <p>ALREADY HAVE AN ACCOUNT? <span><a onclick="toggleModal('login-user')">LOGIN</a></span>
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <!-- USER - INFO -->
-            <div class="container account-user hidden toggle-page" id="account-user">
-                <div class="main-account">
-                    <div class="main-account-header">
-                        <h2>MANAGE YOUR ACCOUNT</h2>
-                        <p>Hi there, <span class="display-username"></span>!</p>
-                    </div>
-                    <div class="main-account-body">
-                        <div class="main-account-body-col" id="user-info-changeacc">
-                            <form class="info-user" id="changeacc-info-form">
-                                <div class="form-group">
-                                    <label for="infoname" class="form-label">Username <i>(cannot change)</i></label>
-                                    <input class="form-input-bar" type="text" name="infoname" id="infoname"
-                                        placeholder="Username*" disabled>
-                                    <p class="form-msg-error"></p>
-                                </div>
-                                <div class="form-group">
-                                    <label for="fullname" class="form-label">Full Name</label>
-                                    <input class="form-input-bar" type="text" name="fullname" id="fullname"
-                                        placeholder="Full Name*">
-                                    <p class="form-msg-error"></p>
-                                </div>
-                                <div class="form-group">
-                                    <label for="infophone" class="form-label">Phone number</label>
-                                    <input class="form-input-bar" type="number" name="infophone" id="infophone"
-                                        placeholder="Phone number*" inputmode="tel">
-                                    <p class="form-msg-error"></p>
-                                </div>
-                                <div class="form-group">
-                                    <label for="infoemail" class="form-label">Email</label>
-                                    <input class="form-input-bar" type="email" name="infoemail" id="infoemail"
-                                        placeholder="example@email.com" inputmode="email">
-                                    <p class="form-msg-error"></p>
-                                </div>
-                                <div class="form-group">
-                                    <label for="infoaddress" class="form-label">Address</label>
-                                    <input class="form-input-bar" type="text" name="infoaddress" id="infoaddress"
-                                        placeholder="Add address for shipping">
-                                    <p class="form-msg-error"></p>
-                                </div>
-                                <div class="form-group">
-                                    <button id="save-info-user" onclick="changeAccInfo()"><i
-                                            class="fa-regular fa-floppy-disk"></i>Save changes</button>
-                                    <button id="undo-info-user" onclick="loadUserInfo()"><i
-                                            class="fa-solid fa-rotate-right"></i>Undo changes</button>
-                                </div>
-                            </form>
-                            <a onclick="toggleChangePass()"><i class="fa-solid fa-key"></i><span>Change
-                                    Password</span></a>
-                        </div>
-                        <div class="main-account-body-col hidden" id="user-info-changepass">
-                            <div>
-                                <h4>CHANGE YOUR PASSWORD</h4>
-                            </div>
-                            <form action="" class="change-password" id="changepass-form">
-                                <div class="form-group">
-                                    <label for="curr-pass" class="form-label">Current password</label>
-                                    <input class="form-input-bar" type="password" name="curr-pass"
-                                        id="password-cur-info" placeholder="Enter current password*">
-                                    <p class="form-msg-error"></p>
-                                </div>
-                                <div class="form-group">
-                                    <label for="new-pass" class="form-label">New password</label>
-                                    <input class="form-input-bar" type="password" name="new-pass"
-                                        id="password-after-info" placeholder="Enter new password*">
-                                    <p class="form-msg-error"></p>
-                                </div>
-                                <div class="form-group">
-                                    <label for="confirm-new-pass" class="form-label">Confirm new password</label>
-                                    <input class="form-input-bar" type="password" name="confirm-new-pass"
-                                        id="password-confirm-info" placeholder="Confirm new password*">
-                                    <p class="form-msg-error"></p>
-                                </div>
-                                <div class="form-group">
-                                    <button id="save-password" onclick="changePassword()"><i
-                                            class="fa-solid fa-key"></i>Change password</button>
-                                </div>
-                            </form>
-                            <a onclick="toggleChangePass()">
-                                <i class="fa-solid fa-user"></i><span>Update user info</span></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- MODAL ORDER DETAIL -->
-            <div class="modal order-detail" id="order-detail">
-            </div>
-            <!-- USER - ORDER HISTORY -->
-            <div class="container order-history hidden toggle-page" id="order-history">
-                <div class="main-account">
-                    <div class="main-account-header">
-                        <h2>ORDER HISTORY</h2>
-                        <p>Hey, <span class="display-username"></span>! Check out what you have ordered so far!</p>
-                    </div>
-                    <div class="main-account-body">
-                        <div class="main-account-body-col">
-                        </div>
-                    </div>
-                </div>
-            </div>
             <!-- CART -->
             <div class="modal sidebar cart" id="cart">
                 <div class="sidebar-main mdl-cnt">
@@ -192,7 +155,17 @@
             </div>
             <!-- CATALOGUE -->
             <div class="catalogue-container always-active-page" id="catalogue">
-                <div class="catalogue-name" id="display-catalogue-name">HOME</div>
+                <!-- BANNER -->
+                <div class="banner">
+                    <div class="banner-images"></div> <!-- Images will be dynamically inserted here -->
+
+                    <!-- Banner Navigation Buttons (Arrows) -->
+                    <div class="banner-buttons">
+                        <button class="prev" onclick="moveSlide(-1)">&#10094;</button>
+                        <button class="next" onclick="moveSlide(1)">&#10095;</button>
+                    </div>
+                </div>
+                <div class="catalogue-name" id="display-catalogue-name"><?=$categoryname?></div>
                 <div class="search-bar">
                     <label for="search-bar"><i class="fas fa-search"></i></label>
                     <input class="form-input-bar filter-option" type="text" name="search-bar" id="search-bar"
@@ -216,11 +189,11 @@
                         <!-- Hidden checkbox to control the dropdown -->
                         <div class="container float-dropdown">
                             <ul class="menu-list">
-                                <li class="sortby-option"><a>None</a></li>
-                                <li class="sortby-option"><a>Alphabetically, A-Z</a></li>
-                                <li class="sortby-option"><a>Alphabetically, Z-A</a></li>
-                                <li class="sortby-option"><a>Price, low to high</a></li>
-                                <li class="sortby-option"><a>Price, high to low</a></li>
+                                <li class="sortby-option" data-filter="1"><a>None</a></li>
+                                <li class="sortby-option" data-filter="2"><a>Alphabetically, A-Z</a></li>
+                                <li class="sortby-option" data-filter="3"><a>Alphabetically, Z-A</a></li>
+                                <li class="sortby-option" data-filter="4"><a>Price, low to high</a></li>
+                                <li class="sortby-option" data-filter="5"><a>Price, high to low</a></li>
                             </ul>
                         </div>
                     </div>
@@ -307,12 +280,14 @@
                                 <li onclick="toggleDropdown('brand-menu')">BRAND</li>
                             </ul>
                             <ul class="dropdown-menu" id="brand-menu">
-                                <li class="filter-option filter-brand" data-filter="Adidas">ADIDAS</li>
-                                <li class="filter-option filter-brand" data-filter="Converse">CONVERSE</li>
-                                <li class="filter-option filter-brand" data-filter="Nike">NIKE</li>
-                                <li class="filter-option filter-brand" data-filter="BirkenStock">BIRKENSTOCK</li>
-                                <li class="filter-option filter-brand" data-filter="Teva">TEVA</li>
-                                <li class="filter-option filter-brand" data-filter="Fila">FILA</li>
+                                <?php
+                                    $brands = "";
+                                    foreach ($brandList as $item) {
+                                        extract($item);
+                                        $brands .= '<li class="filter-option filter-brand" data-filter="'.$BrandID.'">'.$BrandName.'</li>';
+                                    }
+                                    echo $brands;   
+                                ?>
                             </ul>
                         </div>
                         <!-- SIZE Dropdown -->
@@ -372,6 +347,21 @@
                     <!-- DISPLAY PRODUCTS -->
                     <div class="shoes-box-container show-on-mobile">
                         <div class="product-box-container" id="home-product">
+                        <?php
+                           $kq = "";
+                           foreach ($productlist as $item) {
+                               extract($item);
+                               $kq .= '
+                               <div class="product-box" onclick= "detailProduct('. $id .')">
+                                   <div class="img-container">
+                                       <img src="' . $image . '" alt="' . $name . '" onerror="this.src=\'view/layout/asset/img/catalogue/coming-soon.jpg\'" />
+                                   </div>
+                                   <div class="shoes-name">' . $name . '</div>
+                                   <div class="shoes-price">' . number_format($price, 0, ',', '.') . ' ₫</div>
+                               </div>';
+                           }
+                           echo $kq;                           
+                            ?>
                         </div>
                         <div class="page-nav">
                             <ul class="page-nav-list">
@@ -530,24 +520,5 @@
                     </div>
                 </div>
             </div>
-            <!-- PREFOOTER -->
-            <div class="container prefooter" id="prefooter">
-                <div class="prefooter-div">
-                    <i class="fa-solid fa-certificate"></i>
-                    <span>100% AUTHENTIC</span>
-                </div>
-                <div class="prefooter-div">
-                    <i class="fa-solid fa-truck"></i>
-                    <span>EXPRESS DELIVERY</span>
-                </div>
-                <div class="prefooter-div">
-                    <i class="fa-solid fa-headset"></i>
-                    <span>24/7 CUSTOMER SERVICES</span>
-                </div>
-                <div class="prefooter-div">
-                    <i class="fa-solid fa-tags"></i>
-                    <span>REASONABLE PRICE</span>
-                </div>
-            </div>
         </main>
-        <script src="view/layout/js/product.js"> </script>
+<script src="view/layout/js/main.js"></script>

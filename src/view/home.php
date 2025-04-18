@@ -3,6 +3,8 @@ require_once("header.php");
 require_once "./controller/controller.php";
 ?>
 
+
+
 <main>
             <!-- TOAST -->
             <div class="container toast" id="toast"></div>
@@ -72,112 +74,17 @@ require_once "./controller/controller.php";
                     </div>
                 </div>
             </div>
-            <!-- USER - INFO -->
-            <div class="container account-user hidden toggle-page" id="account-user">
-                <div class="main-account">
-                    <div class="main-account-header">
-                        <h2>MANAGE YOUR ACCOUNT</h2>
-                        <p>Hi there, <span class="display-username"></span>!</p>
-                    </div>
-                    <div class="main-account-body">
-                        <div class="main-account-body-col" id="user-info-changeacc">
-                            <form class="info-user" id="changeacc-info-form">
-                                <div class="form-group">
-                                    <label for="infoname" class="form-label">Username <i>(cannot change)</i></label>
-                                    <input class="form-input-bar" type="text" name="infoname" id="infoname"
-                                        placeholder="Username*" disabled>
-                                    <p class="form-msg-error"></p>
-                                </div>
-                                <div class="form-group">
-                                    <label for="fullname" class="form-label">Full Name</label>
-                                    <input class="form-input-bar" type="text" name="fullname" id="fullname"
-                                        placeholder="Full Name*">
-                                    <p class="form-msg-error"></p>
-                                </div>
-                                <div class="form-group">
-                                    <label for="infophone" class="form-label">Phone number</label>
-                                    <input class="form-input-bar" type="number" name="infophone" id="infophone"
-                                        placeholder="Phone number*" inputmode="tel">
-                                    <p class="form-msg-error"></p>
-                                </div>
-                                <div class="form-group">
-                                    <label for="infoemail" class="form-label">Email</label>
-                                    <input class="form-input-bar" type="email" name="infoemail" id="infoemail"
-                                        placeholder="example@email.com" inputmode="email">
-                                    <p class="form-msg-error"></p>
-                                </div>
-                                <div class="form-group">
-                                    <label for="infoaddress" class="form-label">Address</label>
-                                    <input class="form-input-bar" type="text" name="infoaddress" id="infoaddress"
-                                        placeholder="Add address for shipping">
-                                    <p class="form-msg-error"></p>
-                                </div>
-                                <div class="form-group">
-                                    <button id="save-info-user" onclick="changeAccInfo()"><i
-                                            class="fa-regular fa-floppy-disk"></i>Save changes</button>
-                                    <button id="undo-info-user" onclick="loadUserInfo()"><i
-                                            class="fa-solid fa-rotate-right"></i>Undo changes</button>
-                                </div>
-                            </form>
-                            <a onclick="toggleChangePass()"><i class="fa-solid fa-key"></i><span>Change
-                                    Password</span></a>
-                        </div>
-                        <div class="main-account-body-col hidden" id="user-info-changepass">
-                            <div>
-                                <h4>CHANGE YOUR PASSWORD</h4>
-                            </div>
-                            <form action="" class="change-password" id="changepass-form">
-                                <div class="form-group">
-                                    <label for="curr-pass" class="form-label">Current password</label>
-                                    <input class="form-input-bar" type="password" name="curr-pass"
-                                        id="password-cur-info" placeholder="Enter current password*">
-                                    <p class="form-msg-error"></p>
-                                </div>
-                                <div class="form-group">
-                                    <label for="new-pass" class="form-label">New password</label>
-                                    <input class="form-input-bar" type="password" name="new-pass"
-                                        id="password-after-info" placeholder="Enter new password*">
-                                    <p class="form-msg-error"></p>
-                                </div>
-                                <div class="form-group">
-                                    <label for="confirm-new-pass" class="form-label">Confirm new password</label>
-                                    <input class="form-input-bar" type="password" name="confirm-new-pass"
-                                        id="password-confirm-info" placeholder="Confirm new password*">
-                                    <p class="form-msg-error"></p>
-                                </div>
-                                <div class="form-group">
-                                    <button id="save-password" onclick="changePassword()"><i
-                                            class="fa-solid fa-key"></i>Change password</button>
-                                </div>
-                            </form>
-                            <a onclick="toggleChangePass()">
-                                <i class="fa-solid fa-user"></i><span>Update user info</span></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- MODAL ORDER DETAIL -->
+            
+            <!-- MODAL ORDER DETAIL --> 
             <div class="modal order-detail" id="order-detail">
             </div>
-            <!-- USER - ORDER HISTORY -->
-            <div class="container order-history hidden toggle-page" id="order-history">
-                <div class="main-account">
-                    <div class="main-account-header">
-                        <h2>ORDER HISTORY</h2>
-                        <p>Hey, <span class="display-username"></span>! Check out what you have ordered so far!</p>
-                    </div>
-                    <div class="main-account-body">
-                        <div class="main-account-body-col">
-                        </div>
-                    </div>
-                </div>
-            </div>
+            
             <!-- CART -->
             <div class="modal sidebar cart" id="cart">
                 <div class="sidebar-main mdl-cnt">
                     <div class="cart-header">
                         <p>YOUR CART</p>
-                        <a onclick="toggleModal('cart')">CLOSE</a>
+                        <a onclick="toggleModal('cart') ">CLOSE</a>
                     </div>
                     <div class="cart-body"></div>
                     <div class="cart-footer">
@@ -187,14 +94,16 @@ require_once "./controller/controller.php";
                         </div>
                         <div class="cart-btns">
                             <button onclick="toggleModal('cart')">CONTINUE SHOPPING</button>
-                            <button onclick="toggleModal('checkout-page'); showCartCheckout()" class="checkout-btn"
+                            <button onclick="window.checkoutMode = 'cart'; toggleModal('checkout-page'); showCartCheckout()" class="checkout-btn"
                                 id="cart-checkout-btn">TO CHECKOUT</button>
                         </div>
                     </div>
                 </div>
             </div>
+
+            
             <!-- CATALOGUE -->
-            <div class="catalogue-container always-active-page" id="catalogue">
+            <div class="catalogue-container " id="catalogue">
                 <!-- BANNER -->
                 <div class="banner">
                     <div class="banner-images"></div> <!-- Images will be dynamically inserted here -->
@@ -205,55 +114,191 @@ require_once "./controller/controller.php";
                         <button class="next" onclick="moveSlide(1)">&#10095;</button>
                     </div>
                 </div>
-                <div class="catalogue-name" id="display-catalogue-name"></div>
-                <div class="search-bar">
+                
+                <div class="main-container-home Active">
+                    <div class="new-products-header">
+                    <div class="line"></div>
+                    <h2 class="new-products-title">Trending Styles</h2>
+                    <div class="line"></div>
+                    </div>
+                    <br>
+                    <div class="trending-container">
+                        <div class="trending-box" onclick="detailProduct(6)">
+                            <img src="view/layout/asset/img/catalogue/AIR-TERRA-HUMARA.jpg" alt="Sneaker"><br>
+                            <h3>AIR-TERRA-HUMARA</h3>
+                        </div>
+                        <div class="trending-box" onclick="detailProduct(19)">
+                            <img src="view/layout/asset/img/catalogue/RUN-STAR-HIKE-HI.jpg" alt="Sandal"><br>
+                            <h3>RUN-STAR-HIKE-HI</h3>
+                        </div>
+                        <div class="trending-box" onclick="detailProduct(5)">
+                            <img src="view/layout/asset/img/catalogue/AIR-MAX-90-LTR.jpg" alt="Kid"><br>
+                            <h3>AIR-MAX-90-LTR</h3>
+                        </div>
+                    </div>
+                    
+                    <br><br>
+                    <br><br>
+                    <div class="new-products-header">
+                    <div class="line"></div>
+                    <h2 class="new-products-title">Airizona Collection</h2>
+                    <div class="line"></div>
+                    </div>
+                    <br>
+                    <div class="trending-container">
+                        <div class="trending-box" onclick="detailProduct(7)">
+                            <img src="view/layout/asset/img/catalogue/AIRIZONA-VEG-THYME.jpg" alt="Sandal"><br>
+                            <h3>AIRIZONA VEG THYME</h3>
+                        </div>
+                        <div class="trending-box" onclick="detailProduct(8)">
+                            <img src="view/layout/asset/img/catalogue/ARIZONA-BLACKBIRKO-FLOR-SFB.jpg" alt="Sandal"><br>
+                            <h3>ARIZONA BLACKBIRKO FLOR SFB</h3>
+                        </div>
+                        <div class="trending-box" onclick="detailProduct(9)">
+                            <img src="view/layout/asset/img/catalogue/ARIZONA-TOBACCO-BROWN-OILED-LEATHER.jpg" alt="Sandal"><br>
+                            <h3>ARIZONA TOBACCO BROWN OILDED LEATHER</h3>
+                        </div>
+                    </div>
+                    
+                    <br><br>
+                    <br><br>
+                    <div class="new-products-header">
+                    <div class="line"></div>
+                    <h2 class="new-products-title">Kid</h2>
+                    <div class="line"></div>
+                    </div>
+                    <br>
+                    <div class="trending-container">
+                        <div class="trending-box" onclick="detailProduct(14)">
+                            <img src="view/layout/asset/img/catalogue/GAZELLE-(PS).jpg" alt="Kid"><br>
+                            <h3>GAZELLE (PS)</h3>
+                        </div>
+                        <div class="trending-box" onclick="detailProduct(22)">
+                            <img src="view/layout/asset/img/catalogue/SL-72-RS-(PS).jpg" alt="Kid"><br>
+                            <h3>SL72 RS (PS)</h3>
+                        </div>
+                        <div class="trending-box" onclick="detailProduct(23)">
+                            <img src="view/layout/asset/img/catalogue/SL72-RS-(TD).jpg" alt="Kid"><br>
+                            <h3>SL72 RS (TD)</h3>
+                        </div>
+                        <div class="trending-box" onclick="detailProduct(25)">
+                            <img src="view/layout/asset/img/catalogue/STAN-SMITH-(TD).jpg" alt="Kid"><br>
+                            <h3>STAN SMITH (TD)</h3>
+                        </div>
+                    </div>
+                    
+                    <br><br>
+                    <br><br>
+                    <div class="new-products-header">
+                        <div class="line"></div>
+                        <h2 class="new-products-title">NEW PRODUCTS</h2>
+                        <div class="line"></div>
+                    </div>
+                    <!-- slick start -->
+                    
+                    <div class="product-box-container-home slicker" id="home-product"> 
+                        <?php
+                            $kq = "";
+                            foreach ($productlist as $item) {
+                                extract($item);
+                                $kq .= '
+                                <div class="product-box-home" onclick= "detailProduct('. $id .')">
+                                    <div class="img-container">
+                                        <img src="' . $image . '" alt="' . $name . '" onerror="this.src=\'view/layout/asset/img/catalogue/coming-soon.jpg\'" />
+                                    </div>
+                                    <div class="shoes-name">' . $name . '</div>
+                                    <div class="shoes-price">' . number_format($price, 0, ',', '.') . ' ₫</div>
+                                </div>';
+                            }
+                            echo $kq;                           
+                        ?>
+                    </div>
+                    <hr><br>
+                    <br><br>
+                    <div class="main-products-banner center">      
+                        <div><img class="main-products-banner-img" src="view/layout/asset/img/banner/converse.jpg" alt="converse.jpg"></div>
+                        <div><img class="main-products-banner-img" src="view/layout/asset/img/banner/nike.jpg" alt="nike.jpg"></div>
+                        <div><img class="main-products-banner-img" src="view/layout/asset/img/banner/adidas.jpg" alt="adidas.jpg"></div>                                                             
+                    </div>
+                    <!-- <div class="modal product-detail" id="product-detail">
+                            <button class="modal-close close-popup"><i class="fa-solid fa-xmark"
+                                    style="color: white;"></i></button>
+                            <div class="modal-container product-detail-content mdl-cnt" id="product-detail-content">
+                            </div>
+                    </div> -->
+                </div>
+
+                    <br><br>
+                    <!-- product page -->
+                    <div class="product-page">
+                    <div class="catalogue-name" id="display-catalogue-name">HOME</div>
+                <div class="search-bar" style="display:none">
                     <label for="search-bar"><i class="fas fa-search"></i></label>
                     <input class="form-input-bar filter-option" type="text" name="search-bar" id="search-bar"
                         placeholder="Search products by name">
                 </div>
-
+                <div class="details-search-bar hide-on-pc show-on-mobile"
+                    onclick="toggleModal('details-search-sidebar')">
+                    <i class="fa-solid fa-bars"></i>
+                    <p>Filter by</p>
+                </div>
+                <div class="catalogue-info" style="display:none">
+                    <div class="products-amount">
+                       <?php
+                            
+                            echo ' <p><span id="display-catalogue-amount">' . count($productlist) . '</span> product(s)</p>';
+                       ?>
+                    </div>
+                    <div class="sortby">
+                        <div>
+                            <span>Sort by:</span>
+                            <span id="sortby-mode-display">Alphabetically, A-Z</span>
+                            <span class="dropdown-arrow">&#9662;</span>
+                        </div>
+                        <!-- Hidden checkbox to control the dropdown -->
+                        <div class="container float-dropdown">
+                            <ul class="menu-list">
+                                <li class="sortby-option"><a>Alphabetically, A-Z</a></li>
+                                <li class="sortby-option"><a>Alphabetically, Z-A</a></li>
+                                <li class="sortby-option"><a>Price, low to high</a></li>
+                                <li class="sortby-option"><a>Price, high to low</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
                 
                 <!-- CATALOGUE - DETAILS SEARCH SIDEBAR -->
                 
                 <!-- CATALOGUE - MAIN -->
-                <div class="main-container">
-                    <!-- DISPLAY PRODUCTS -->
-                    <div class="shoes-box-container show-on-mobile">
-                        <div class="product-box-container" id="home-product">
-                            <?php
-                           $kq = "";
-                           foreach ($productlist as $item) {
-                               extract($item);
-                               $kq .= '
-                               <div class="product-box" onclick= "detailProduct('. $id .')">
-                                   <div class="img-container">
-                                       <img src="' . $image . '" alt="' . $name . '" onerror="this.src=\'view/layout/asset/img/catalogue/coming-soon.jpg\'" />
-                                   </div>
-                                   <div class="shoes-name">' . $name . '</div>
-                                   <div class="shoes-price">' . number_format($price, 0, ',', '.') . ' ₫</div>
-                               </div>';
-                           }
-                           echo $kq;                           
-                            ?>
-                        </div>
-                        <div class="page-nav">
-                            <ul class="page-nav-list">
-                            </ul>
-                        </div>
+                
+                
+                <!-- CATALOGUE - DETAILS SEARCH SIDEBAR -->
+                
+                <!-- CATALOGUE - MAIN -->
+                    <div class="main-container">
+                    
+                        <!-- DISPLAY PRODUCTS -->
                     </div>
-                    <div class="modal product-detail">
-                        <button class="modal-close close-popup"><i class="fa-solid fa-xmark"
-                                style="color: white;"></i></button>
-                        <div class="modal-container product-detail-content mdl-cnt" id="product-detail-content">
-                        </div>
+                        <!-- <div class="modal product-detail" id="product-detail">
+                            <button class="modal-close close-popup"><i class="fa-solid fa-xmark"
+                                    style="color: white;"></i></button>
+                            <div class="modal-container product-detail-content mdl-cnt" id="product-detail-content">
+                            </div>
+                        </div> -->
                     </div>
                 </div>
+                <div class="modal product-detail" id="product-detail">
+                            <button class="modal-close close-popup"><i class="fa-solid fa-xmark"
+                                    style="color: white;"></i></button>
+                            <div class="modal-container product-detail-content mdl-cnt" id="product-detail-content">
+                            </div>
+                        </div>
             </div>
             <!-- CHECKOUT -->
             <div class="checkout-page" id="checkout-page">
                 <div class="checkout-header">
                     <div class="checkout-return">
-                        <a onclick="toggleModal('checkout-page')"><i class="fa-solid fa-angle-left"></i></a>
+                        <a onclick="handleReturnFromCheckout()"><i class="fa-solid fa-angle-left"></i></a>
                     </div>
                     <h1 class="checkout-title">CHECKOUT</h1>
                 </div>
@@ -282,22 +327,21 @@ require_once "./controller/controller.php";
                                     </label>
                                     <div class="option-detail content-group" id="new-address">
                                         <input type="text" class="note-order form-input-bar"
-                                            placeholder="Enter new address (full)" id="checkout-address-new"></input>
+                                            placeholder="Enter new address" id="checkout-address-new"></input>
                                         <p class="form-msg-error"></p>
                                     </div>
                                 </div>
                                 <!-- Chọn vùng miền -->
-                                <h3 class="checkout-content-label">Choose a region for delivery destination <i
-                                        style="font-weight: normal;">(this will help us locate you faster)</i></h3>
+                                <h3 class="checkout-content-label">Choose a region for delivery destination</h3>
                                 <div class="region-selector">
-                                    <select id="province" class="region-select" onchange="updateDistricts()">
-                                        <option value="">Province/City</option>
+                                    <select id="province" class="region-select">
+                                        <option value="" disabled selected hidden>Province/City</option>
                                     </select>
-                                    <select id="district" class="region-select" onchange="updateWards()">
-                                        <option value="">District</option>
+                                    <select id="district" class="region-select">
+                                        <option value="" disabled selected hidden>District</option>
                                     </select>
                                     <select id="ward" class="region-select">
-                                        <option value="">Ward/Commune</option>
+                                        <option value="" disabled selected hidden>Ward/Commune</option>
                                     </select>
                                 </div>
                                 <p class="form-msg-error"></p>
@@ -307,12 +351,12 @@ require_once "./controller/controller.php";
                                 <!-- Phần thanh toán bằng tiền mặt -->
                                 <div class="payment-option">
                                     <label for="cash" onclick="togglePaymentMethod('cash')">
-                                        <input class="checkout-option" type="radio" name="payment-method" id="cash"
-                                            value="cash" checked>
-                                        <span>Cash</span>
+                                        <input class="checkout-option" type="radio" name="payment-method" id="cod"
+                                            value="cod" checked>
+                                        <span>COD (cash on deivery)</span>
                                     </label>
                                     <div id="cash-option" class="option-detail" style="display:block">
-                                        <p><b><i>You will pay with cash.</i></b></p>
+                                        <p><b><i>You will pay with cash on delivery.</i></b></p>
                                     </div>
                                 </div>
                                 <!-- Phần thanh toán bằng thẻ -->
@@ -333,30 +377,38 @@ require_once "./controller/controller.php";
                                             </div>
                                             <div class="form-group">
                                                 <label for="cvv">CVV</label>
-                                                <input type="number" class="form-input-bar" placeholder="CVV"
+                                                <input type="password" class="form-input-bar" placeholder="CVV"
                                                     minlength="3" maxlength="3" id="cvv">
                                                 <p class="form-msg-error"></p>
                                             </div>
                                             <div class="form-group">
                                                 <label for="card-number">Card Number</label>
-                                                <input type="number" class="form-input-bar" placeholder="Card number"
-                                                    id="card-number" minlength="12">
+                                                <input type="text" class="form-input-bar" placeholder="Card number"
+                                                    id="card-number" minlength="16" maxlength="16">
                                                 <p class="form-msg-error"></p>
                                             </div>
                                             <div class="form-group">
                                                 <label for="card-expdate">Exp. date</label>
-                                                <input type="date" name="card-expdate" id="card-expdate">
+                                                <input type="month" name="card-expdate" id="card-expdate">
                                                 <p class="form-msg-error"></p>
                                             </div>
                                             <div class="cardsthanhtoan">
-                                                <div class="img-container">
-                                                    <img src="view/layout/asset/img/card/mc.png" alt="">
+                                                <div class="form-group">
+                                                <label>
+                                                    <input type="checkbox" id="save-card-checkbox">
+                                                    Save this card for future purchases
+                                                </label>
                                                 </div>
-                                                <div class="img-container">
-                                                    <img src="view/layout/asset/img/card/pp.png" alt="">
-                                                </div>
-                                                <div class="img-container">
-                                                    <img src="view/layout/asset/img/card/vi.png" alt="">
+                                                <div class="card-icons">
+                                                    <div class="img-container">
+                                                        <img src="view/layout/asset/img/card/mc.png" alt="">
+                                                    </div>
+                                                    <div class="img-container">
+                                                        <img src="view/layout/asset/img/card/pp.png" alt="">
+                                                    </div>
+                                                    <div class="img-container">
+                                                        <img src="view/layout/asset/img/card/vi.png" alt="">
+                                                    </div>
                                                 </div>
                                             </div>
                                         </form>
@@ -393,24 +445,10 @@ require_once "./controller/controller.php";
                     </div>
                 </div>
             </div>
-            <!-- PREFOOTER -->
-            <div class="container prefooter" id="prefooter">
-                <div class="prefooter-div">
-                    <i class="fa-solid fa-certificate"></i>
-                    <span>100% AUTHENTIC</span>
-                </div>
-                <div class="prefooter-div">
-                    <i class="fa-solid fa-truck"></i>
-                    <span>EXPRESS DELIVERY</span>
-                </div>
-                <div class="prefooter-div">
-                    <i class="fa-solid fa-headset"></i>
-                    <span>24/7 CUSTOMER SERVICES</span>
-                </div>
-                <div class="prefooter-div">
-                    <i class="fa-solid fa-tags"></i>
-                    <span>REASONABLE PRICE</span>
-                </div>
-            </div>
-        </main>
-<script src="view/layout/js/main.js"> </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.js" integrity="sha512-HGOnQO9+SP1V92SrtZfjqxxtLmVzqZpjFFekvzZVWoiASSQgSr4cw9Kqd2+l8Llp4Gm0G8GIFJ4ddwZilcdb8A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.js" integrity="sha512-eP8DK17a+MOcKHXC5Yrqzd8WI5WKh6F1TIk5QZ/8Lbv+8ssblcz7oGC8ZmQ/ZSAPa7ZmsCU4e/hcovqR8jfJqA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script type="text/javascript" src="view/layout/js/slick_slide.js"></script>
+<script src="view/layout/js/toast-msg.js"> </script>          
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script  src="view/layout/js/main.js"></script>   
+<script  src="view/layout/js/products.js"></script> 

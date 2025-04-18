@@ -2,14 +2,14 @@
 require_once __DIR__ . "/../controller/db_controller/api.php";
 // Lấy ID từ URL
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
-    die("<h2>Lỗi: Không tìm thấy ID sản phẩm</h2>");
+    die("<h2>Error: Could not find the product's id</h2>");
 }
 
 $idProduct = intval($_GET['id']);
 $product = getProductDetail($idProduct);
 
 if (!$product) {
-    die("<h2>Không tìm thấy sản phẩm</h2>");
+    die("<h2>Could not find the product</h2>");
 }
 ?>
 <div class="product-detail-content">
@@ -19,7 +19,7 @@ if (!$product) {
     <h2 class="product-title"><?= $product['name'] ?></h2>
     <div class="product-control">
         <div class="priceBox">
-            <span class="current-price"><?= number_format($product['price'], 0, ',', '.') ?> ₫</span>
+            <span class="current-price" data-price="<?= $product['price'] ?>"><?= number_format($product['price'], 0, ',', '.') ?> ₫</span>
         </div>
         <div class="buttons_added">
             <button class="minus is-form" type="button" value="-" onclick="decreasingNumber(this)">
@@ -31,24 +31,32 @@ if (!$product) {
             </button>
         </div>
     </div>
+    
+    <!-- Phần hiển thị size -->
     <div class="size-container">
-        <?php
-        if (!empty($product['size']) && is_array($product['size'])) {
-            foreach ($product['size'] as $size) {
-                echo "<button class='size-button'>$size</button>";
-            }
-        }        
-        ?>
-    </div>
+    <?php
+    if (isset($product['size']) && is_array($product['size']) && !empty($product['size'])) {
+        foreach ($product['size'] as $sizeInfo) {
+            // Tách ProductSizeID và Size
+            list($productSizeId, $size) = explode('-', $sizeInfo);
+            echo "<button class='size-button' data-sizeid='{$productSizeId}'>{$size}</button>";
+        }
+    } else {
+        echo "<p>Không có thông tin về size cho sản phẩm này.</p>";
+    }
+    ?>
+</div>
+
     <div class="modal-footer">
         <div class="price-total">
             <span class="thanhtien">Total</span>
-            <span class="price"><?= number_format($product['price'], 0, ',', '.') ?> ₫</span>
+            <span class="price" ><?= number_format($product['price'], 0, ',', '.') ?> ₫</span>
         </div>
         <div class="modal-footer-control">
-            <button class="checkout-btn">Buy now</button>
+            <button class="checkout-btn" id="checkout-modal-btn">Buy now</button>
             <button class="button-dat" id="add-cart"><i class="fa-solid fa-cart-shopping"></i></button>
         </div>
     </div>
 </div>
+
 

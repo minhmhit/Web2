@@ -14,8 +14,6 @@ function toggleModal(elementId) {
         if (modal.id !== elementId)
             modal.classList.remove("open");
     });
-
-
 }
 
 function togglePage(elementId) {
@@ -48,219 +46,6 @@ function togglePage(elementId) {
 // VISIBILITY - END DEFINE /////////////////////////////////////////////////////
 
 // USER - BEGIN DEFINE /////////////////////////////////////////////////////
-// Change UI based on whether user has logged in or not
-function updateMenuVisibility() {
-    let isLoggedIn = !!localStorage.getItem("currentuser");
-    let currentuser = JSON.parse(localStorage.getItem("currentuser"));
-
-    // Show checkout-btn if user is logged in
-    let checkoutBtn = document.getElementById("cart-checkout-btn");
-    if (isLoggedIn) {
-        checkoutBtn.classList.add("active");
-        checkoutBtn.disabled = false;
-    } else {
-        checkoutBtn.classList.remove("active");
-        checkoutBtn.disabled = true;
-    }
-
-    // Show cart, order-history if user is logged in
-    if (isLoggedIn) {
-        showCart();
-        updateCartTotalAmount();
-        updateCartTotalPrice();
-        showOrderHistory();
-    }
-
-    // Show logged-in items, hide logged-out items if user is logged in
-    document.querySelectorAll(".logged-in").forEach(item => {
-        item.style.display = isLoggedIn ? "block" : "none";
-    });
-    document.querySelectorAll(".logged-out").forEach(item => {
-        item.style.display = isLoggedIn ? "none" : "block";
-    });
-
-    // Show admin features if account is admin
-    document.querySelectorAll(".isAdmin").forEach(item => {
-        item.style.display = isLoggedIn && currentuser.isAdmin ? "block" : "none";
-    });
-
-    // Show username in specific places if user is logged in
-    document.querySelectorAll(".display-username").forEach(item => {
-        item.textContent = isLoggedIn ? currentuser.username : "";
-    });
-
-    // Show address in specific places if user is logged in
-    document.querySelectorAll(".display-address").forEach(item => {
-        item.value = isLoggedIn ? currentuser.address : "";
-    });
-}
-
-// For signup form
-function handleSignupForm(event) {
-    event.preventDefault();
-
-    let username = document.getElementById("username-signup").value.trim();
-    let fullname = document.getElementById("fullname-signup").value.trim();
-    let phone = document.getElementById("phone-signup").value.trim();
-    let address = document.getElementById("address-signup").value.trim();
-    let password = document.getElementById("password-signup").value.trim();
-    let confirmPassword = document.getElementById("confirm-password-signup").value.trim();
-
-    let hasError = false;
-
-    // Reset form-msg-error classes
-    document.querySelectorAll(".signup-user .form-msg-error").forEach(msg => {
-        msg.textContent = "";
-    });
-
-
-
-    // Validate username
-    if (!username || username.length < 5 || /\W|\s/.test(username)) {
-        document.querySelector("#username-signup + .form-msg-error").innerText =
-            "Username must be at least 5 characters long, no spaces or special characters.";
-        hasError = true;
-    }
-
-    // Validate fullname
-    if (!fullname) {
-        document.querySelector("#fullname-signup + .form-msg-error").innerText =
-            "Full name cannot be empty.";
-        hasError = true;
-    }
-
-    // Validate phone
-    if (!phone || !/^\d{10}$/.test(phone)) {
-        document.querySelector("#phone-signup + .form-msg-error").innerText =
-            "Phone number must be exactly 10 digits.";
-        hasError = true;
-    }
-
-    // Validate address
-    if (!address) {
-        document.querySelector("#address-signup + .form-msg-error").innerText =
-            "Address cannot be empty.";
-        hasError = true;
-    }
-
-    // Validate password
-    if (!password || password.length < 5 || /\s/.test(password)) {
-        document.querySelector("#password-signup + .form-msg-error").innerText =
-            "Password must be at least 5 characters long and cannot contain spaces.";
-        hasError = true;
-    }
-
-    // Validate confirm password
-    if (password !== confirmPassword) {
-        document.querySelector("#confirm-password-signup + .form-msg-error").innerText =
-            "Passwords do not match.";
-        hasError = true;
-    }
-
-    if (hasError) {
-        toastMsg({ title: "ERROR", message: "Please fill in the form correctly.", type: "error" });
-        return;
-    }
-
-
-    // If no error messages, proceed with saving to local storage
-    let accounts = JSON.parse(localStorage.getItem("accounts")) || [];
-    let user = {
-        id: ID_TYPE[0] + (accounts.length + 1),
-        username: username,
-        fullname: fullname,
-        phone: phone,
-        address: address,
-        password: password,
-        join: new Date(),
-        cart: [],
-        isAdmin: 0,
-        status: 1
-    };
-
-    // Check for duplicate / trung username/phone
-    let containsDuplicate = accounts.some(account => {
-        return account.phone === user.phone || account.username === user.username;
-    });
-
-
-    if (!containsDuplicate) {
-        accounts.push(user);
-        localStorage.setItem("accounts", JSON.stringify(accounts));
-        localStorage.setItem("currentuser", JSON.stringify(user));
-        console.log("handleSignupForm(): Signed up");
-        updateMenuVisibility();
-        toggleModal("signup-user");
-        document.getElementById("signup-form").reset();
-        toastMsg({ title: "SUCCESS", message: "Account created successfully!", type: "success" });
-    } else {
-        toastMsg({ title: "ERROR", message: "Account with username and/or phone number already existed!", type: "error" });
-    }
-};
-
-// For login form
-function handleLoginForm() {
-    event.preventDefault();
-
-    let usernameOrPhone = document.getElementById("username-login").value.trim();
-    let password = document.getElementById("password-login").value.trim();
-    let userMsgError = document.querySelector("#username-login + .form-msg-error");
-    let passMsgError = document.querySelector("#password-login + .form-msg-error");
-
-    // Ensure accounts exist in local storage
-    let accounts = JSON.parse(localStorage.getItem("accounts")) || [];
-
-    // Reset form-msg-error classes
-    document.querySelectorAll(".login-user .form-msg-error").forEach(msg => {
-        msg.textContent = "";
-    });
-
-    if (!usernameOrPhone || !password) {
-        userMsgError.innerText = "Both fields are required";
-        passMsgError.innerText = "Both fields are required";
-        toastMsg({ title: "ERROR", message: "Please fill in the form correctly.", type: "error" });
-        return;
-    }
-
-    let userIdx = accounts.findIndex(account => (account.phone === usernameOrPhone || account.username === usernameOrPhone));
-
-    if (userIdx === -1) {
-        userMsgError.innerText = "Account with this username or phone number does not exist.";
-    } else if (accounts[userIdx].password === password) {
-        if (accounts[userIdx].status === 0) {
-            userMsgError.innerText = "This account has been locked.";
-        } else {
-            localStorage.setItem("currentuser", JSON.stringify(accounts[userIdx]));
-            toastMsg({ title: "SUCCESS", message: "Login successful!", type: "success" });
-            console.log("handleLoginForm(): Signed up");
-            updateMenuVisibility();
-            toggleModal("login-user");
-            document.getElementById("login-form").reset();
-        }
-    } else {
-        passMsgError.innerText = "Password is incorrect.";
-    }
-}
-
-// To sign out
-function signOut() {
-    let accounts = JSON.parse(localStorage.getItem("accounts"));
-    let user = JSON.parse(localStorage.getItem("currentuser"));
-    let idx = accounts.findIndex(item => item.phone == user.phone);
-
-    //Save cart when logged in again
-    accounts[idx].cart.length = 0;
-    for (let i = 0; i < user.cart.length; i++) {
-        accounts[idx].cart[i] = user.cart[i];
-    }
-
-    localStorage.setItem("accounts", JSON.stringify(accounts));
-    localStorage.removeItem("currentuser");
-    console.log("signOut(): Signed out.");
-    updateMenuVisibility();
-    location.reload();
-}
-
 
 // Load user info to My Account after user has logged in
 function loadUserInfo() {
@@ -278,85 +63,50 @@ function loadUserInfo() {
 }
 
 // Apply changes to current account in My Acocunt
-function changeAccInfo() {
-    event.preventDefault();
+// function changeAccInfo() {
+//     event.preventDefault();
+//     // Collect updated values from the form
+//     // let username = document.getElementById("infoname").value.trim();
+//     let fullname = document.getElementById("fullname").value.trim();
+//     let phone = document.getElementById("infophone").value.trim();
+//     let email = document.getElementById("infoemail").value.trim();
+//     let address = document.getElementById("infoaddress").value.trim();
 
-    // Collect updated values from the form
-    // let username = document.getElementById("infoname").value.trim();
-    let fullname = document.getElementById("fullname").value.trim();
-    let phone = document.getElementById("infophone").value.trim();
-    let email = document.getElementById("infoemail").value.trim();
-    let address = document.getElementById("infoaddress").value.trim();
+//     let hasError = false;
 
-    let hasError = false;
+//     // Reset form-msg-error classes
+//     document.querySelectorAll(".account-user .form-msg-error").forEach(msg => {
+//         msg.textContent = "";
+//     });
 
-    // Reset form-msg-error classes
-    document.querySelectorAll(".account-user .form-msg-error").forEach(msg => {
-        msg.textContent = "";
-    });
-
-    // Validation checks
-    // if (!username || username.length < 5 || /\W|\s/.test(username)) {
-    //     errorMsg.innerHTML += "<p>Username must be at least 5 characters long, no spaces or special characters.</p>";
-    // }
-
-
-    if (!fullname) {
-        document.querySelector("#fullname + .form-msg-error").innerText = "Full name cannot be empty.";
-        hasError = true;
-    }
-
-    if (!phone || !/^\d{10}$/.test(phone)) {
-        document.querySelector("#infophone + .form-msg-error").innerText = "Phone number must be exactly 10 digits.";
-        hasError = true;
-    }
-
-    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        document.querySelector("#infoemail + .form-msg-error").innerText = "Please enter a valid email address.";
-        hasError = true;
-    }
-
-    if (!address) {
-        document.querySelector("#infoaddress + .form-msg-error").innerText = "Address cannot be empty.";
-        hasError = true;
-    }
-
-    if (hasError) {
-        toastMsg({ title: "ERROR", message: "Please fill in the form correctly.", type: "error" });
-        return;
-    }
-
-    let updatedUser = {
-        // username: username,
-        fullname: fullname,
-        phone: phone,
-        email: email,
-        address: address
-    };
+//     // Validation checks
+//     // if (!username || username.length < 5 || /\W|\s/.test(username)) {
+//     //     errorMsg.innerHTML += "<p>Username must be at least 5 characters long, no spaces or special characters.</p>";
+//     // }
 
 
-    const accounts = JSON.parse(localStorage.getItem("accounts"));
-    const currentuser = JSON.parse(localStorage.getItem("currentuser"));
+//     if (!fullname) {
+//         document.querySelector("#fullname + .form-msg-error").innerText = "Full name cannot be empty.";
+//         hasError = true;
+//     }
 
-    const isPhoneTaken = accounts.some(account => account.phone === phone && account.id !== currentuser.id);
+//     if (!phone || !/^\d{10}$/.test(phone)) {
+//         document.querySelector("#infophone + .form-msg-error").innerText = "Phone number must be exactly 10 digits.";
+//         hasError = true;
+//     }
 
-    if (isPhoneTaken) {
-        document.querySelector("#infophone + .form-msg-error").innerText = "Phone number is already taken.";
-        toastMsg({ title: "ERROR", message: "Phone number already taken! Please try again.", type: "error" });
-        return;
-    }
+//     if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+//         document.querySelector("#infoemail + .form-msg-error").innerText = "Please enter a valid email address.";
+//         hasError = true;
+//     }
 
-    let userIdx = accounts.findIndex(account => account.id === currentuser.id);
+//     if (!address) {
+//         document.querySelector("#infoaddress + .form-msg-error").innerText = "Address cannot be empty.";
+//         hasError = true;
+//     }
 
-    if (userIdx !== -1) {
-        accounts[userIdx] = { ...accounts[userIdx], ...updatedUser };
-        localStorage.setItem("accounts", JSON.stringify(accounts));
-        localStorage.setItem("currentuser", JSON.stringify(accounts[userIdx]));
-        toastMsg({ title: "SUCCESS", message: "Account info updated successfully!", type: "success" });
-    } else {
-        toastMsg({ title: "ERROR", message: "User not found!", type: "error" });
-    }
-}
+//     return !hasError;
+// }
 
 function toggleChangePass() {
     let changepass = document.getElementById("user-info-changepass");
@@ -372,9 +122,7 @@ function toggleChangePass() {
 }
 
 // Change current user"s password
-function changePassword() {
-    event.preventDefault();
-
+function changePassword() {  
     let currentPassword = document.getElementById("password-cur-info").value.trim();
     let newPassword = document.getElementById("password-after-info").value.trim();
     let confirmNewPassword = document.getElementById("password-confirm-info").value.trim();
@@ -385,9 +133,7 @@ function changePassword() {
     document.querySelectorAll(".change-password .form-msg-error").forEach(msg => {
         msg.textContent = "";
     });
-
-    const currentuser = JSON.parse(localStorage.getItem("currentuser"));
-    const accounts = JSON.parse(localStorage.getItem("accounts"));
+ 
 
     if (!currentPassword) {
         document.querySelector("#password-cur-info + .form-msg-error").innerText = "Please enter current password";
@@ -419,15 +165,7 @@ function changePassword() {
         return;
     }
 
-    currentuser.password = newPassword;
-    // let userIdx = accounts.findIndex(account => account.phone === currentuser.phone || account.username === currentuser.username);
-
-    accounts[userIdx].password = newPassword;
-    localStorage.setItem("accounts", JSON.stringify(accounts));
-    localStorage.setItem("currentuser", JSON.stringify(currentuser));
-    document.getElementById("changepass-form").reset();
-    toastMsg({ title: "SUCCESS", message: "Password changed successfully.", type: "success" });
-
+    return !hasError;
 }
 
 // USER - END DEFINE /////////////////////////////////////////////////////
@@ -468,301 +206,109 @@ window.addEventListener("load", function () {
 
 // CATALOGUE - FILTER - BEGIN DEFINE /////////////////////////////////////////////////////
 // Toggle filter options
-const filterOptions = document.querySelectorAll(".filter-option");
-const sortbyDisplay = document.getElementById("sortby-mode-display");
-const displayCatalogueName = document.getElementById("display-catalogue-name");
+// const filterOptions = document.querySelectorAll(".filter-option");
+// const sortbyDisplay = document.getElementById("sortby-mode-display");
+// const displayCatalogueName = document.getElementById("display-catalogue-name");
 
-filterOptions.forEach(option => {
-    option.addEventListener("click", (event) => {
-        let clickedElement = event.target;
-        if (!clickedElement.classList.contains("active")) {
-            clickedElement.classList.add("active");
-        } else {
-            clickedElement.classList.remove("active");
-        }
-    });
-});
+// filterOptions.forEach(option => {
+//     option.addEventListener("click", (event) => {
+//         let clickedElement = event.target;
+//         if (!clickedElement.classList.contains("active")) {
+//             clickedElement.classList.add("active");
+//         } else {
+//             clickedElement.classList.remove("active");
+//         }
+//     });
+// });
 
 
 // Toggle & display products by category
-document.querySelectorAll(".filter-category").forEach(category => {
-    category.addEventListener("click", (event) => {
+// document.querySelectorAll(".filter-category").forEach(category => {
+//     category.addEventListener("click", (event) => {
+//         if(event.target.dataset.filter == "Home"){
+//             document.querySelector(".main-container-home").classList.add("Active");
+//             document.querySelector(".main-container").classList.remove("Active");
+//         }else{
+//             document.querySelector(".main-container-home").classList.remove("Active");
+//             document.querySelector(".main-container").classList.add("Active");
+//         }
+//         // If header-sidebar is open, toggle it off
+//         let headerSideabar = document.getElementById("header-sidebar");
+//         if (parseFloat(window.getComputedStyle(headerSideabar).getPropertyValue("width"))) {
+//             toggleModal("header-sidebar");
+//         }
 
-        // If header-sidebar is open, toggle it off
-        let headerSideabar = document.getElementById("header-sidebar");
-        if (parseFloat(window.getComputedStyle(headerSideabar).getPropertyValue("width"))) {
-            toggleModal("header-sidebar");
-        }
+//         // If toggle-page is open, toggle it off
+//         let isTogglePage = document.querySelector(".toggle-page:not(.hidden)");
+//         if (isTogglePage) {
+//             if (isTogglePage.classList.contains("account-user")) togglePage("account-user");
+//             if (isTogglePage.classList.contains("order-history")) togglePage("order-history");
+//         }
 
-        // If toggle-page is open, toggle it off
-        let isTogglePage = document.querySelector(".toggle-page:not(.hidden)");
-        if (isTogglePage) {
-            if (isTogglePage.classList.contains("account-user")) togglePage("account-user");
-            if (isTogglePage.classList.contains("order-history")) togglePage("order-history");
-        }
-
-        document.querySelectorAll(".category-menu .filter-category.active").forEach(ele => ele.classList.remove("active"));
-        event.target.classList.add("active");
-        displayCatalogueName.innerText = event.target.innerText.trim();
-        resetFilter();
-        showHomeProduct(JSON.parse(localStorage.getItem("products")));
-    });
-});
+//         document.querySelectorAll(".category-menu .filter-category.active").forEach(ele => ele.classList.remove("active"));
+//         event.target.classList.add("active");
+//         displayCatalogueName.innerText = event.target.innerText.trim();
+//     });
+// });
 
 // Toggle search by name
-document.getElementById("search-bar").addEventListener("keyup", () => {
-    window.scrollTo({ top: 700, behavior: 'smooth' });
-    showHomeProduct(JSON.parse(localStorage.getItem("products")));
+// document.getElementById("search-bar").addEventListener("keyup", () => {
+//     window.scrollTo({ top: 700, behavior: 'smooth' });
+//     showHomeProduct(JSON.parse(localStorage.getItem("products")));
 
-})
+// })
 
 
 
 // CATALOGUE - FILTER - END DEFINE /////////////////////////////////////////////////////
 
-// CATALOGUE - CART - BEGIN DEFINE /////////////////////////////////////////////////////
-
-//Get product from the the "products" array
-
-function getCartTotalAmount() {
-    let currentuser = JSON.parse(localStorage.getItem("currentuser"));
-    let amount = 0;
-    currentuser.cart.forEach(element => {
-        amount += parseInt(element.quantity);
-    });
-    return amount;
-}
-
-function updateCartTotalAmount() {
-    if (!localStorage.getItem("currentuser")) {
-        console.log("updateCartTotalAmount(): Not logged in.");
-        return;
-    }
-
-    let amount = getCartTotalAmount();
-    document.querySelectorAll(".display-cart-total-amount").forEach(ele => ele.innerText = amount);
-    console.log("updateCartTotalAmount(): ", amount);
-}
-
-// Display/update the totalprice of the cart
-function updateCartTotalPrice() {
-    const total = vnd(getCartTotalPrice());
-    document.querySelectorAll(".display-totalprice").forEach(ele => {
-        ele.innerText = total;
-    });
-    document.querySelectorAll(".display-totalorder").forEach(ele => {
-        ele.innerText = vnd(getCartTotalPrice() + DELIVERY_FEE);
-    })
-}
-
-// Get the totalprice of the cart
-function getCartTotalPrice() {
-    let currentuser = JSON.parse(localStorage.getItem("currentuser"));
-    let totalprice = 0;
-    if (currentuser != null || currentuser.cart.length) {
-        currentuser.cart.forEach(item => {
-            totalprice += (parseInt(item.quantity) * parseInt(item.originalPrice));
-        });
-    }
-    return totalprice;
-}
-
-// Update total cart amount when changing cartItem quantity
-function updateCartAll(id, size, ele) {
-    let currentuser = JSON.parse(localStorage.getItem("currentuser"));
-    let parent = ele.parentNode;
-    console.log("updateCartAll(): ", parent);
-    let quantity = parseInt(parent.querySelector(".input-qty").value.trim());
-    console.log("updateCartAll(): ", quantity);
-    let idx = currentuser.cart.findIndex(item => item.id == id && item.size == size);
-    if (idx == -1) {
-        console.log("updateCartAll(): Error findIndex()");
-        return;
-    }
-    currentuser.cart[idx].quantity = quantity;
-    localStorage.setItem("currentuser", JSON.stringify(currentuser));
-    updateCartTotalAmount();
-    updateCartTotalPrice();
-    // saveCartInfo();
-}
-
-//Reset the cart
-function resetCart() {
-    let accounts = JSON.parse(localStorage.getItem("accounts"));
-    let currentuser = JSON.parse(localStorage.getItem("currentuser"));
-    currentuser.cart = [];
-    localStorage.setItem("currentuser", JSON.stringify(currentuser));
-
-    let userIdx = accounts.findIndex(user => user.phone === currentuser.phone);
-    if (userIdx != -1) {
-        accounts[userIdx] = currentuser;
-        localStorage.setItem("accounts", JSON.stringify(accounts));
-    }
-    updateCartTotalAmount();
-    updateCartTotalPrice();
-    updateMenuVisibility();
-}
-
-//Add cart item to cart[]
-function addCart(id, size, quantity, price) {
-    if (!localStorage.getItem("currentuser")) {
-        console.log(-1);
-        return;
-    }
-
-    let currentuser = JSON.parse(localStorage.getItem("currentuser"));
-
-    let cartItem = {
-        id: id,
-        quantity: quantity,
-        size: parseInt(size),
-        originalPrice: parseInt(price)
-    }
-
-    console.log("Cart item:", cartItem);
-
-    let idx = currentuser.cart.findIndex(item => item.id == cartItem.id && item.size == cartItem.size);
-    if (idx === -1) {
-        currentuser.cart.push(cartItem);
-    } else {
-        currentuser.cart[idx].quantity += cartItem.quantity;
-    }
-
-    localStorage.setItem("currentuser", JSON.stringify(currentuser));
-    updateCartTotalAmount();
-    updateCartTotalPrice();
-    showCart();
-    closeModal();
-}
-
-//Delete the cart item
-function deleteCartItem(id, size, ele) {
-    const checkoutBtn = document.getElementById("cart-checkout-btn");
-    let cartParent = ele.parentNode.parentNode;
-    cartParent.remove();
-    let currentuser = JSON.parse(localStorage.getItem("currentuser"));
-    let idx = currentuser.cart.findIndex(item => item.id == id && item.size == size)
-    currentuser.cart.splice(idx, 1);
-
-    if (currentuser.cart.length == 0) {
-        displayWhenEmpty(".cart .cart-body", displayEmptyHTML_cart);
-        checkoutBtn.classList.remove(".active");
-        checkoutBtn.disabled = true;
-    }
-    localStorage.setItem("currentuser", JSON.stringify(currentuser));
-    updateCartTotalPrice();
-    updateCartTotalAmount();
-    console.log("Deleted item cart ID = ", id, ", size = ", size);
-    console.log("Updated cart:", currentuser.cart);
-}
-
-function showCart() {
-    if (!localStorage.getItem("currentuser")) {
-        displayWhenEmpty(".cart .cart-body", displayEmptyHTML_cart);
-        return;
-    }
-    let currentuser = JSON.parse(localStorage.getItem("currentuser"));
-    const cartBody = document.querySelector(".cart .cart-body");
-    const checkoutBtn = document.getElementById("cart-checkout-btn");
-
-    cartBody.innerHTML = "";
-
-    if (currentuser.cart.length !== 0) {
-        // Show the checkout button and generate cart items HTML
-        checkoutBtn.classList.add("active");
-        checkoutBtn.disabled = false;
-
-        let cartItemhtml = "";
-        currentuser.cart.forEach(item => {
-            let product = getProduct(item);
-            cartItemhtml += `
-                    <div class="modal-container cart-item" data-productID="${product.id}">
-                        <div class="img-container">
-                            <img src="${product.image}" onerror="this.src='./asset/img/catalogue/coming-soon.jpg'">
-                        </div>
-                        <div class="cart-item-info">
-                            <p class="display-product-name">${product.name}</p>
-                            <p>Brand: <span class="display-product-brand">${product.brand}</span></p>
-                            <p>Size: <span class="display-product-size">${product.size}</span></p>
-                            <p class="display-product-price">${vnd(item.originalPrice)}</p>
-                        </div>
-                        <div class="cart-item-control">
-                            <a onclick="deleteCartItem('${product.id}', ${product.size}, this)">
-                                <i class="fa-regular fa-circle-xmark"></i>
-                            </a>
-                            <div class="cart-item-amount">
-                                <button class="minus is-form" onclick="decreasingNumber(this); updateCartAll('${product.id}',${product.size}, this)">
-                                    <i class="fa-solid fa-minus"></i>
-                                </button>
-                                <input class="input-qty" max="100" min="1" name="" type="number" value="${product.quantity}" onkeyup="updateCartAll('${product.id}',${product.size}, this)">
-                                <button class="plus is-form" onclick="increasingNumber(this); updateCartAll('${product.id}',${product.size}, this)">
-                                    <i class="fa-solid fa-plus"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-        });
-        // Inject cart items into cart body
-        cartBody.innerHTML = cartItemhtml;
-    } else {
-        // If the cart is empty, show the empty message and hide checkout button
-        checkoutBtn.classList.remove("active");
-        checkoutBtn.disabled = true;
-        displayWhenEmpty(".cart .cart-body", displayEmptyHTML_cart);
-    }
-
-}
-
-// CATALOGUE - CART - END DEFINE /////////////////////////////////////////////////////
-
 // CATALOGUE - ORDER HISTORY - BEGIN DEFINE /////////////////////////////////////////////////////
 
-function showOrderDetail(orderID) {
-    const orders = JSON.parse(localStorage.getItem("orders")) || [];
-    const order = orders[orders.findIndex(order => order.id == orderID)];
-    const orderDetail = document.getElementById("order-detail");
-    orderDetail.innerHTML = `
-                    <div class="modal-container mdl-cnt">
-                    <h3 class="modal-container-title">ORDER DETAIL</h3>
-                    <a onclick="closeModal()" style="position: absolute; right: 16px"><i class="fa-regular fa-circle-xmark"></i></a>
-                    <div class="order-detail-row">
-                        <span><i class="fa-solid fa-hashtag"></i>Order ID: </span>
-                        <span>${order.id}</span>
-                    </div>
-                    <div class="order-detail-row">
-                        <span><i class="fa-regular fa-calendar"></i>Purchase date: </span>
-                        <span>${formatDate(order.orderDate)}</span>
-                    </div>
-                    <div class="order-detail-row">
-                        <span><i class="fa-solid fa-location-dot"></i>Delivery address: </span>
-                        <span>${order.address.fullAddress}</span>
-                    </div>
-                    <div class="order-detail-row">
-                        <span><i class="fa-solid fa-map-location-dot"></i>Region: </span>
-                        <p>${order.address.region.ward}, ${order.address.region.district}, ${order.address.region.province}</p>
-                    </div>
-                    <div class="order-detail-row">
-                        <span><i class="fa-solid fa-cash-register"></i>Payment method: </span>
-                        <span>${order.payment.method}</span>
-                    </div>
-                    <div class="order-detail-row card-payment">
-                        <span><i class="fa-solid fa-user"></i>Card owner: </span>
-                        <span>${order.payment.cardOwner}</span>
-                    </div>
-                    <div class="order-detail-row card-payment">
-                        <span><i class="fa-regular fa-credit-card"></i>Card number: </span>
-                        <span>${order.payment.cardNumber}</span>
-                    </div>
-                </div>
-    `;
+// function showOrderDetail(orderID) {
+//     const orders = JSON.parse(localStorage.getItem("orders")) || [];
+//     const order = orders[orders.findIndex(order => order.id == orderID)];
+//     const orderDetail = document.getElementById("order-detail");
+//     orderDetail.innerHTML = `
+//                     <div class="modal-container mdl-cnt">
+//                     <h3 class="modal-container-title">ORDER DETAIL</h3>
+//                     <a onclick="closeModal()" style="position: absolute; right: 16px"><i class="fa-regular fa-circle-xmark"></i></a>
+//                     <div class="order-detail-row">
+//                         <span><i class="fa-solid fa-hashtag"></i>Order ID: </span>
+//                         <span>${order.id}</span>
+//                     </div>
+//                     <div class="order-detail-row">
+//                         <span><i class="fa-regular fa-calendar"></i>Purchase date: </span>
+//                         <span>${formatDate(order.orderDate)}</span>
+//                     </div>
+//                     <div class="order-detail-row">
+//                         <span><i class="fa-solid fa-location-dot"></i>Delivery address: </span>
+//                         <span>${order.address.fullAddress}</span>
+//                     </div>
+//                     <div class="order-detail-row">
+//                         <span><i class="fa-solid fa-map-location-dot"></i>Region: </span>
+//                         <p>${order.address.region.ward}, ${order.address.region.district}, ${order.address.region.province}</p>
+//                     </div>
+//                     <div class="order-detail-row">
+//                         <span><i class="fa-solid fa-cash-register"></i>Payment method: </span>
+//                         <span>${order.payment.method}</span>
+//                     </div>
+//                     <div class="order-detail-row card-payment">
+//                         <span><i class="fa-solid fa-user"></i>Card owner: </span>
+//                         <span>${order.payment.cardOwner}</span>
+//                     </div>
+//                     <div class="order-detail-row card-payment">
+//                         <span><i class="fa-regular fa-credit-card"></i>Card number: </span>
+//                         <span>${order.payment.cardNumber}</span>
+//                     </div>
+//                 </div>
+//     `;
 
-    if (order.payment.method.toLowerCase() != "card") {
-        orderDetail.querySelectorAll(".card-payment").forEach(item => item.style.display = "none");
-    }
+//     if (order.payment.method.toLowerCase() != "card") {
+//         orderDetail.querySelectorAll(".card-payment").forEach(item => item.style.display = "none");
+//     }
 
-    orderDetail.classList.toggle("open");
-}
+//     orderDetail.classList.toggle("open");
+// }
 
 function getOrderHistoryCart(orderCart) {
     let OHCarthtml = ``;
@@ -888,6 +434,9 @@ function detailProduct(id) {
             document.querySelector('#product-detail-content').innerHTML = html;
             modal.classList.add('open'); // Hiện modal
             body.style.overflow = "hidden"; // Ẩn scroll của body
+
+            // Đăng ký sự kiện chọn size và xử lý add-to-cart sau khi modal được mở
+            setupEventListeners();
         })
         .catch(error => console.error("Lỗi khi tải sản phẩm:", error));
 }
@@ -899,113 +448,452 @@ document.querySelector('.modal-close').addEventListener('click', function () {
 });
 
 
-    // // Select a shoes size
-    // let selectedSize;
-    // document.querySelector(".size-container").addEventListener("click", (event) => {
-    //     if (event.target.tagName === "BUTTON") {
-    //         document.querySelectorAll(".size-container button").forEach(button => {
-    //             button.classList.remove("active");
-    //         });
+async function checkLogin() {
+    try {
+        const res = await fetch("/Web2/src/controller/db_controller/cart.php?action=check_login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" }
+        });
 
-    //         event.target.classList.add("active");
-    //         selectedSize = event.target.textContent.trim();
-    //         console.log("Selected size: " + selectedSize);
-    //     }
-    // });
-
-    // modal.querySelector('.button-dat').addEventListener('click', () => {
-    //     if (!selectedSize) {
-    //         toastMsg({ title: "REMINDER", message: "Please chose a shoe size first!", type: "warning" });
-    //         return;
-    //     }
-
-    //     if (localStorage.getItem('currentuser')) {
-    //         addCart(infoProduct.id, selectedSize, parseInt(qty.value), infoProduct.price);
-    //     } else {
-    //         toastMsg({ title: "REMINDER", message: "Please login first!", type: "warning" });
-    //         closeModal();
-    //     }
-    // });
-
-    // modal.querySelector(".checkout-btn").addEventListener("click", () => {
-    //     if (!selectedSize) {
-    //         toastMsg({ title: "REMINDER", message: "Please chose a shoe size first!", type: "warning" });
-    //         return;
-    //     }
-
-    //     if (localStorage.getItem('currentuser')) {
-    //         addCart(infoProduct.id, selectedSize, parseInt(qty.value), infoProduct.price);
-    //         showCartCheckout();
-    //         toggleModal("checkout-page");
-    //     } else {
-    //         toastMsg({ title: "REMINDER", message: "Please login first!", type: "warning" });
-    //         closeModal();
-    //     }
-    // });
-
-
-
-// Phân trang 
-
-let currentPage = 1;
-function displayList(productAll, perPage, currentPage) {
-    let start = (currentPage - 1) * perPage;
-    let end = (currentPage - 1) * perPage + perPage;
-    let productShow = productAll.slice(start, end);
-    displayProducts(productShow);
-}
-
-
-function setupPagination(productAll, perPage) {
-    const pageNav = document.querySelector('.page-nav'); // Get the pagination container
-    const pageNavList = document.querySelector('.page-nav-list'); // Get the list inside pagination
-
-    // Clear previous pagination content
-    pageNavList.innerHTML = '';
-
-    // Handle case where no products are available
-    if (productAll.length === 0 || productAll.length <= perPage) {
-        pageNav.style.display = 'none'; // Hide pagination
-        return; // Exit the function early
-    }
-
-    // Show pagination if there are products
-    pageNav.style.display = 'flex'; // Ensure pagination is visible
-
-    // Calculate the number of pages
-    let page_count = Math.ceil(productAll.length / perPage);
-
-    // Generate pagination items
-    for (let i = 1; i <= page_count; i++) {
-        let li = paginationChange(i, productAll, currentPage);
-        pageNavList.appendChild(li);
-    }
-}
-
-function paginationChange(page, productAll, currentPage) {
-    let node = document.createElement(`li`);
-    node.classList.add('page-nav-item');
-    node.innerHTML = `<a href="javascript:;">${page}</a>`;
-    if (currentPage == page) node.classList.add('active');
-    node.addEventListener('click', function () {
-        currentPage = page;
-        displayList(productAll, perPage, currentPage);
-        let t = document.querySelectorAll('.page-nav-item.active');
-        for (let i = 0; i < t.length; i++) {
-            t[i].classList.remove('active');
+        // Kiểm tra phản hồi có hợp lệ và là JSON không
+        if (!res.ok) throw new Error("Network response was not ok");
+        
+        const contentType = res.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+            throw new Error("Expected JSON, got something else!");
         }
-        node.classList.add('active');
-        window.scrollTo({ top: 700, behavior: 'smooth' });
+
+        const data = await res.json();
+
+        if (!data.success) {
+            toastMsg({
+                title: data.title || "REMINDER",
+                message: data.message || "Please login first!",
+                type: data.type || "info"
+            });
+            return false;
+        }
+
+        return true;
+    } catch (err) {
+        console.error("Login check error:", err);
+        toastMsg({
+            title: "ERROR",
+            message: "Can not detect the login status!",
+            type: "error"
+        });
+        return false;
+    }
+}
+
+// Đăng ký sự kiện chọn size và thêm vào giỏ hàng
+function setupEventListeners() {
+    let selectedSizeId = null;
+
+    // Kiểm tra xem phần tử size-container có tồn tại không
+    const sizeContainer = document.querySelector(".size-container");
+    if (!sizeContainer) {
+        console.error("Không tìm thấy phần tử size-container!");
+        return;
+    }
+
+    // Xử lý chọn size
+    sizeContainer.addEventListener("click", (event) => {
+        if (event.target.tagName === "BUTTON") {
+            // Loại bỏ active class từ tất cả các button
+            document.querySelectorAll(".size-container button").forEach(button => {
+                button.classList.remove("active");
+            });
+            event.target.classList.add("active");
+
+            // Lấy ProductSizeID từ data-sizeid
+            selectedSizeId = event.target.getAttribute('data-sizeid');
+            if (selectedSizeId) {
+                console.log("Selected ProductSizeID: " + selectedSizeId);
+            } else {
+                console.error("Không thể lấy ProductSizeID từ button!");
+            }
+        }
+    });
+
+    // Kiểm tra phần tử add-cart có tồn tại không trước khi đăng ký sự kiện
+    const addCartButton = document.querySelector('#add-cart');
+    if (!addCartButton) {
+        console.error("Không tìm thấy nút 'Add to Cart'!");
+        return;
+    }
+
+    // Sự kiện "Add to Cart"
+    addCartButton.addEventListener('click', async () => {
+        if (!selectedSizeId) {
+            toastMsg({ title: "REMINDER", message: "Please choose a size first!", type: "info" });
+            return;
+        }
+    
+        const isLoggedIn = await checkLogin();
+        if (!isLoggedIn) return;
+    
+        let quantityInput = document.querySelector(".input-qty");
+        let quantity = quantityInput ? parseInt(quantityInput.value) : 1;
+        let price = parseInt(document.querySelector(".current-price").dataset.price || 0);
+    
+        try {
+            const response = await fetch("/Web2/src/controller/db_controller/cart.php?action=add_to_cart", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ productsizeid: selectedSizeId, quantity, price })
+            });
+    
+            console.log("Response Status: ", response.status); // Log mã trạng thái HTTP
+            const textResponse = await response.text(); // Đọc phản hồi dưới dạng text
+    
+            console.log("Raw response: ", textResponse); // Log nội dung raw của phản hồi
+    
+            // Kiểm tra xem phản hồi có phải là JSON không
+            let data;
+            try {
+                data = JSON.parse(textResponse); // Cố gắng chuyển đổi nội dung thành JSON
+            } catch (error) {
+                console.error("Response is not valid JSON:", error);
+                toastMsg({ title: "ERROR", message: "Server response is not JSON", type: "error" });
+                return;
+            }
+    
+            if (data.success) {
+                toastMsg({ title: "SUCCESS", message: "Added successfully!", type: "success" });
+                loadCartSummary(); 
+                if (quantityInput) quantityInput.value = 1;
+                document.querySelector('.modal.product-detail').classList.remove('open');
+                document.body.style.overflow = "auto";
+
+            } else {
+                toastMsg({ title: "ERROR", message: data.message || "Error occurred.", type: "error" });
+            }
+        } catch (err) {
+            console.error("Lỗi khi fetch:", err);
+        }
+    });
+    
+    
+
+    // Kiểm tra phần tử checkout-btn có tồn tại không trước khi đăng ký sự kiện
+    const checkoutButton = document.querySelector("#checkout-modal-btn");
+    if (!checkoutButton) {
+        console.error("Không tìm thấy nút 'Buy Now'!");
+        return;
+    }
+
+    // Sự kiện "Buy Now"
+    checkoutButton.addEventListener("click", async () => {
+        if (!selectedSizeId) {
+            toastMsg({ title: "REMINDER", message: "Please choose a size first!", type: "info" });
+            return;
+        }
+    
+        const isLoggedIn = await checkLogin();
+        if (!isLoggedIn) return;
+    
+        let quantityInput = document.querySelector(".product-detail .input-qty");
+        let quantity = quantityInput ? parseInt(quantityInput.value) : 1;
+        let price = parseInt(document.querySelector(".current-price").dataset.price || 0);
+
+        console.log("selectedSizeId:", selectedSizeId, "quantity:", quantity, "price:", price);
+
+        fetch("/Web2/src/controller/db_controller/cart.php?action=buy_now", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ productsizeid: selectedSizeId, quantity, price })
+        })
+        .then(res => {
+            console.log("Response Status:", res.status);
+            return res.json();
+        })
+        .then(data => {
+            if (data.success) {
+                window.checkoutMode = "buy_now";
+                toggleModal("product-detail");
+                toggleModal("checkout-page");
+                renderCheckoutUI();
+            } else {
+                toastMsg({ title: "ERROR", message: data.message || "Error occurred.", type: "error" });
+            }
+        })
+        .catch(err => console.error("Lỗi:", err));
+    });
+}    
+
+function handleReturnFromCheckout() {
+    console.log("checkoutMode hiện tại:", window.checkoutMode);
+    if (window.checkoutMode === "buy_now") {
+        // Gọi API xoá session checkout nếu đang trong chế độ 'buy now'
+        fetch("/Web2/src/controller/db_controller/cart.php?action=clear_checkout_session", {
+            method: "POST"
+        });
+    }
+
+    window.checkoutMode = null; // reset lại mode
+    toggleModal("checkout-page"); // đóng modal
+    document.body.style.overflow = "auto";
+}
+
+
+function renderCheckoutUI() {
+    console.log("checkoutMode trong renderCheckoutUI:", window.checkoutMode);
+    const checkoutBody = document.querySelector(".checkout-page .cart-body");
+    const totalPriceElem = document.querySelector(".checkout-page .display-totalprice");
+
+    // Kiểm tra phần tử có tồn tại không trước khi thao tác
+    if (!checkoutBody || !totalPriceElem) {
+        console.warn("Không tìm thấy .cart-body hoặc .display-totalprice trong checkout-page.");
+        return;
+    }
+
+    // Giả sử bạn đã lưu thông tin trong session, bây giờ fetch dữ liệu từ session
+    fetch("/Web2/src/controller/db_controller/cart.php?action=get_checkout_session", {method: "POST"})
+    .then(res => {
+        if (!res.ok) throw new Error("Lỗi khi fetch dữ liệu từ session.");
+            return res.json(); // Giờ chỗ này sẽ không lỗi nữa
+        })    
+        .then(data => {
+            if (!data.success || !data.product) {
+                checkoutBody.innerHTML = "<p>Không có sản phẩm nào trong session.</p>";
+                totalPriceElem.innerHTML = "0 VND";
+                document.querySelectorAll(".display-totalorder").forEach(el => el.innerText = "0 VND");
+                return;
+            }
+
+            // Lấy thông tin sản phẩm duy nhất từ session
+            const product = data.product;
+
+            // Hiển thị sản phẩm duy nhất vào giao diện
+            const checkoutHTML = `
+                <div class="modal-container cart-item" data-productID="${product.ProductSizeID}">
+                    <div class="img-container">
+                        <img src="${product.product_image}" onerror="this.src='/assets/img/placeholder.jpg'">
+                    </div>
+                    <div class="cart-item-info">
+                        <p class="display-product-name">${product.product_name}</p>
+                        <p>Size: <span class="display-product-size">${product.Size}</span></p>
+                        <p class="display-product-price" style="position: absolute; bottom: 1.5rem; right: 0;">${vnd(product.Price)}</p>
+                    </div>
+                    <div class="cart-item-amount">
+                        <p>x<span class="display-product-quantity">${product.Quantity}</span></p>
+                    </div>
+                </div>
+            `;
+
+            // Render sản phẩm vào body modal
+            checkoutBody.innerHTML = checkoutHTML;
+            // Hiển thị tổng giá (vì chỉ có một sản phẩm, tổng giá là giá sản phẩm * số lượng)
+            totalPriceElem.innerHTML = vnd(product.Price * product.Quantity);
+            updateBuyNowSummary(product);
+        })
+        .catch(err => {
+            console.error("Lỗi khi tải dữ liệu từ session:", err);
+            checkoutBody.innerHTML = "<p>Đã xảy ra lỗi khi tải dữ liệu từ session.</p>";
+            totalPriceElem.innerHTML = "0 VND";
+        });
+}
+
+function updateBuyNowSummary(product) {
+    const DELIVERY_FEE = 30000;
+    const totalPrice = product.Price * product.Quantity;
+    const totalOrder = totalPrice + DELIVERY_FEE;
+
+    document.querySelectorAll(".display-totalprice").forEach(el => el.innerText = vnd(totalPrice));
+    document.querySelectorAll(".display-totalorder").forEach(el => el.innerText = vnd(totalOrder));
+}
+
+
+
+// CART - BEGIN DEFINE /////////////////////////////////////////////
+
+
+// Cập nhật hiển thị tổng số lượng và giá tiền
+function updateCartSummary(totalQty, totalPrice) {
+    const DELIVERY_FEE = 30000;
+
+    document.querySelectorAll(".display-cart-total-amount").forEach(el => el.innerText = totalQty);
+    document.querySelectorAll(".display-totalprice").forEach(el => el.innerText = vnd(totalPrice));
+    document.querySelectorAll(".display-totalorder").forEach(el => {
+        const finalTotal = totalPrice + DELIVERY_FEE;
+        el.innerText = vnd(finalTotal);
+    });
+}
+
+
+// Load tóm tắt cart (dùng riêng cho header)
+function loadCartSummary(callback) {
+    fetch("controller/db_controller/cart.php?action=get_cart")
+        .then(res => res.json())
+        .then(data => {
+            let totalQty = 0;
+            let totalPrice = 0;
+            if (data.success) {
+                data.cart.forEach(item => {
+                    totalQty += parseInt(item.Quantity);
+                    totalPrice += item.Quantity * item.Price;
+                });
+            }
+            updateCartSummary(totalQty, totalPrice);
+            if (callback) callback();
+        })
+        .catch(err => {
+            console.error("Failed to load cart summary", err);
+            updateCartSummary(0, 0);
+            if (callback) callback();
+        });
+}
+
+// Xử lý cập nhật số lượng
+function updateCartAll(productSizeID, size, el) {
+    const parent = el.closest(".cart-item");
+    const input = parent.querySelector(".input-qty");
+    let quantity = parseInt(input.value);
+
+    if (quantity < 1) quantity = 1;
+    if (quantity > 100) quantity = 100;
+    input.value = quantity;
+
+    fetch("controller/db_controller/cart.php?action=update_cart", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productsizeid: productSizeID, quantity })
     })
-    return node;
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                // toastMsg({ title: "Success", message: data.message, type: "success" });
+                showCart(); // reload cart
+                loadCartSummary();
+            } else {
+                toastMsg({ title: "Error", message: data.message, type: "error" });
+            }
+        });
 }
 
-window.onload = () => {
-    window.scrollTo({ top: 0 });
-    initializeProvinces();
+// Xử lý xóa sản phẩm
+function deleteCartItem(productsizeid, el) {
+    fetch("controller/db_controller/cart.php?action=delete_cart_item", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productsizeid })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            toastMsg({ title: "Deleted", message: data.message, type: "info" });
+            showCart(); // reload cart
+            loadCartSummary();
+        } else {
+            toastMsg({ title: "ERROR", message: data.message, type: "error" });
+        }
+    });
 }
 
-// CATALOGUE - PRODUCTS - END DEFINE /////////////////////////////////////////////////////
+
+// Hiển thị giỏ hàng
+function showCart() {
+    const cartBody = document.querySelector(".cart .cart-body");
+    const checkoutBtn = document.getElementById("cart-checkout-btn");
+
+    if (!cartBody || !checkoutBtn) return;
+
+    fetch("controller/db_controller/cart.php?action=get_cart")
+        .then(res => {
+            if (!res.ok) throw new Error("Network response was not ok");
+
+            const contentType = res.headers.get("content-type");
+            if (!contentType || !contentType.includes("application/json")) {
+                throw new Error("Expected JSON, got something else!");
+            }
+
+            return res.json();
+        })
+        .then(data => {
+            cartBody.innerHTML = "";
+
+            // Case 1: Chưa đăng nhập
+            if (data.login_required === true) {
+                checkoutBtn.classList.remove("active");
+                checkoutBtn.disabled = true;
+                return;
+            }
+
+            // Case 2: Đã login nhưng giỏ trống
+            if (!data.success || !Array.isArray(data.cart) || data.cart.length === 0) {
+                checkoutBtn.classList.remove("active");
+                checkoutBtn.disabled = true;
+
+                displayWhenEmpty(".cart .cart-body", displayEmptyHTML_cart);
+                updateCartSummary(0, 0);
+                return;
+            }
+
+            // Case 3: Có sản phẩm trong giỏ
+            checkoutBtn.classList.add("active");
+            checkoutBtn.disabled = false;
+
+            let cartItemhtml = "";
+            let totalQty = 0;
+            let totalPrice = 0;
+
+            data.cart.forEach(item => {
+                totalQty += parseInt(item.Quantity);
+                totalPrice += item.Quantity * item.Price;
+                console.log(item);
+                cartItemhtml += `
+                    <div class="modal-container cart-item" data-productID="${item.ProductSizeID}">
+                        <div class="img-container">
+                            <img src="${item.product_image}" onerror="this.src='/assets/img/placeholder.jpg'">
+                        </div>
+                        <div class="cart-item-info">
+                            <p class="display-product-name">${item.product_name}</p>
+                            <p>Size: <span class="display-product-size">${item.Size}</span></p>
+                            <p class="display-product-price">${vnd(item.Price)}</p>
+                        </div>
+                        <div class="cart-item-control">
+                            <a onclick="deleteCartItem(${item.ProductSizeID}, this)">
+                                <i class="fa-regular fa-circle-xmark"></i>
+                            </a>
+                            <div class="cart-item-amount">
+                                <button class="minus is-form" 
+                                    onclick="decreasingNumber(this); updateCartAll(${item.ProductSizeID}, '${item.Size}', this.nextElementSibling)">
+                                    <i class="fa-solid fa-minus"></i>
+                                </button>
+                                <input class="input-qty" 
+                                    max="100" min="1" type="number" value="${item.Quantity}" 
+                                    onkeyup="updateCartAll(${item.ProductSizeID}, '${item.Size}', this)">
+                                <button class="plus is-form" 
+                                    onclick="increasingNumber(this); updateCartAll(${item.ProductSizeID}, '${item.Size}', this.previousElementSibling)">
+                                    <i class="fa-solid fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            cartBody.innerHTML = cartItemhtml;
+            updateCartSummary(totalQty, totalPrice);
+        })
+        .catch(err => {
+            console.error("Failed to load cart:", err);
+            displayWhenEmpty(".cart .cart-body", "<p>Error occured while loading cart.</p>");
+            updateCartSummary(0, 0);
+        });
+}
+
+
+// Format tiền VNĐ
+function vnd(x) {
+    return x.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
+}
+
+
+// CATALOGUE - CART - END DEFINE /////////////////////////////////////////////////////
+
+
 // CATALOGUE - END DEFINE /////////////////////////////////////////////////////
 
 // BANNER - BEGIN /////////////////////////////////////////////////////
@@ -1070,3 +958,8 @@ setInterval(() => {
 
 
 // BANNER - END /////////////////////////////////////////////////////
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    loadCartSummary(); // gọi để update số lượng trong header khi trang vừa load
+});

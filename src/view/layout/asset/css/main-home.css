@@ -1,0 +1,104 @@
+.slick-arrow {
+    position: absolute;
+    top: 40%;
+    transform: translateY(-50%);
+    z-index: 2;
+    background-color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+/* .slick-arrow:hover {
+    opacity: 1;
+} */
+
+/* Left and right positioning */
+.slick-prev {
+    left: -25px;
+}
+.slick-next {
+    right: -25px;
+}
+
+/* Optional: Custom arrow icons */
+.slick-prev::before,
+.slick-next::before {
+    font-size: 20px;
+    color: black;
+}
+
+.slick-prev::before {
+    content: '←'; /* or '\2190' */
+}
+
+.slick-next::before {
+    content: '→'; /* or '\2192' */
+}
+.slick-prev {
+    left: 5px;
+}
+.slick-next {
+    right: 5px;
+}
+
+/* trending display */
+
+.trending-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    width: 100%;
+    height: 100%;
+    padding: 20px 0;
+}
+.trending-box{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 5px 0;
+}
+.trending-box:hover{
+    cursor: pointer;
+    transform: scale(1.05);
+    transition: all 0.3s ease-in-out;
+    background-color: rgb(229, 225, 220);
+}
+.trending-box img{
+    width: 70%;
+    height: 70%;
+    /* height: 100%; */
+    object-fit: cover;
+    border-radius: 10px;
+}
+.trending-box h3{
+    font-size: 20px;
+    font-weight: bold;
+    color: #000;
+    /* margin-top: 10px; */
+}
+
+.main-products-banner {
+    /* display: flex;
+    justify-content: center;
+    align-items: center; */
+    width: 100%;
+    padding: 20px 0;
+    
+}
+
+.main-products-banner-img {
+    max-width: 100%;
+    object-fit: cover;
+    max-height: 100vh;
+    display: block;
+    margin: 0 auto; /* Center the image horizontally */
+}
+
