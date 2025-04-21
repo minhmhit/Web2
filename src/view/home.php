@@ -86,6 +86,10 @@ require_once "./controller/controller.php";
                         <p>YOUR CART</p>
                         <a onclick="toggleModal('cart') ">CLOSE</a>
                     </div>
+                    <div id="select-all-wrapper">
+                        <input type="checkbox" id="select-all-checkbox" onclick="handleSelectAll(this)">
+                        <label for="select-all-checkbox" style="cursor: pointer;">Choose all products</label>
+                    </div>
                     <div class="cart-body"></div>
                     <div class="cart-footer">
                         <div class="cart-totalprice">

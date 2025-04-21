@@ -45,9 +45,8 @@ if (isset($data['action']) && ($data['action'] === 'checkout' || $data['action']
         $cardOwner = $data["payment"]["cardOwner"] ?? null;
         $cardNumber = $data["payment"]["cardNumber"] ?? null;
         $cvv = $data["payment"]["cvv"] ?? null;
-        $expiryDate = $data["payment"]["expiryDate"] ?? null;  // Dạng YYYY-MM
+        $expiryDate = $data["payment"]["expiryDate"] ?? null;
 
-        // ⏺️ Lưu thẻ nếu có tick checkbox
         if (!empty($data["payment"]["saveCard"])) {
             $saveCardSuccess = executeQuery(
                 "INSERT INTO savedpayments (UserID, CardOwner, CardNumber, CVV, ExpiryDate)
@@ -67,28 +66,27 @@ if (isset($data['action']) && ($data['action'] === 'checkout' || $data['action']
         }        
     }
 
-    // 🛒 Lấy sản phẩm, nếu là "Buy Now" thì lấy sản phẩm từ request
+    // 🛒 Xử lý sản phẩm được mua
     if ($data['action'] === 'buy_now_checkout') {
         if (!isset($_SESSION['checkout_products'])) {
             http_response_code(400);
             echo json_encode(["error" => "Không có sản phẩm trong phiên Buy Now."]);
             exit();
         }
-    
+
         $product = $_SESSION['checkout_products'];
-    
+
         if (!isset($product['ProductSizeID']) || !isset($product['Price']) || !isset($product['Quantity'])) {
             http_response_code(400);
             echo json_encode(["error" => "Dữ liệu sản phẩm không hợp lệ."]);
             exit();
         }
-    
+
         $productSizeId = $product['ProductSizeID'];
         $quantity = $product['Quantity'];
-    
         $unitPrice = $product['Price'];
         $subtotal = $unitPrice * $quantity;
-    
+
         $cart = [
             [
                 'ProductSizeID' => $productSizeId,
@@ -98,12 +96,13 @@ if (isset($data['action']) && ($data['action'] === 'checkout' || $data['action']
             ]
         ];  
     } else {
-        // Nếu là "checkout" thông thường, lấy giỏ hàng
-        $cart = getAll("SELECT * FROM cart WHERE UserID = $userId");
-        if (empty($cart)) {
-            echo json_encode(["success" => false, "message" => "Giỏ hàng trống."]);
+        // Lấy danh sách sản phẩm đã chọn (checkbox)
+        if (!isset($data['items']) || !is_array($data['items']) || empty($data['items'])) {
+            echo json_encode(["success" => false, "message" => "Không có sản phẩm được chọn để thanh toán."]);
             exit();
         }
+
+        $cart = $data['items']; // Mảng các sản phẩm được tick
     }
 
     // 🧾 Tạo đơn hàng
@@ -121,7 +120,7 @@ if (isset($data['action']) && ($data['action'] === 'checkout' || $data['action']
 
     $orderId = getOne("SELECT MAX(OrderID) as id FROM orders WHERE UserID = $userId")['id'];
 
-    // 📦 Ghi từng item vào orderdetail
+    // 📦 Ghi vào bảng orderdetail
     foreach ($cart as $item) {
         $productSizeId = $item['ProductSizeID'];
         $quantity = $item['Quantity'];
@@ -148,9 +147,12 @@ if (isset($data['action']) && ($data['action'] === 'checkout' || $data['action']
         exit();
     }
 
-    // 🧹 Xoá giỏ hàng nếu là checkout thông thường
+    // 🧹 Xoá sản phẩm đã mua khỏi giỏ (nếu là checkout)
     if ($data['action'] === 'checkout') {
-        executeQuery("DELETE FROM cart WHERE UserID = ?", [$userId]);
+        foreach ($cart as $item) {
+            $productSizeId = $item['ProductSizeID'];
+            executeQuery("DELETE FROM cart WHERE UserID = ? AND ProductSizeID = ?", [$userId, $productSizeId]);
+        }
     }
 
     echo json_encode(["success" => true, "orderId" => $orderId, "message" => "Đặt hàng thành công!"]);

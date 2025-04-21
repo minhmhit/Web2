@@ -83,25 +83,35 @@ let per_Page = 8;
 
 function displayProducts(productList) {
   let div = document.querySelector(".product-box-container");
-  div.html = "";
+  div.innerHTML = "";
 
   let html = "";
   productList.forEach((product) => {
+    // Kiểm tra trạng thái "hết hàng" và áp dụng class "disabled"
+    const isOutOfStock = product.stockStatus?.toLowerCase() === 'out of stock'; // Sửa "hết hàng" thành 'out of stock' nếu cần
+    const stockStatusClass = product.stockStatus?.toLowerCase().replace(/\s+/g, '-');
+
+    // Tạo chuỗi HTML giống PHP của bạn
     html += `
-    <div class="product-box" onclick="detailProduct('${product.id}')">
+      <div class="product-box ${isOutOfStock ? 'disabled' : ''}" 
+           ${isOutOfStock ? '' : `onclick="detailProduct('${product.id}')"`}>
         <div class="img-container">
-            <img src="${product.image}" alt="${
-      product.name
-    }" onerror="this.src='./asset/img/catalogue/coming-soon.jpg'" />
+          <div class="stock-status ${stockStatusClass}">
+            ${product.stockStatus}
+          </div>
+          <img src="${product.image}" alt="${product.name}"
+               onerror="this.src='view/layout/asset/img/catalogue/coming-soon.jpg'" />
         </div>
         <div class="shoes-name">${product.name}</div>
         <div class="shoes-price">${vnd(product.price)}</div>
-    </div>
-`;
+      </div>
+    `;
   });
+
   div.innerHTML = html;
   displayWhenEmpty(".product-box-container", displayEmptyHTML_catalogue);
 }
+
 
 ///
 

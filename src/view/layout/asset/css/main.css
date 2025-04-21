@@ -785,6 +785,7 @@ header {
     transform: none;
     box-shadow: none;
     border-radius: 0;
+    padding-left: 3rem;
 }
 
 .modal-container.cart-item .cart-item-info {
@@ -826,6 +827,79 @@ header {
     border: none;
 }
 
+/* CSS cho checkbox */
+.checkout-checkbox {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid var(--border-color);
+    background: white;
+    cursor: pointer;
+    position: absolute;
+    left: 0.25rem; /* canh bên trái một tí */
+    top: 50%; /* đặt ở giữa theo chiều cao của cha */
+    transform: translateY(-50%); /* đẩy nó lên nửa chiều cao để thật sự giữa */
+    transition: all 0.3s ease;
+}
+
+/* Khi được chọn */
+.checkout-checkbox:checked {
+    background: linear-gradient(120deg, var(--theme-color-1), var(--theme-color-2));
+    border-color: var(--theme-color-1);
+}
+
+/* Thêm kiểu cho item bị hết hàng */
+.cart-item.out-of-stock {
+    opacity: 0.5; /* Làm mờ toàn bộ item */
+    pointer-events: none; /* Không thể click vào toàn bộ item nếu hết hàng */
+}
+
+/* Khi checkbox bị disable */
+.checkout-checkbox:disabled {
+    pointer-events: none; /* Không cho phép click vào checkbox */
+    /* opacity: 0.5; */
+    cursor: not-allowed; /* Thay đổi con trỏ khi hover qua checkbox */
+    border-color: gray;
+    background-color: darkgray;
+}
+
+/* Thêm kiểu cho label hoặc phần tử chứa checkbox */
+.cart-item-checkbox input[type="checkbox"]:disabled + label {
+    color: #aaa; /* Làm mờ label */
+}
+
+/* Hiệu ứng hover */
+.checkout-checkbox:hover {
+    border-color: var(--theme-color-2);
+}
+
+#select-all-wrapper {
+    display: flex;
+    margin-top: 15px;
+}
+
+#select-all-checkbox {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid var(--border-color);
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-right: 10px;
+    margin-left: 0.25rem;
+}
+
+#select-all-checkbox:checked {
+    background: linear-gradient(120deg, var(--theme-color-1), var(--theme-color-2));
+    border-color: var(--theme-color-1);
+}
+
+#select-all-checkbox:hover {
+    border-color: var(--theme-color-2);
+}
 
 /* ///////////////////////////////// USER - END ///////////////////////////////// */
 
@@ -941,7 +1015,7 @@ header {
     display: flex;
     align-items: center;
     width: 95%;
-    margin-bottom: 20px;
+    margin: 0 auto 20px auto;
 }
 
 .search-bar label {
@@ -1256,9 +1330,48 @@ header {
     cursor: pointer;
 }
 
+.product-box.disabled {
+    pointer-events: none; 
+    opacity: 0.6; 
+    cursor: not-allowed;
+}
+
 .product-box .img-container {
     max-width: none;
     overflow: hidden;
+    position: relative;
+}
+
+.stock-status {
+    height: 30px;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    outline: 1px solid black;
+    color: black;
+    padding: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;   /* canh dọc giữa */
+    justify-content: center; /* canh ngang giữa */
+    text-align: center;  
+}
+
+.stock-status.low-stock {
+    width: 90px;
+    background-color: #fec333;
+}
+
+.stock-status.out-of-stock {
+    width: 120px;
+    background-color: #eb5454;
+}
+
+.stock-status.in-stock {
+    display: none;
 }
 
 .product-box .img-container img {
@@ -1475,6 +1588,15 @@ h2.product-title {
 .size-button.active {
     filter: invert(100%);
 }
+
+.size-button.disabled {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 0.6;
+}
+
 
 /* Page Nav  */
 

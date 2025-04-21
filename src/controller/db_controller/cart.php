@@ -31,13 +31,17 @@ $data = json_decode(file_get_contents("php://input"));
 switch ($_SERVER['REQUEST_METHOD']) {
     case 'GET':
         if ($_GET['action'] == 'get_cart') {
-            $cart_items = getAll("SELECT c.ProductSizeID, c.Quantity, c.UnitPrice AS Price, 
-                                        p.ProductName AS product_name, p.ImageURL AS product_image, 
-                                        ps.size AS Size
-                                  FROM cart c
-                                  JOIN productsize ps ON c.ProductSizeID = ps.ProductSizeID
-                                  JOIN product p ON ps.ProductID = p.ProductID
-                                  WHERE c.UserID = $user_id");
+            $cart_items = getAll("SELECT c.ProductSizeID, 
+                                        c.Quantity, 
+                                        c.UnitPrice AS Price, 
+                                        p.ProductName AS product_name, 
+                                        p.ImageURL AS product_image, 
+                                        ps.size AS Size,
+                                        ps.StockQuantity
+                                    FROM cart c
+                                    JOIN productsize ps ON c.ProductSizeID = ps.ProductSizeID
+                                    JOIN product p ON ps.ProductID = p.ProductID
+                                    WHERE c.UserID = $user_id");
 
             if (count($cart_items) > 0) {
                 echo json_encode(['success' => true, 'cart' => $cart_items]);

@@ -25,7 +25,14 @@ if (!$product) {
             <button class="minus is-form" type="button" value="-" onclick="decreasingNumber(this)">
                 <i class="fa-solid fa-minus"></i>
             </button>
-            <input class="input-qty" max="100" min="1" type="number" value="1">
+            
+            <input class="input-qty"
+                type="number"
+                min="1"
+                max="100"
+                value="1"
+                data-stock="100"  readonly>
+            
             <button class="plus is-form" type="button" value="+" onclick="increasingNumber(this)">
                 <i class="fa-solid fa-plus"></i>
             </button>
@@ -35,15 +42,19 @@ if (!$product) {
     <!-- Phần hiển thị size -->
     <div class="size-container">
     <?php
-    if (isset($product['size']) && is_array($product['size']) && !empty($product['size'])) {
-        foreach ($product['size'] as $sizeInfo) {
-            // Tách ProductSizeID và Size
-            list($productSizeId, $size) = explode('-', $sizeInfo);
-            echo "<button class='size-button' data-sizeid='{$productSizeId}'>{$size}</button>";
+    if (!empty($product['size'])) {
+        foreach ($product['size'] as $sizeData) {
+            $productSizeId = $sizeData['ProductSizeID'];
+            $size = $sizeData['Size'];
+            $stock = $sizeData['Stock'];
+    
+            // Disable nút nếu stockQuantity bằng 0
+            $disabled = ($stock <= 0) ? "disabled" : "";
+            echo "<button class='size-button' data-sizeid='{$productSizeId}' data-stock='{$stock}' {$disabled}>{$size}</button>";
         }
     } else {
         echo "<p>Không có thông tin về size cho sản phẩm này.</p>";
-    }
+    }       
     ?>
 </div>
 

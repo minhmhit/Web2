@@ -1,4 +1,10 @@
 <?php 
+if (!isset($_GET['pg']) || $_GET['pg'] == "") {
+    header("Location: index.php?pg=home");
+    exit();
+}
+
+
 include_once("controller/db_controller/api.php");
 $catalog_list = getCatalogList();
 include_once("view/header.php");
@@ -7,21 +13,21 @@ if(isset($_GET['pg'])&&($_GET['pg'])!=""){
 
     switch ($_GET['pg']) {
             
-        case 'product' :
-            // include product
-            $catalogname = "";
-            $productlist = getProduct();
-            $brandList = getAll("SELECT * FROM brand");
-            $sizeList = getAll("SELECT * FROM productsize");
-            if ((isset($_GET['idcatalog']))&&($_GET['idcatalog']>0)) {     
-                $catalogname = getCatalogname($_GET['idcatalog']);  
-                $productlist = getProductsByCatalogID($_GET['idcatalog']);    
-            }
-            if ((isset($_GET['idBrand']))&&($_GET['idBrand']>0)) {   
-                $productlist = getBrandProductByID($_GET['idBrand']);
-            }
-            include_once("view/product.php");
-            break;
+        // case 'product' :
+        //     // include product
+        //     $catalogname = "";
+        //     $productlist = getProduct();
+        //     $brandList = getAll("SELECT * FROM brand");
+        //     $sizeList = getAll("SELECT * FROM productsize");
+        //     if ((isset($_GET['idcatalog']))&&($_GET['idcatalog']>0)) {     
+        //         $catalogname = getCatalogname($_GET['idcatalog']);  
+        //         $productlist = getProductsByCatalogID($_GET['idcatalog']);    
+        //     }
+        //     if ((isset($_GET['idBrand']))&&($_GET['idBrand']>0)) {   
+        //         $productlist = getBrandProductByID($_GET['idBrand']);
+        //     }
+        //     include_once("view/product.php");
+        //     break;
 
         
 

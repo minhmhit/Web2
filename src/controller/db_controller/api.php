@@ -7,13 +7,13 @@ require_once 'db_connect.php';
 function getProduct() {
     $sql = "
         SELECT p.ProductID AS id, p.ProductName AS name, p.Price AS price, p.ImageURL AS image, 
-               c.CategoryName AS category, b.BrandName AS brand, p.Gender AS sex,
-               GROUP_CONCAT(ps.Size) AS size
+        c.CategoryName AS category, b.BrandName AS brand, p.Gender AS sex,
+        GROUP_CONCAT(ps.Size) AS size, 
+        SUM(ps.StockQuantity) AS totalStock
         FROM Product p
         LEFT JOIN Categories c ON p.CategoryID = c.CategoryID
         LEFT JOIN Brand b ON p.BrandID = b.BrandID
         LEFT JOIN ProductSize ps ON p.ProductID = ps.ProductID
-        WHERE p.ProductID != 1
         GROUP BY p.ProductID;
     ";
 
@@ -21,9 +21,21 @@ function getProduct() {
 
     // Chuyển kích thước thành mảng và thêm thuộc tính isDeleted
     foreach ($products as &$product) {
+        // Chuyển kích thước thành mảng
         $product['size'] = !empty($product['size']) ? explode(',', $product['size']) : [];
+        // Thêm thuộc tính isDeleted mặc định
         $product['isDeleted'] = false;
+    
+        // Xác định trạng thái tồn kho dựa trên tổng số lượng tồn kho
+        if ($product['totalStock'] == 0) {
+            $product['stockStatus'] = 'Out of Stock';
+        } elseif ($product['totalStock'] <= 5) {
+            $product['stockStatus'] = 'Low Stock';
+        } else {
+            $product['stockStatus'] = 'In Stock';
+        }
     }
+    
 
     return $products;
 }
@@ -32,8 +44,8 @@ function getProduct() {
 function getProductDetail($idProduct) {
     $sql = "
         SELECT p.ProductID AS id, p.ProductName AS name, p.Price AS price, p.ImageURL AS image, 
-               c.CategoryName AS category, b.BrandName AS brand, p.Gender AS sex,
-               GROUP_CONCAT(DISTINCT CONCAT(ps.ProductSizeID, '-', ps.Size) ORDER BY ps.Size ASC) AS size
+            c.CategoryName AS category, b.BrandName AS brand, p.Gender AS sex,
+            GROUP_CONCAT(DISTINCT CONCAT(ps.ProductSizeID, '-', ps.Size, '-', ps.StockQuantity) ORDER BY ps.Size ASC) AS size_raw
         FROM Product p
         LEFT JOIN Categories c ON p.CategoryID = c.CategoryID
         LEFT JOIN Brand b ON p.BrandID = b.BrandID
@@ -45,12 +57,22 @@ function getProductDetail($idProduct) {
     $product = getOne($sql); // Không cần truyền tham số
 
     if ($product) {
-        $product['size'] = !empty($product['size']) ? explode(',', $product['size']) : [];
+        $product['size'] = [];
+        if (!empty($product['size_raw'])) {
+            $sizes = explode(',', $product['size_raw']);
+            foreach ($sizes as $sizeInfo) {
+                list($productSizeId, $size, $stock) = explode('-', $sizeInfo);
+                $product['size'][] = [
+                    'ProductSizeID' => $productSizeId,
+                    'Size' => $size,
+                    'Stock' => (int)$stock
+                ];
+            }
+        }
     }
 
     return $product;
 }
-
 
 
 // function getIDCatalog ($idCatalog) {
@@ -62,27 +84,41 @@ function getProductDetail($idProduct) {
 
 function getProducts($pdo)
 {
+    // Truy vấn SQL lấy thông tin sản phẩm và các thuộc tính liên quan
     $stmt = $pdo->prepare("
         SELECT p.ProductID AS id, p.ProductName AS name, p.Price AS price, p.ImageURL AS image, 
                c.CategoryName AS category, b.BrandName AS brand, p.Gender AS sex,
-               GROUP_CONCAT(ps.Size) AS size
+               GROUP_CONCAT(ps.Size) AS size, 
+               SUM(ps.StockQuantity) AS totalStock  -- Tính tổng số lượng tồn kho
         FROM Product p
         LEFT JOIN Categories c ON p.CategoryID = c.CategoryID
         LEFT JOIN Brand b ON p.BrandID = b.BrandID
         LEFT JOIN ProductSize ps ON p.ProductID = ps.ProductID
         GROUP BY p.ProductID
     ");
+    
     $stmt->execute();
     $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Chuyển kích thước thành mảng
+    // Chuyển kích thước thành mảng và thêm thông tin tồn kho
     foreach ($products as &$product) {
+        // Chuyển kích thước thành mảng
         $product['size'] = explode(',', $product['size']);
         $product['isDeleted'] = false;
+
+        // Xác định trạng thái tồn kho dựa trên tổng số lượng tồn kho
+        if ($product['totalStock'] == 0) {
+            $product['stockStatus'] = 'Out of Stock';  // Hết hàng
+        } elseif ($product['totalStock'] <= 5) {
+            $product['stockStatus'] = 'Low Stock';    // Sắp hết hàng
+        } else {
+            $product['stockStatus'] = 'In Stock';     // Còn hàng
+        }
     }
 
     return $products;
 }
+
 
 function getSuppliers($pdo)
 {

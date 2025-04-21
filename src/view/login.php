@@ -39,7 +39,7 @@ if (isset($_POST['btnlogin'])) {
                 "title" => "Success",
                 "message" => "Login successful!",
                 "type" => "success",
-                "redirect" => "index.php"
+                "redirect" => "index.php?pg=home"
             ]);
         }
     } else {

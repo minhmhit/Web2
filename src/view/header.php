@@ -93,7 +93,11 @@
                                 </ul>
                             </div>
                         </li>
-                        <li><a onclick="toggleModal('cart'); showCart();">CART (<span class="display-cart-total-amount"><?= $_SESSION['cartQty'] ?? 0 ?></span>)</a>
+                        <li class="hide-on-mobile">
+                            <a onclick="toggleModal('cart'); showCart();"><i class="fas fa-shopping-cart"></i> 
+                                (<span class="display-cart-total-amount"><?= $_SESSION['cartQty'] ?? 0 ?></span>)
+                            </a>
+                        </li>
                     </ul>
                 </div>
                 <div class="container hamburger-menu-button hide-on-pc show-on-mobile">

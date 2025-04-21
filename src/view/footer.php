@@ -75,7 +75,7 @@
             </div>
         </footer>
         <script src="view/layout/js/initialization.js"></script>
-        <!-- <script src="view/layout/js/main.js"></script> -->
+        <script src="view/layout/js/main.js"></script>
         <!-- <script src="view/layout/js/products.js"></script> -->
         <script src="view/layout/js/checkout.js"></script>
         <script src="view/layout/js/toast-msg.js"></script>
