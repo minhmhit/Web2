@@ -910,9 +910,9 @@ header {
 .banner {
     position: relative;
     width: 98%;
-    height: 670px; /* Set your preferred height */
-    overflow: hidden; /* 0Hide anything that overflows the container */
-    margin-bottom: 60px;
+    height: 670px; 
+    overflow: hidden; 
+    margin-bottom: 110px;
 }
 
 .banner-images {
@@ -1767,6 +1767,13 @@ h2.product-title {
 .checkout-col-right {
     width: 40%;
     height: fit-content;
+    max-height: 80vh;
+}
+
+.checkout-col-right .cart-body{
+    max-height: 297px;
+    overflow-y: auto;
+    padding-right: 0.5rem;
 }
 
 .checkout-col-title {
@@ -1780,9 +1787,19 @@ h2.product-title {
 
 .cardsthanhtoan {
     display: flex;
-    justify-content: flex-end;
-    column-gap: 8px;
+    align-items: center;
 }
+
+.card-icons {
+    display: flex;
+    column-gap: 8px;
+    margin-left: auto; 
+}
+
+.cardsthanhtoan .form-group {
+    margin: 0;
+}
+
 
 .checkout-col-left .img-container {
     border: none;
@@ -1816,15 +1833,16 @@ h2.product-title {
     align-items: flex-start;
 }
 
-.region-selector , .region-select-address {
+.region-selector {
     display: flex;
     flex-wrap: wrap;
     gap: 16px;
 }
 
-.region-select , .region-select-address{
+
+.region-select {
     flex: 1;
-    width: 200px;
+    min-width: 200px;
     outline: 2px solid transparent;
     border: 1px solid var(--bg-footer-color);
     transition: all 0.25s linear;
@@ -1832,10 +1850,12 @@ h2.product-title {
     background-color: white;
 }
 
-.region-select:focus ,.region-select-address:focus{
-    outline: 2px solid var(--theme-color-2);
-    outline-offset: 0px;
+.region-selector.sign-up-region {
+    width: 450px;
+    margin-top: 15px;
+    justify-content: space-between;
 }
+
 
 .price-row,
 .sum-bill {
@@ -1859,7 +1879,6 @@ h2.product-title {
     font-size: 1rem;
     outline: 1px solid var(--border-color);
 }
-
 
 /*.....................................................*/
 .cart-main .cart-footer .cart-btns {

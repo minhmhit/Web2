@@ -95,7 +95,7 @@
                         </li>
                         <li class="hide-on-mobile">
                             <a onclick="toggleModal('cart'); showCart();"><i class="fas fa-shopping-cart"></i> 
-                                (<span class="display-cart-total-amount"><?= $_SESSION['cartQty'] ?? 0 ?></span>)
+                                (<span class="display-cart-total-amount">0</span>)
                             </a>
                         </li>
                     </ul>

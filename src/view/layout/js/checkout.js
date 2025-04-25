@@ -11,63 +11,6 @@ function togglePaymentMethod(method) {
     document.getElementById('card-option').style.display = method === 'card' ? 'block' : 'none';
 }
 
-
-function showCartCheckout() {
-    console.log("checkoutMode hiện tại:", window.checkoutMode);
-    const checkoutBody = document.querySelector(".checkout-page .cart-body");
-    const totalPriceElem = document.querySelector(".checkout-page .display-totalprice");
-
-    // Check phần tử có tồn tại không trước khi thao tác
-    if (!checkoutBody || !totalPriceElem) {
-        console.warn("Không tìm thấy .cart-body hoặc .display-totalprice trong checkout-page.");
-        return;
-    }
-
-    fetch("controller/db_controller/cart.php?action=get_cart")
-        .then(res => {
-            if (!res.ok) throw new Error("Lỗi khi fetch giỏ hàng.");
-            return res.json();
-        })
-        .then(data => {
-            if (!data.success || !Array.isArray(data.cart) || data.cart.length === 0) {
-                checkoutBody.innerHTML = "<p>Không có sản phẩm nào trong giỏ hàng.</p>";
-                totalPriceElem.innerHTML = "0 VND";
-                return;
-            }
-
-            let cartHTML = "";
-            let totalPrice = 0;
-
-            data.cart.forEach(item => {
-                totalPrice += item.Price * item.Quantity;
-
-                cartHTML += `
-                    <div class="modal-container cart-item" data-productID="${item.ProductSizeID}">
-                        <div class="img-container">
-                            <img src="${item.product_image}" onerror="this.src='/assets/img/placeholder.jpg'">
-                        </div>
-                        <div class="cart-item-info">
-                            <p class="display-product-name">${item.product_name}</p>
-                            <p>Size: <span class="display-product-size">${item.Size}</span></p>
-                            <p class="display-product-price" style="position: absolute; bottom: 1.5rem; right: 0;">${vnd(item.Price)}</p>
-                        </div>
-                        <div class="cart-item-amount">
-                            <p>x<span class="display-product-quantity">${item.Quantity}</span></p>
-                        </div>
-                    </div>
-                `;
-            });
-
-            checkoutBody.innerHTML = cartHTML;
-            totalPriceElem.innerHTML = vnd(totalPrice);
-        })
-        .catch(err => {
-            console.error("Lỗi khi tải giỏ hàng:", err);
-            checkoutBody.innerHTML = "<p>Đã xảy ra lỗi khi tải giỏ hàng.</p>";
-            totalPriceElem.innerHTML = "0 VND";
-        });
-}
-
 document.getElementById("checkout-address-new").addEventListener("input", () => {
     document.querySelector("#new-address .form-msg-error").textContent = "";
 });
@@ -77,14 +20,16 @@ document.getElementById("checkout-address-new").addEventListener("input", () => 
     });
 });
 
-function handleBuyNowCheckout() {
-    console.log("🚀 Buy Now process started");
+function handleCheckout() {
+    console.log("🚀 Unified Checkout started");
 
+    // 1. Kiểm tra địa chỉ
     if (!validateAddress()) {
         console.log("❌ Address validation failed");
         return;
     }
 
+    // 2. Kiểm tra thanh toán
     const paymentValidation = validatePayment();
     if (!paymentValidation.isPaymentValid) {
         console.log("❌ Payment validation failed");
@@ -92,8 +37,8 @@ function handleBuyNowCheckout() {
     }
 
     const isNewAddress = document.getElementById("new-address-option").checked;
-
     let address = {};
+
     if (isNewAddress) {
         address = {
             address: document.getElementById("checkout-address-new").value.trim(),
@@ -116,14 +61,12 @@ function handleBuyNowCheckout() {
 
     const paymentDetails = paymentValidation.paymentDetails;
 
-    // Không cần gửi product nữa, đã có trong session rồi nèee
+    // 3. Gửi request tạo đơn hàng (dùng session có sẵn)
     fetch("controller/db_controller/checkout.php", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            action: "buy_now_checkout",
+            action: window.checkoutMode,
             address: address,
             payment: paymentDetails
         })
@@ -134,121 +77,49 @@ function handleBuyNowCheckout() {
         try {
             const jsonData = JSON.parse(data);
             if (jsonData.success) {
-                toastMsg({ title: "Success", message: "Your order has been recorded.", type: "success" });
+                toastMsg({ title: "Success", message: "Your order has been recorded!", type: "success" });
                 window.checkoutMode = null;
                 toggleModal("checkout-page");
-
                 fetch("/Web2/src/controller/db_controller/cart.php?action=clear_checkout_session", {
                     method: "POST"
                 });
+
+                showCart();
+                loadCartSummary(); 
+                fetchHeaderQty(); 
             } else {
                 toastMsg({ title: "Error", message: jsonData.message, type: "error" });
             }
         } catch (e) {
-            toastMsg({ title: "Error", message: "Phản hồi không hợp lệ từ server.", type: "error" });
+            toastMsg({ title: "Error", message: "Invalid response from server.", type: "error" });
             console.error("Parse error:", e);
         }
     })
     .catch(err => {
         toastMsg({ title: "Error", message: "Có lỗi khi đặt hàng.", type: "error" });
-        console.error("Buy Now error:", err);
+        console.error("Checkout error:", err);
     });
 }
 
+function fetchHeaderQty() {
+    fetch("controller/db_controller/cart.php?action=get_cart")
+        .then(res => res.json())
+        .then(data => {
+            if (data.success && Array.isArray(data.cart)) {
+                let totalQty = 0;
+                data.cart.forEach(item => {
+                    const qty = item.Quantity;
 
-function handleCheckout() {
-    if (window.checkoutMode === "buy_now") {
-        handleBuyNowCheckout();
-    } else {
-        handleCheckoutFromCart();
-    }
-}
+                    totalQty += qty; // Cộng số lượng sản phẩm dù có hết hàng hay không
 
 
-function handleCheckoutFromCart() {
-    console.log("Checkout started");
-
-    // Kiểm tra địa chỉ
-    if (!validateAddress()) {
-        console.log("❌ Address validation failed");
-        return; // Nếu địa chỉ không hợp lệ thì dừng lại
-    }
-
-    // Kiểm tra phương thức thanh toán
-    const paymentValidation = validatePayment();
-    if (!paymentValidation.isPaymentValid) {
-        console.log("❌ Payment validation failed");
-        return; // Nếu phương thức thanh toán không hợp lệ thì dừng lại
-    }
-
-    console.log("✅ Passed validation, sending request...");
-
-    // Kiểm tra loại địa chỉ đang được chọn: 'new' hoặc 'default'
-    const isNewAddress = document.getElementById("new-address-option").checked;
-
-    let address = {};
-    if (isNewAddress) {
-        // Lấy thông tin địa chỉ mới
-        address = {
-            address: document.getElementById("checkout-address-new").value.trim(),
-            region: {
-                province: document.getElementById("province").value,
-                district: document.getElementById("district").value,
-                ward: document.getElementById("ward").value
-            }
-        };
-    } else {
-        // Lấy thông tin địa chỉ mặc định
-        address = {
-            address: document.getElementById("default-address").value.trim(),
-            region: {
-                province: defaultProvinceId,
-                district: defaultDistrictId,
-                ward: defaultWardId
-            }
-        };
-    }
-
-    const paymentDetails = paymentValidation.paymentDetails;
-
-    // Tạo order và gửi lên server
-    fetch("controller/db_controller/checkout.php", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            action: "checkout",
-            address: address,  // Gửi dữ liệu địa chỉ (mới hoặc mặc định)
-            payment: paymentDetails  // Gửi thông tin thanh toán
-        })
-    })
-    .then(res => res.text())  // Chuyển đổi thành text để debug lỗi HTML
-    .then(data => {
-        console.log("Server response:", data);  // Log toàn bộ response
-        try {
-            const jsonData = JSON.parse(data);  // Parse nếu là JSON hợp lệ
-            if (jsonData.success) {
-                toastMsg({ title: "Success", message: "Your order has been recorded!", type: "success" });
-                window.checkoutMode = null;
-                toggleModal("checkout-page");
-                showCart(); // reload cart
-                loadCartSummary();
+                });
+                updateCartQtyInHeader(totalQty); // Cập nhật tổng số lượng trong header
             } else {
-                toastMsg({ title: "Error", message: jsonData.message, type: "error" });
+                updateCartQtyInHeader(0);
             }
-
-        } catch (e) {
-            toastMsg({ title: "Error", message: "Invalid response from server.", type: "error" });
-            console.error("Error parsing response:", e);
-        }
-    })
-    .catch(err => {
-        toastMsg({ title: "Error", message: "There was an error processing the order.", type: "error" });
-        console.error("Order error:", err);
-    });
+        });
 }
-
 
 function validateAddress() {
     const isNew = getComputedStyle(document.getElementById("new-address")).display !== 'none';

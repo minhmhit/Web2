@@ -11,6 +11,7 @@ if (!isset($_SESSION['user']) || !isset($_SESSION['user']['userID'])) {
 
 $userId = $_SESSION['user']['userID'];
 
+// --- Lấy địa chỉ & thẻ mặc định ---
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'init') {
     $defaultAddress = getOne("SELECT Address, ProvinceID, DistrictID, WardID FROM user WHERE UserID = $userId");
     $savedCard = getOne("SELECT CardOwner, CardNumber, CVV, ExpiryDate FROM savedpayments WHERE UserID = $userId");
@@ -66,50 +67,34 @@ if (isset($data['action']) && ($data['action'] === 'checkout' || $data['action']
         }        
     }
 
-    // 🛒 Xử lý sản phẩm được mua
-    if ($data['action'] === 'buy_now_checkout') {
-        if (!isset($_SESSION['checkout_products'])) {
-            http_response_code(400);
-            echo json_encode(["error" => "Không có sản phẩm trong phiên Buy Now."]);
-            exit();
-        }
+    // 🛒 Lấy sản phẩm từ session
+    if (!isset($_SESSION['checkout_products']) || !is_array($_SESSION['checkout_products']) || count($_SESSION['checkout_products']) === 0) {
+        echo json_encode(["success" => false, "message" => "Không có sản phẩm nào để thanh toán."]);
+        exit();
+    }
 
-        $product = $_SESSION['checkout_products'];
+    $cart = json_decode(json_encode($_SESSION['checkout_products']), true); // ép về array chuẩn
 
+    // ✅ Validate từng sản phẩm (nếu muốn)
+    foreach ($cart as $product) {
         if (!isset($product['ProductSizeID']) || !isset($product['Price']) || !isset($product['Quantity'])) {
             http_response_code(400);
             echo json_encode(["error" => "Dữ liệu sản phẩm không hợp lệ."]);
             exit();
         }
-
-        $productSizeId = $product['ProductSizeID'];
-        $quantity = $product['Quantity'];
-        $unitPrice = $product['Price'];
-        $subtotal = $unitPrice * $quantity;
-
-        $cart = [
-            [
-                'ProductSizeID' => $productSizeId,
-                'Quantity' => $quantity,
-                'UnitPrice' => $unitPrice,
-                'Subtotal' => $subtotal
-            ]
-        ];  
-    } else {
-        // Lấy danh sách sản phẩm đã chọn (checkbox)
-        if (!isset($data['items']) || !is_array($data['items']) || empty($data['items'])) {
-            echo json_encode(["success" => false, "message" => "Không có sản phẩm được chọn để thanh toán."]);
-            exit();
-        }
-
-        $cart = $data['items']; // Mảng các sản phẩm được tick
     }
 
-    // 🧾 Tạo đơn hàng
+    // ✅ Tính tổng tiền
+    $total = 0;
+    foreach ($cart as $item) {
+        $total += $item['Price'] * $item['Quantity'];
+    }
+
+    // ✅ Tạo đơn hàng, thêm total
     $success = executeQuery(
-        "INSERT INTO orders (UserID, ShippingAddress, ProvinceID, DistrictID, WardID) 
-         VALUES (?, ?, ?, ?, ?)", 
-        [$userId, $address, $provinceId, $districtId, $wardId]
+        "INSERT INTO orders (UserID, ShippingAddress, ProvinceID, DistrictID, WardID, total) 
+         VALUES (?, ?, ?, ?, ?, ?)", 
+        [$userId, $address, $provinceId, $districtId, $wardId, $total]
     );
 
     if (!$success) {
@@ -118,13 +103,15 @@ if (isset($data['action']) && ($data['action'] === 'checkout' || $data['action']
         exit();
     }
 
-    $orderId = getOne("SELECT MAX(OrderID) as id FROM orders WHERE UserID = $userId")['id'];
+    $order = getOne("SELECT MAX(OrderID) as id FROM orders WHERE UserID = $userId");
+    $orderId = $order['id'];
 
-    // 📦 Ghi vào bảng orderdetail
+
+    // 📦 Ghi vào orderdetail
     foreach ($cart as $item) {
         $productSizeId = $item['ProductSizeID'];
         $quantity = $item['Quantity'];
-        $unitPrice = $item['UnitPrice'];
+        $unitPrice = $item['Price'];
         $subtotal = $quantity * $unitPrice;
 
         executeQuery(
@@ -134,7 +121,7 @@ if (isset($data['action']) && ($data['action'] === 'checkout' || $data['action']
         );
     }
 
-    // 💸 Lưu thông tin thanh toán
+    // 💸 Lưu thanh toán
     $paymentSuccess = executeQuery(
         "INSERT INTO paymentdetail (OrderID, PaymentMethod, CardOwner, CardNumber, CVV, ExpiryDate)
          VALUES (?, ?, ?, ?, ?, ?)",
@@ -147,7 +134,7 @@ if (isset($data['action']) && ($data['action'] === 'checkout' || $data['action']
         exit();
     }
 
-    // 🧹 Xoá sản phẩm đã mua khỏi giỏ (nếu là checkout)
+    // 🧹 Nếu là checkout (giỏ hàng), xoá sản phẩm khỏi db cart
     if ($data['action'] === 'checkout') {
         foreach ($cart as $item) {
             $productSizeId = $item['ProductSizeID'];
@@ -158,4 +145,3 @@ if (isset($data['action']) && ($data['action'] === 'checkout' || $data['action']
     echo json_encode(["success" => true, "orderId" => $orderId, "message" => "Đặt hàng thành công!"]);
     exit();
 }
-?>

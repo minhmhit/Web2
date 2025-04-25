@@ -98,8 +98,7 @@ require_once "./controller/controller.php";
                         </div>
                         <div class="cart-btns">
                             <button onclick="toggleModal('cart')">CONTINUE SHOPPING</button>
-                            <button onclick="window.checkoutMode = 'cart'; toggleModal('checkout-page'); showCartCheckout()" class="checkout-btn"
-                                id="cart-checkout-btn">TO CHECKOUT</button>
+                            <button onclick="handleCheckoutClick()" class="checkout-btn" id="cart-checkout-btn">TO CHECKOUT</button>
                         </div>
                     </div>
                 </div>
@@ -118,7 +117,6 @@ require_once "./controller/controller.php";
                         <button class="next" onclick="moveSlide(1)">&#10095;</button>
                     </div>
                 </div>
-                
                 <div class="main-container-home Active">
                     <div class="new-products-header">
                     <div class="line"></div>
@@ -140,9 +138,8 @@ require_once "./controller/controller.php";
                             <h3>AIR-MAX-90-LTR</h3>
                         </div>
                     </div>
+                    <div class="see-more" id="Sneaker">see more</div>
                     
-                    <br><br>
-                    <br><br>
                     <div class="new-products-header">
                     <div class="line"></div>
                     <h2 class="new-products-title">Airizona Collection</h2>
@@ -163,9 +160,8 @@ require_once "./controller/controller.php";
                             <h3>ARIZONA TOBACCO BROWN OILDED LEATHER</h3>
                         </div>
                     </div>
+                    <div class="see-more" id="Sandal">see more</div>
                     
-                    <br><br>
-                    <br><br>
                     <div class="new-products-header">
                     <div class="line"></div>
                     <h2 class="new-products-title">Kid</h2>
@@ -190,9 +186,8 @@ require_once "./controller/controller.php";
                             <h3>STAN SMITH (TD)</h3>
                         </div>
                     </div>
+                    <div class="see-more" id="Kid">see more</div>
                     
-                    <br><br>
-                    <br><br>
                     <div class="new-products-header">
                         <div class="line"></div>
                         <h2 class="new-products-title">NEW PRODUCTS</h2>
@@ -217,8 +212,6 @@ require_once "./controller/controller.php";
                             echo $kq;                           
                         ?>
                     </div>
-                    <hr><br>
-                    <br><br>
                     <div class="main-products-banner center">      
                         <div><img class="main-products-banner-img" src="view/layout/asset/img/banner/converse.jpg" alt="converse.jpg"></div>
                         <div><img class="main-products-banner-img" src="view/layout/asset/img/banner/nike.jpg" alt="nike.jpg"></div>

@@ -93,69 +93,41 @@ switch ($_SERVER['REQUEST_METHOD']) {
             exit();
         }
 
+        // --- Set checkout session ---
+        if ($_GET['action'] == 'set_checkout_session') {
+            if (empty($data->products) || !is_array($data->products)) {
+                echo json_encode(['success' => false, 'message' => 'Dữ liệu không hợp lệ.']);
+                exit();
+            }
+
+            $_SESSION['checkout_products'] = $data->products;
+            echo json_encode(['success' => true, 'message' => 'Đã lưu session checkout.']);
+            exit();
+        }
+
         if ($_GET['action'] == 'get_checkout_session') {
-            ob_clean(); // 💥 Dọn rác output
-            header('Content-Type: application/json'); // 👈 Đảm bảo header đúng
-        
+            ob_clean();
+            header('Content-Type: application/json');
+
             if (isset($_SESSION['checkout_products'])) {
-                $product = $_SESSION['checkout_products'];
                 echo json_encode([
                     'success' => true,
-                    'product' => $product
+                    'product' => $_SESSION['checkout_products']
                 ]);
             } else {
                 echo json_encode(['success' => false, 'message' => 'Không có sản phẩm.']);
             }
             exit();
         }
-        
 
         if ($_GET['action'] == 'clear_checkout_session') {
             unset($_SESSION['checkout_products']);
             echo json_encode(['success' => true, 'message' => 'Đã xoá session checkout.']);
             exit();
         }
-        
-        
-        
-        // Case: BUY NOW
-        if ($_GET['action'] == 'buy_now') {
-            if (empty($data->productsizeid) || empty($data->quantity) || empty($data->price)) {
-                echo json_encode(['success' => false, 'message' => 'Thiếu thông tin sản phẩm.']);
-                exit();
-            }
-        
-            $productsizeid = $data->productsizeid;
-            $quantity = $data->quantity;
-            $price = $data->price;
-        
-            // Lấy thông tin sản phẩm từ database
-            $item = getOne("SELECT p.ProductName AS product_name, p.ImageURL AS product_image, ps.size AS Size
-                            FROM productsize ps
-                            JOIN product p ON ps.ProductID = p.ProductID
-                            WHERE ps.ProductSizeID = $productsizeid");
-        
-            // Tạo sản phẩm checkout
-            $checkout_item = [
-                'ProductSizeID' => $productsizeid,
-                'Quantity' => $quantity,
-                'Price' => $price,
-                'product_name' => $item['product_name'],
-                'product_image' => $item['product_image'],
-                'Size' => $item['Size']
-            ];
-        
-            // Chỉ lưu một sản phẩm duy nhất vào session
-            $_SESSION['checkout_products'] = $checkout_item;  
 
-            echo json_encode([
-                'success' => true,
-                'message' => 'Chuẩn bị mua ngay thành công.',
-                'data' => [$checkout_item]
-            ]);
-            exit();
-        }
-              
+        break;
+
     case 'PUT':
         if ($_GET['action'] == 'update_cart') {
             if (empty($data->productsizeid) || empty($data->quantity)) {
