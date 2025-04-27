@@ -109,9 +109,11 @@
                 <div class="modal sidebar header-sidebar" id="header-sidebar">
                     <div class="sidebar-main mdl-cnt">
                         <ul class="menu-list category-menu">
-                            <li>Hi there <span class="display-username"></span>!</li>
+                            <li>Hi there <span class="display-username"><?php echo isset($_SESSION['user']) ? htmlspecialchars($_SESSION['user']['Username']) : ''; ?></span>!</li>
                             <!-- <li><a class="filter-category active" data-filter="Home" href="index.php?pg=home">HOME</a></li> -->
                             <?php // echo $cataloglist?>
+                            <li><a class="filter-category" data-filter="Home">HOME</a></li>
+                            <li><a class="filter-category" data-filter="Product">PRODUCTS</a></li>
                             <li><a class="filter-category" data-filter="Sneaker">SNEAKERS</a></li>
                             <li><a class="filter-category" data-filter="Sandal">SANDALS</a></li>
                             <li><a class="filter-category" data-filter="Kid">KIDS</a></li>            

@@ -291,6 +291,79 @@ require_once "./controller/controller.php";
                             </div>
                         </div>
             </div>
+            <div class="modal details-search sidebar" id="details-search-sidebar">
+                    <div class="sidebar-main mdl-cnt">
+                        <a><i class="fa-solid fa-xmark" onclick="toggleModal('details-search-sidebar')"></i></a>
+                        <div class="dropdown">
+                            <ul class="dropdown-header">
+                                <li onclick="toggleDropdown('brand-menu-sidebar')">BRAND</li>
+                            </ul>
+                            <ul class="dropdown-menu" id="brand-menu-sidebar">
+                                <li class="filter-option filter-brand" data-filter="Adidas">ADIDAS</li>
+                                <li class="filter-option filter-brand" data-filter="Converse">CONVERSE</li>
+                                <li class="filter-option filter-brand" data-filter="Nike">NIKE</li>
+                                <li class="filter-option filter-brand" data-filter="BirkenStock">BIRKENSTOCK</li>
+                                <li class="filter-option filter-brand" data-filter="Teva">TEVA</li>
+                                <li class="filter-option filter-brand" data-filter="Fila">FILA</li>
+                            </ul>
+                        </div>
+                        <!-- SIZE Dropdown -->
+                        <div class="dropdown">
+                            <ul class="dropdown-header">
+                                <li onclick="toggleDropdown('size-menu-sidebar')">SIZE</li>
+                            </ul>
+                            <ul class="dropdown-menu" id="size-menu-sidebar">
+                                <li class="filter-option filter-size" data-filter="20">20</li>
+                                <li class="filter-option filter-size" data-filter="21">21</li>
+                                <li class="filter-option filter-size" data-filter="22">22</li>
+                                <li class="filter-option filter-size" data-filter="23">23</li>
+                                <li class="filter-option filter-size" data-filter="24">24</li>
+                                <li class="filter-option filter-size" data-filter="35">35</li>
+                                <li class="filter-option filter-size" data-filter="36">36</li>
+                                <li class="filter-option filter-size" data-filter="37">37</li>
+                                <li class="filter-option filter-size" data-filter="38">38</li>
+                                <li class="filter-option filter-size" data-filter="39">39</li>
+                                <li class="filter-option filter-size" data-filter="41">41</li>
+                                <li class="filter-option filter-size" data-filter="42">42</li>
+                                <li class="filter-option filter-size" data-filter="43">43</li>
+                            </ul>
+                        </div>
+
+                        <!-- GENDER Dropdown -->
+                        <div class="dropdown">
+                            <ul class="dropdown-header">
+                                <li onclick="toggleDropdown('gender-menu-sidebar')">GENDER</li>
+                            </ul>
+                            <ul class="dropdown-menu" id="gender-menu-sidebar">
+                                <li class="filter-option filter-gender" data-filter="M">Male</li>
+                                <li class="filter-option filter-gender" data-filter="F">Female</li>
+                                <li class="filter-option filter-gender" data-filter="U">Unisex</li>
+                            </ul>
+                        </div>
+                        <!-- PRICE Dropdown -->
+                        <div class="dropdown">
+                            <ul class="dropdown-header">
+                                <li onclick="toggleDropdown('price-menu-sidebar')">PRICE</li>
+                            </ul>
+                            <ul class="dropdown-menu" id="price-menu-sidebar">
+                                <label for="price-lowerbound-sidebar">Between</label>
+                                <input class="form-input-bar filter-option" type="number"
+                                    name="price-lowerbound-sidebar" id="price-lowerbound-sidebar"
+                                    placeholder="Minimun price" inputmode="tel">
+                                <label for="price-upperbound-sidebar">and</label>
+                                <input class="form-input-bar filter-option" type="number"
+                                    name="price-upperbound-sidebar" id="price-upperbound-sidebar"
+                                    placeholder="Maximum price" inputmode="tel">
+                            </ul>
+                        </div>
+                        <div>
+                            <button class="apply-filter-btn" onclick="toggleModal('details-search-sidebar'); ">APPLY
+                                FILTER</button>
+                            <a onclick="resetFilter()"><i class="fa-solid fa-rotate-left"></i><span>RESET
+                                    FILTER</span></a>
+                        </div>
+                    </div>
+                </div>
             <!-- CHECKOUT -->
             <div class="checkout-page" id="checkout-page">
                 <div class="checkout-header">

@@ -18,10 +18,12 @@ document.querySelectorAll(".filter-category").forEach((category) => {
     // If header-sidebar is open, toggle it off
     if(event.target.dataset.filter == "Home"){
       document.querySelector(".main-container-home").classList.add("Active");
+      document.querySelector(".banner").style.display = "block";
       document.querySelector(".product-page").classList.remove("Active");
     }else{
         document.querySelector(".main-container-home").classList.remove("Active");
         document.querySelector(".product-page").classList.add("Active");
+        document.querySelector(".banner").style.display = "none";
     }
 
     document.querySelector(".search-bar").style.display = "flex";
@@ -116,7 +118,7 @@ function displayProducts(productList) {
 ///
 
 document.getElementById("search-bar").addEventListener("keyup", () => {
-  window.scrollTo({ top: 700, behavior: "smooth" });
+  window.scrollTo({ top: 0, behavior: "smooth" });
   showHomeProduct(productlist);
 });
 // fill san pham
@@ -163,7 +165,7 @@ function addclick(products) {
       let currentPagenum = document.querySelector(".page-nav-list .active");
       currentPagenum.classList.remove("active");
       list[index].classList.add("active");
-      window.scrollTo({ top: 700, behavior: "smooth" });
+      window.scrollTo({ top: 0, behavior: "smooth" });
       products = products ? products : productlist;
       displayList(products, per_Page, index + 1);
     });
@@ -185,7 +187,7 @@ function showHomeProduct(products) {
 
   displayList(filteredProducts, per_Page, 1);
   setupPagination(filteredProducts, per_Page);
-  window.scrollTo({ top: 700 });
+  window.scrollTo({ top: 0 });
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -196,7 +198,7 @@ document.querySelectorAll(".menu-list .sortby-option a").forEach((option) => {
     document.querySelector("#sortby-mode-display").innerText =
       option.textContent;
     showHomeProduct(productlist);
-    window.scrollTo({ top: 700, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   });
 });
 function sortProducts(products, sortbyOption) {
@@ -342,7 +344,7 @@ function resetFilter() {
     option.classList.remove("active");
     option.value = "";
   });
-  window.scrollTo({ top: 700 });
+  window.scrollTo({ top: 0 });
   showHomeProduct(productlist);
 }
 
@@ -388,19 +390,27 @@ function addListener_filterOption() {
   filterOptions.forEach((option) => {
     option.addEventListener("click", (event) => {
       let clickedElement = event.target;
-      if (!clickedElement.classList.contains("active")) {
-        clickedElement.classList.add("active");
-      } else {
-        clickedElement.classList.remove("active");
-      }
+      clickedElement.classList.toggle("active"); // Gọn hơn xíu
     });
   });
 
+  // Cho PC
   document.querySelector(".apply-filter-btn").addEventListener("click", () => {
-    window.scrollTo({ top: 700, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: "smooth" });
     showHomeProduct(productlist);
   });
+
+  // Cho mobile
+  const mobileApplyBtn = document.querySelector(".modal.details-search.sidebar .apply-filter-btn");
+  if (mobileApplyBtn) {
+    mobileApplyBtn.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      toggleModal('details-search-sidebar'); // Ẩn modal
+      showHomeProduct(productlist); // Refresh product list theo filter mới
+    });
+  }
 }
+
 
 // product detail
 //
