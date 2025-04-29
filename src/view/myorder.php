@@ -112,7 +112,7 @@ function order_statusColor($status) {
         case "Processed":
             return "--stat-delivering";
         case "Received":
-            return "--stat-received";
+            return "--stat-completed";
         case "Cancelled":
             return "--stat-cancel";
         default:
@@ -176,6 +176,7 @@ function getSizeByProductSizeID($ProductSizeID){
 <!-- USER - ORDER HISTORY -->
 <div class="container order-history toggle-page" id="order-history">
                 <div class="main-account">
+                <a href = "index.php?pg=home" class = "back2HomeBtn"><span> < Back </span></a>
                     <div class="main-account-header">
                         <h2>ORDER HISTORY</h2>
                         <?php

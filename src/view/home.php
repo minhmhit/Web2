@@ -1,3 +1,32 @@
+<script>
+    
+    document.addEventListener("click", (e) => {
+    const seeMore = e.target.closest(".see-more");
+    if (!seeMore) return;
+
+    document.querySelector(".main-container-home").classList.remove("Active");
+    document.querySelector(".product-page").classList.add("Active");
+    document.querySelector(".banner").style.display = "none";
+
+    const id = seeMore.id;
+    const filter = seeMore.dataset.filter; // có thể dùng .dataset
+
+    document.querySelector(".search-bar").style.display = "flex";
+    document.querySelector(".catalogue-info").style.display = "flex";
+    
+    let displayCatalogueName = document.getElementById(
+      "display-catalogue-name"
+    );
+    displayCatalogueName.innerText = e.target.id;
+    //  main_container
+    html_mainc();
+    
+    // them nut nhan cho filter option
+    addListener_filterOption();
+    
+    resetFilter();
+    });
+</script>
 <?php 
 require_once("header.php"); 
 require_once "./controller/controller.php";
@@ -138,7 +167,7 @@ require_once "./controller/controller.php";
                             <h3>AIR-MAX-90-LTR</h3>
                         </div>
                     </div>
-                    <div class="see-more" id="Sneaker">see more</div>
+                    <div class="see-more filter-category" id="Trending Styles" data-filter="Product">see more</div>
                     
                     <div class="new-products-header">
                     <div class="line"></div>
@@ -160,7 +189,7 @@ require_once "./controller/controller.php";
                             <h3>ARIZONA TOBACCO BROWN OILDED LEATHER</h3>
                         </div>
                     </div>
-                    <div class="see-more" id="Sandal">see more</div>
+                    <div class="see-more filter-category" id="Airizona Collection" data-filter="Sandal">see more</div>
                     
                     <div class="new-products-header">
                     <div class="line"></div>
@@ -186,7 +215,7 @@ require_once "./controller/controller.php";
                             <h3>STAN SMITH (TD)</h3>
                         </div>
                     </div>
-                    <div class="see-more" id="Kid">see more</div>
+                    <div class="see-more filter-category" id="Kid" data-filter="Kid">see more</div>
                     
                     <div class="new-products-header">
                         <div class="line"></div>
@@ -290,7 +319,7 @@ require_once "./controller/controller.php";
                             <div class="modal-container product-detail-content mdl-cnt" id="product-detail-content">
                             </div>
                         </div>
-            </div>
+            
             <div class="modal details-search sidebar" id="details-search-sidebar">
                     <div class="sidebar-main mdl-cnt">
                         <a><i class="fa-solid fa-xmark" onclick="toggleModal('details-search-sidebar')"></i></a>

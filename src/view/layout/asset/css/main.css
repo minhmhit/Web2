@@ -161,6 +161,14 @@ button:hover {
     border: 1px solid var(--border-color);
 }
 
+.product-box-home .img-container{
+    flex: 1;
+    max-width: 150px;
+    height: auto;
+    margin: auto;
+    border: none;
+}
+
 .display-username {
     background: linear-gradient(to right, var(--theme-color-2), var(--theme-color-1));
     background-clip: text;
@@ -1073,6 +1081,7 @@ header {
 }
 .product-page{
     display: none;
+    width: 100%;
 }
 .main-container {
     display:flex;
@@ -2120,6 +2129,16 @@ h2.product-title {
     padding: 0;
   }
   
+  .back2HomeBtn{
+    margin-top: 10px;
+    margin-left: 10px;
+    }  
+.back2HomeBtn span{
+    border-bottom: 1px solid black;
+    }  
+.back2HomeBtn:hover{
+    font-weight: bold;
+    }
   
   
 /* ///////////////////////////////// FOOTER - END ///////////////////////////////// */
