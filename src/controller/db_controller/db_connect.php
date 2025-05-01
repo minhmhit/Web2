@@ -5,7 +5,7 @@ function connectdb() {
     $dbname = 'bangiay_db2'; 
     $username = 'root'; 
     $password = ''; 
-    $port = 3306;
+    $port = 3307;
 
     try {
         $pdo = new PDO("mysql:host=$host;port=$port;dbname=$dbname;charset=utf8", $username, $password);

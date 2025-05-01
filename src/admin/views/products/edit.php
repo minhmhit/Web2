@@ -14,7 +14,9 @@
             </div>
         <?php endif; ?>
 
-        <form method="POST" action="admin.php?page=products&action=edit&id=<?= $product['ProductID'] ?>" enctype="multipart/form-data" class="space-y-6">
+        <form id="editform" method="POST" action="admin.php?page=products&action=edit&id=<?= $product['ProductID'] ?>"
+            onsubmit="cleanUnchangedInputsBeforeSubmit('editform', event)"
+            enctype="multipart/form-data" class="space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Cột 1 -->
                 <div class="space-y-4">
@@ -146,17 +148,16 @@
                     <?php foreach ($sizes as $size): ?>
                         <div class="flex space-x-4 items-center">
                             <!-- Ẩn ProductSizeID để submit cùng -->
-                            <input type="hidden" name="product_size_ids[]" value="<?= $size['ProductSizeID'] ?>">
+                            <input type="hidden" name="product_size_ids[]"  value="<?= $size['ProductSizeID'] ?>">
 
                             <div class="w-1/2">
                                 <input type="text" name="sizes[]" value="<?= htmlspecialchars($size['Size']) ?>" required
                                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
                             </div>
                             <div class="w-1/2">
-                                <input type="number" name="stock_quantities[]" value="<?= htmlspecialchars($size['StockQuantity']) ?>" required
+                                <input type="number" name="stock_quantities[]" data-original="<?= htmlspecialchars($size['StockQuantity']) ?>" value="<?= htmlspecialchars($size['StockQuantity']) ?>" required
                                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
                             </div>
-                            <button type="button" onclick="removeRow(this)" class="text-red-500 hover:text-red-700">Xóa</button>
                         </div>
                     <?php endforeach; ?>
                 </div>

@@ -71,7 +71,7 @@ class Import
 
     public function getProductSizes()
     {
-        $stmt = $this->pdo->query("SELECT ps.*, p.ProductName, p.ImageURL 
+        $stmt = $this->pdo->query("SELECT ps.*, p.ProductName, p.ImageURL, p.ProductID
                                   FROM `productsize` ps 
                                   JOIN `product` p ON ps.ProductID = p.ProductID");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

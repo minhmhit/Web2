@@ -3,6 +3,8 @@ require_once 'models/Import.php';
 require_once 'models/Employee.php';
 require_once 'db_connection.php';
 require_once 'models/Permission.php';
+require_once 'models/Product.php';
+
 $permissionModel = new Permission($pdo);
 $userRoleId = $_SESSION['user']['RoleID'] ?? null;
 $permissions = $permissionModel->getPermissionsByRole($userRoleId);
@@ -12,6 +14,7 @@ $hasImportEditPermission = in_array('import_edit', $permissions);
 $hasImportDeletePermission = in_array('import_delete', $permissions);
 $importModel = new Import($pdo);
 $employeeModel = new Employee($pdo);
+$productmodel = new Product($pdo);
 
 if (isset($_GET['action'])) {
     $action = $_GET['action'];
@@ -22,7 +25,7 @@ if (isset($_GET['action'])) {
             break;
 
         case 'detail':
-            if(!$hasImportViewPermission) {
+            if (!$hasImportViewPermission) {
                 header('Location: admin.php?page=imports&action=list');
                 exit;
             }
@@ -33,7 +36,7 @@ if (isset($_GET['action'])) {
             break;
 
         case 'add':
-            if(!$hasImportAddPermission) {
+            if (!$hasImportAddPermission) {
                 header('Location: admin.php?page=imports&action=list');
                 exit;
             }
@@ -59,6 +62,29 @@ if (isset($_GET['action'])) {
                         }
                     }
                 }
+                // Thu thập giá bán cho từng productID
+                $productSizeIDs = $_POST['productSizeID'];
+                $productSellPrices = [];
+                if (!empty($productSizeIDs)) {
+                    // Truy vấn để ánh xạ productSizeID sang productID
+                    $placeholders = implode(',', array_fill(0, count($productSizeIDs), '?'));
+                    $stmt = $pdo->prepare("SELECT ProductSizeID, ProductID FROM productsize WHERE ProductSizeID IN ($placeholders)");
+                    $stmt->execute($productSizeIDs);
+                    $productSizeToProduct = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+
+                    // Gán giá bán cho từng productID
+                    foreach ($_POST['productSizeID'] as $i => $productSizeID) {
+                        $productID = $productSizeToProduct[$productSizeID] ?? null;
+                        if ($productID && isset($_POST['sellprice'][$i])) {
+                            $productSellPrices[$productID] = $_POST['sellprice'][$i]; // Lấy giá bán cuối cùng cho mỗi productID
+                        }
+                    }
+                }
+                foreach ($productSellPrices as $productID => $sellPrice) {
+                    $productmodel->updatePrice($productID, $sellPrice);
+                }
+
+
 
                 $data = [
                     'EmployeeID' => $_POST['EmployeeID'],

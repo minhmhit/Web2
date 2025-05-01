@@ -49,6 +49,16 @@ if (isset($_GET['action'])) {
                 $status = $_POST['Status'];
                 $total = isset($_POST['Total']) ? $_POST['Total'] : null;
 
+                // Kiểm tra nếu trạng thái là "Completed" hoặc "Pending", giảm tồn kho
+                if ($success && ($status === 'Completed' || $status === 'Pending')) {
+                    $orderDetails = $orderModel->getOrderDetails($id);
+                    foreach ($orderDetails as $detail) {
+                        $productSizeID = $detail['ProductSizeID'];
+                        $quantity = $detail['Quantity'];
+                        $orderModel->decreaseStock($productSizeID, $quantity);
+                    }
+                }
+
                 // Cập nhật cả trạng thái và tổng tiền (nếu có)
                 $success = $orderModel->updateOrderInfo($id, $status, $total);
 

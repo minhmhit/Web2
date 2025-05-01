@@ -130,7 +130,7 @@
                 <div id="size-stock-container" class="space-y-2">
                     <!-- Các dòng size/stock sẽ xuất hiện ở đây -->
                 </div>
-                <button type="button" onclick="addSizeStockRow()"
+                <button type="button" onclick="addSizeStockRow2()"
                     class="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
                     + Thêm Size
                 </button>

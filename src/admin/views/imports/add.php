@@ -36,19 +36,22 @@
                     <div id="product-list" class="space-y-4">
                         <div class="product-item bg-gray-50 p-4 rounded-lg">
                             <div class="grid grid-cols-12 gap-3">
-                                <div class="col-span-5">
+                                <div class="col-span-3">
                                     <label class="block text-xs font-medium text-gray-500 mb-1">Sản phẩm & Size</label>
                                     <select name="productSizeID[]" required class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
                                         <option value="">-- Chọn sản phẩm --</option>
                                         <?php foreach ($productSizes as $ps): ?>
-                                            <option value="<?= $ps['ProductSizeID'] ?>">
+                                            <option value="<?= $ps['ProductSizeID'] ?>" data-product-id="<?= $ps['ProductID'] ?>">
                                                 <?= htmlspecialchars($ps['ProductName']) ?> - Size: <?= htmlspecialchars($ps['Size']) ?>
                                             </option>
+
                                         <?php endforeach; ?>
                                     </select>
+
+
                                 </div>
 
-                                <div class="col-span-3">
+                                <div class="col-span-2">
                                     <label class="block text-xs font-medium text-gray-500 mb-1">Số lượng</label>
                                     <input type="number" name="quantity[]" min="1" required
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm product-quantity"
@@ -56,10 +59,15 @@
                                 </div>
 
                                 <div class="col-span-3">
-                                    <label class="block text-xs font-medium text-gray-500 mb-1">Đơn giá (₫)</label>
+                                    <label class="block text-xs font-medium text-gray-500 mb-1">Giá nhập (₫)</label>
                                     <input type="number" name="unitPrice[]" min="1000" step="1000" required
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm product-price"
                                         oninput="calculateSubtotal(this)">
+                                </div>
+                                <div class="col-span-3">
+                                    <label class="block text-xs font-medium text-gray-500 mb-1">Giá bán (₫)</label>
+                                    <input type="number" name="sellprice[]" min="1000" step="1000" required
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
                                 </div>
 
                                 <div class="col-span-1 flex items-end">
@@ -79,7 +87,7 @@
                     </div>
 
                     <div class="mt-3">
-                        <button type="button" id="add-product"
+                        <button type="button" id="add-product" onclick="addproduct()"
                             class="inline-flex items-center px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
                             <i class="fas fa-plus mr-1"></i> Thêm sản phẩm
                         </button>
@@ -122,6 +130,18 @@
             container.appendChild(template);
         });
     });
+    //lấy giá bán
+
+    const select = document.getElementById('productSizeSelect');
+    const hiddenInput = document.getElementById('productIDsJson');
+
+    select.addEventListener('change', function() {
+        const selectedOptions = Array.from(select.selectedOptions);
+        const productIDs = selectedOptions.map(option => option.dataset.productId);
+        hiddenInput.value = JSON.stringify(productIDs); 
+    });
+
+    select.dispatchEvent(new Event('change'));
 
     // Xóa dòng sản phẩm
     function removeProduct(button) {

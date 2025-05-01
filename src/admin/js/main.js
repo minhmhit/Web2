@@ -67,29 +67,29 @@ if (rows.length > 0) {
 }
 });
 
-function addSizeStockRow() {
-    const container = document.getElementById('size-stock-container');
+// function addSizeStockRow() {
+//     const container = document.getElementById('size-stock-container');
 
-    const row = document.createElement('div');
-    row.className = "flex space-x-4";
+//     const row = document.createElement('div');
+//     row.className = "flex space-x-4";
 
-    row.innerHTML = `
-        <div class="w-1/2">
-            <input type="text" name="sizes[]" required placeholder="Nhập Size"
-                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-        </div>
-        <div class="w-1/2">
-            <input type="number" name="stock_quantities[]" required min="0" placeholder="Nhập số lượng"
-                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-        </div>
-    `;
+//     row.innerHTML = `
+//         <div class="w-1/2">
+//             <input type="text" name="sizes[]" required placeholder="Nhập Size"
+//                 class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+//         </div>
+//         <div class="w-1/2">
+//             <input type="number" name="stock_quantities[]" required min="0" placeholder="Nhập số lượng"
+//                 class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+//         </div>
+//     `;
 
-    container.appendChild(row);
-}
+//     container.appendChild(row);
+// }
 
 // Auto thêm 1 dòng đầu tiên
 window.onload = function() {
-    addSizeStockRow();
+    addSizeStockRow2();
 }
 function addSizeStockRow2() {
     const container = document.getElementById('size-stock-container');
@@ -97,19 +97,65 @@ function addSizeStockRow2() {
     row.className = "flex space-x-4 items-center";
 
     row.innerHTML = `
-        <input type="hidden" name="product_size_ids[]" value="">
+        <input type="hidden" name="product_size_ids[]" value="" data-original="">
         <div class="w-1/2">
-            <input type="text" name="sizes[]" required
-                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+            <input type="text" name="sizes[]" value=""
+                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                data-original="">
         </div>
         <div class="w-1/2">
-            <input type="number" name="stock_quantities[]" min="0" required
-                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+            <input type="number" name="stock_quantities[]" value="" min="0"
+                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                data-original="">
         </div>
         <button type="button" onclick="removeRow(this)" class="text-red-500 hover:text-red-700">Xóa</button>
     `;
+
     container.appendChild(row);
 }
+
+function cleanUnchangedInputsBeforeSubmit(formId, event) {
+    const form = document.getElementById(formId);
+    const sizeInputs = form.querySelectorAll('input[name="sizes[]"]');
+    const quantityInputs = form.querySelectorAll('input[name="stock_quantities[]"]');
+    const hiddenIds = form.querySelectorAll('input[name="product_size_ids[]"]');
+
+    let isValid = true;
+
+    for (let i = 0; i < sizeInputs.length; i++) {
+        const size = sizeInputs[i];
+        const quantity = quantityInputs[i];
+        const id = hiddenIds[i];
+
+        const sizeVal = size.value.trim();
+        const qtyVal = quantity.value.trim();
+        const idVal = id.value.trim();
+
+        // Bắt lỗi: nếu 1 ô có value thì ô còn lại bắt buộc phải có
+        if ((sizeVal && !qtyVal) || (!sizeVal && qtyVal)) {
+            isValid = false;
+            size.classList.add("border-red-500");
+            quantity.classList.add("border-red-500");
+        } else {
+            size.classList.remove("border-red-500");
+            quantity.classList.remove("border-red-500");
+        }
+
+        // Xóa value nếu không thay đổi
+        if (size.getAttribute("data-original") === sizeVal) size.value = "";
+        if (quantity.getAttribute("data-original") === qtyVal) quantity.value = "";
+        if (id.getAttribute("data-original") === idVal) id.value = "";
+        
+    }
+
+    // Ngăn submit nếu không hợp lệ
+    if (!isValid) {
+        alert("Bạn phải nhập cả kích thước và số lượng nếu đã nhập một trong hai.");
+        event.preventDefault();
+    }
+}
+
+
 
 function removeRow(button) {
     button.parentElement.remove();

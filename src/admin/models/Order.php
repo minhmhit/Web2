@@ -111,6 +111,19 @@ class Order
         }
     }
 
+    public function decreaseStock($productSizeID, $quantity)
+    {
+        $stmt = $this->pdo->prepare("
+        UPDATE productsize
+        SET StockQuantity = StockQuantity - ?
+        WHERE ProductSizeID = ? AND StockQuantity >= ?
+    ");
+        $stmt->execute([$quantity, $productSizeID, $quantity]);
+        if ($stmt->rowCount() == 0) {
+            error_log("Insufficient stock for ProductSizeID: $productSizeID");
+        }
+    }
+
     public function getOrderDetails($orderId)
     {
         // Kiểm tra và debug dữ liệu

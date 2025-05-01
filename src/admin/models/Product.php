@@ -1,12 +1,16 @@
 <?php
-class Product {
+class Product
+{
     private $pdo;
 
-    public function __construct($pdo) {
+    public function __construct($pdo)
+    {
         $this->pdo = $pdo;
     }
 
-    public function getAll() {
+
+    public function getAll()
+    {
         $stmt = $this->pdo->query("SELECT p.*, c.CategoryName, b.BrandName 
                                    FROM product p 
                                    LEFT JOIN categories c ON p.CategoryID = c.CategoryID 
@@ -15,7 +19,8 @@ class Product {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getById($id) {
+    public function getById($id)
+    {
         $stmt = $this->pdo->prepare("SELECT * FROM product WHERE ProductID = ? AND IsDeleted = 0");
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -63,7 +68,7 @@ class Product {
     public function update($id, $data)
     {
         try {
-            
+
             $this->pdo->beginTransaction();
 
             // Update bảng product
@@ -84,6 +89,27 @@ class Product {
             $productSizeIds = $data['product_size_ids'];   // mảng id
             $sizes = $data['sizes'];                       // mảng size
             $stockQuantities = $data['stock_quantities'];  // mảng stock
+
+            $filteredSizes = [];
+            $filteredQuantities = [];
+            $filteredIds = [];
+
+            foreach ($sizes as $index => $size) {
+                $stockQuantity = $stockQuantities[$index] ?? null;
+
+                // Nếu cả size và stockQuantity đều không rỗng
+                if (trim($size) !== '' && $stockQuantity !== '' && $stockQuantity !== null) {
+                    $filteredSizes[] = $size;
+                    $filteredQuantities[] = $stockQuantity;
+                    $filteredIds[] = $productSizeIds[$index] ?? '';
+                }
+            }
+
+            // Gán lại
+            $sizes = $filteredSizes;
+            $stockQuantities = $filteredQuantities;
+            $productSizeIds = $filteredIds;
+
 
             foreach ($sizes as $index => $size) {
                 $stockQuantity = $stockQuantities[$index] ?? 0;
@@ -108,8 +134,15 @@ class Product {
     }
 
 
-    public function delete($id) {
+    public function delete($id)
+    {
         $stmt = $this->pdo->prepare("UPDATE product SET IsDeleted = 1 WHERE ProductID = ?");
         $stmt->execute([$id]);
+    }
+
+    public function updatePrice($productID, $price)
+    {
+        $stmt = $this->pdo->prepare("UPDATE product SET Price = ? WHERE ProductID = ?");
+        $stmt->execute([$price, $productID]);
     }
 }

@@ -92,12 +92,12 @@ if (isset($_GET['action'])) {
             $products = $productModel->getAll();
             include 'views/products/list.php';
             break;
-        case 'add':  
+        case 'add':
             if (!$hasProductAddPermission) {
                 // echo "Bạn không có quyền thêm sản phẩm.";
                 header('Location: admin.php?page=products&action=list');
                 exit;
-            }         
+            }
             // Lấy danh sách danh mục và thương hiệu
             $categories = getCategories($pdo);
             $brands = getBrands($pdo);
@@ -141,7 +141,7 @@ if (isset($_GET['action'])) {
             // Lấy danh sách danh mục và thương hiệu
             $categories = getCategories($pdo);
             $brands = getBrands($pdo);
-            $sizes = getsize($pdo,$id);
+            $sizes = getsize($pdo, $id);
 
             if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $data = [
@@ -150,7 +150,8 @@ if (isset($_GET['action'])) {
                     'BrandID' => $_POST['BrandID'],
                     'Gender' => $_POST['Gender'],
                     'Price' => $_POST['Price'],
-                    'sizes' => $_POST['sizes'],               // array các size
+                    'sizes' => $_POST['sizes'],
+                    'product_size_ids' => $_POST['product_size_ids'],              // array các size
                     'stock_quantities' => $_POST['stock_quantities'],
                     'ImageURL' => $_POST['current_image'] // Giữ nguyên ảnh cũ nếu không có ảnh mới
 
