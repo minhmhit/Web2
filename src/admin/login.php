@@ -314,11 +314,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <div class="circle circle-4"></div>
                 
                 <div class="company-name">BRO SHOES</div>
+
                 
                 <div class="welcome-content">
                     <h1>WELCOME BACK</h1>
                     <hr>
                     <p class="subtitle">Chức năng quản trị của shop bán giày BRO SHOES</p>
+
                 </div>
             </div>
             
