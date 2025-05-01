@@ -4,7 +4,6 @@ require_once 'models/Employee.php';
 require_once 'db_connection.php';
 require_once 'models/Permission.php';
 require_once 'models/Product.php';
-
 $permissionModel = new Permission($pdo);
 $userRoleId = $_SESSION['user']['RoleID'] ?? null;
 $permissions = $permissionModel->getPermissionsByRole($userRoleId);
