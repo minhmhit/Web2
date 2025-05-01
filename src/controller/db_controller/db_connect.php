@@ -2,7 +2,7 @@
 
 function connectdb() {
     $host = 'localhost'; 
-    $dbname = 'bangiay_db'; 
+    $dbname = 'bangiay_db2'; 
     $username = 'root'; 
     $password = ''; 
     $port = 3307;

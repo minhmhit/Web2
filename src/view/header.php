@@ -125,8 +125,8 @@
                                     <ul class="menu-list" id="login-dropdown">
                                         <?php if (isset($_SESSION['user'])): ?>
                                                 <!-- Đã đăng nhập -->                                           
-                                                <li class="logged-in"><a onclick="loadUserInfo(); togglePage('account-user'); toggleModal('header-sidebar')"><span>My Account</span></a></li>
-                                                <li class="logged-in"><a onclick="togglePage('order-history'); toggleModal('header-sidebar')"><span>My Order</span></a></li>
+                                                <li class="logged-in"><a href="index.php?pg=myaccount"><span>My Account</span></a></li>
+                                                <li class="logged-in"><a href="index.php?pg=myordert"><span>My Order</span></a></li>
                                                 <li class="logged-in"><a href="view/logout.php"><span>Sign Out</span></a></li>
                                             <?php else: ?>
                                                 <!-- Chưa đăng nhập -->

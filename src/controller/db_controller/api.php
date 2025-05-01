@@ -41,6 +41,11 @@ function getProduct() {
 }
 
 
+
+
+
+
+
 function getProductDetail($idProduct) {
     $sql = "
         SELECT p.ProductID AS id, p.ProductName AS name, p.Price AS price, p.ImageURL AS image, 
@@ -474,5 +479,48 @@ switch ($action) {
     default:
         // echo json_encode(['error' => 'Invalid action']);
         break;
+}
+
+function filterProduct($pdo,$condition){
+    $stmt = $pdo->prepare('
+     SELECT p.ProductID AS id, p.ProductName AS name, p.Price AS price, p.ImageURL AS image, 
+        c.CategoryName AS category, b.BrandName AS brand, p.Gender AS sex,
+        GROUP_CONCAT(ps.Size) AS size, 
+        SUM(ps.StockQuantity) AS totalStock
+        FROM Product p
+        LEFT JOIN Categories c ON p.CategoryID = c.CategoryID
+        LEFT JOIN Brand b ON p.BrandID = b.BrandID
+        LEFT JOIN ProductSize ps ON p.ProductID = ps.ProductID
+        GROUP BY p.ProductID
+        having 1 ' . $condition );
+    $stmt->execute();
+    $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($products as &$product) {
+        // Chuyển kích thước thành mảng
+        $product['size'] = !empty($product['size']) ? explode(',', $product['size']) : [];
+        // Thêm thuộc tính isDeleted mặc định
+        $product['isDeleted'] = false;
+    
+        // Xác định trạng thái tồn kho dựa trên tổng số lượng tồn kho
+        if ($product['totalStock'] == 0) {
+            $product['stockStatus'] = 'Out of Stock';
+        } elseif ($product['totalStock'] <= 5) {
+            $product['stockStatus'] = 'Low Stock';
+        } else {
+            $product['stockStatus'] = 'In Stock';
+        }
+    }
+
+    return $products ;
+}
+
+$data_post = json_decode(file_get_contents("php://input"), true);
+if ( isset($data_post['action'])){
+    $pdo = connectdb();
+    switch ($data_post['action']) {
+        case 'filter_product' : 
+            echo json_encode(filterProduct($pdo,$data_post['filter']));
+    }
 }
 
