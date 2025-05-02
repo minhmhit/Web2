@@ -17,15 +17,37 @@ if (isset($_GET['action'])) {
             break;
         case 'detail':
             $hasOrderViewPermission = in_array('order_view', $permissions);
-            if(!$hasOrderViewPermission) {
+            if (!$hasOrderViewPermission) {
                 header('Location: admin.php?page=orders&action=list');
                 exit;
             }
-            // Kiểm tra có quyền cập nhật đơn hàng hay không
             $hasOrderEditPermission = in_array('order_edit', $permissions);
             $id = $_GET['id'];
             $order = $orderModel->getById($id);
             $orderDetails = $orderModel->getOrderDetails($id);
+
+            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id']) && isset($_POST['status'])) {
+                $id = $_POST['id'];
+                $newStatus = $_POST['status'];
+                $oldStatus = $order['Status']; // Lấy trạng thái cũ từ đơn hàng
+
+                // Cập nhật trạng thái
+                $orderModel->updateStatus($id, $newStatus);
+
+                // Giảm stock nếu trạng thái cũ là "Pending" và trạng thái mới là "Processing" hoặc "Completed"
+                if ($oldStatus === 'Pending' && ($newStatus === 'Processing' || $newStatus === 'Completed')) {
+                    $orderDetails = $orderModel->getOrderDetails($id);
+                    foreach ($orderDetails as $detail) {
+                        $productSizeID = $detail['ProductSizeID'];
+                        $quantity = $detail['Quantity'];
+                        $orderModel->decreaseStock($productSizeID, $quantity);
+                    }
+                }
+
+                header("Location: admin.php?page=orders&action=detail&id=$id&success=Cập nhật trạng thái thành công");
+                exit;
+            }
+
             include 'views/orders/detail.php';
             break;
         case 'update':
@@ -49,8 +71,14 @@ if (isset($_GET['action'])) {
                 $status = $_POST['Status'];
                 $total = isset($_POST['Total']) ? $_POST['Total'] : null;
 
-                // Kiểm tra nếu trạng thái là "Completed" hoặc "Pending", giảm tồn kho
-                if ($success && ($status === 'Completed' || $status === 'Pending')) {
+                $order = $orderModel->getById($id);
+                $oldStatus = $order['Status'];
+
+                // Cập nhật thông tin đơn hàng
+                $success = $orderModel->updateOrderInfo($id, $status, $total);
+
+                // Giảm stock nếu trạng thái cũ là "Pending" và trạng thái mới là "Processing" hoặc "Completed"
+                if ($success && $oldStatus === 'Pending' && ($status === 'Processing' || $status === 'Completed')) {
                     $orderDetails = $orderModel->getOrderDetails($id);
                     foreach ($orderDetails as $detail) {
                         $productSizeID = $detail['ProductSizeID'];
@@ -59,26 +87,11 @@ if (isset($_GET['action'])) {
                     }
                 }
 
-                // Cập nhật cả trạng thái và tổng tiền (nếu có)
-                $success = $orderModel->updateOrderInfo($id, $status, $total);
-
                 if ($success) {
                     header("Location: admin.php?page=orders&action=detail&id=$id&success=Cập nhật đơn hàng thành công");
                 } else {
                     header("Location: admin.php?page=orders&action=update&id=$id&error=Có lỗi xảy ra khi cập nhật đơn hàng");
                 }
-                exit;
-            }
-            // Hiển thị form cập nhật
-            else if (isset($_GET['id'])) {
-                $id = $_GET['id'];
-                $order = $orderModel->getById($id);
-                $orderDetails = $orderModel->getOrderDetails($id);
-                include 'views/orders/update.php';
-            }
-            // Xử lý lỗi
-            else {
-                header('Location: admin.php?page=orders&action=list');
                 exit;
             }
             break;
