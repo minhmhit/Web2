@@ -83,9 +83,6 @@ if (isset($_GET['action'])) {
                 foreach ($productSellPrices as $productID => $sellPrice) {
                     $productmodel->updatePrice($productID, $sellPrice);
                 }
-
-
-
                 $data = [
                     'EmployeeID' => $_POST['EmployeeID'],
                     'Total' => $total,
@@ -93,6 +90,10 @@ if (isset($_GET['action'])) {
                 ];
 
                 $importModel->add($data);
+
+                $importModel->updateStock($details);
+
+
                 header('Location: admin.php?page=imports&action=list');
                 exit;
             } else {

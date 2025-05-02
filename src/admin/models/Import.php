@@ -76,4 +76,20 @@ class Import
                                   JOIN `product` p ON ps.ProductID = p.ProductID");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function updateStock($details)
+    {
+        try {
+            $stmt = $this->pdo->prepare("UPDATE productsize SET StockQuantity = StockQuantity + ? WHERE ProductSizeID = ?");
+            foreach ($details as $detail) {
+                $stmt->execute([$detail['Quantity'], $detail['ProductSizeID']]);
+                if ($stmt->rowCount() == 0) {
+                    error_log("Failed to update stock for ProductSizeID: {$detail['ProductSizeID']}");
+                }
+            }
+        } catch (Exception $e) {
+            error_log("Error updating stock: " . $e->getMessage());
+            throw $e;
+        }
+    }
 }
