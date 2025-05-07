@@ -92,7 +92,7 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium"><?= getTotalStockQuantity($product['ProductID'])?></td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-3">
 
-                                    <?php renderButton('Sửa', 'admin.php?page=products&action=edit&id= ' . $product['ProductID'] . '', 'fas fa-edit', 'text-yellow-600 hover:text-yellow-900', !$hasProductEditPermission) ?>
+                                    <?php renderButton('Chi tiết', 'admin.php?page=products&action=edit&id= ' . $product['ProductID'] . '', 'fas fa-edit', 'text-yellow-600 hover:text-yellow-900', !$hasProductEditPermission) ?>
 
                                     <?= ($hasProductDeletePermission) ? '<a href="admin.php?page=products&action=delete&id=' . $product['ProductID'] . '" 
                                         class="text-red-600 hover:text-red-900" onclick="return confirm(\'Bạn chắc chắn muốn xóa sản phẩm này?\')">

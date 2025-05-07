@@ -33,7 +33,6 @@ try {
     } else {
         $wards = [];
     }
-
 } catch (PDOException $e) {
     die("Connection failed: " . $e->getMessage());
 }
@@ -103,127 +102,134 @@ try {
         Bạn không có quyền truy cập trang này.
     </div>
 <?php else: ?>
-<div class="max-w-7xl mx-auto p-6">
-    <div class="bg-white rounded-lg shadow-md p-8">
+    <div class="max-w-7xl mx-auto p-6">
+        <div class="bg-white rounded-lg shadow-md p-8">
 
-        <!-- FORM FILTER -->
-        <form method="GET" class="mb-6 flex flex-wrap gap-4" action="?page=orders&action=list">
-            <input type="hidden" name="page" value="orders">
-            <input type="hidden" name="action" value="list">
+            <!-- FORM FILTER -->
+            <form method="GET" class="mb-6 flex flex-wrap gap-4" action="?page=orders&action=list">
+                <input type="hidden" name="page" value="orders">
+                <input type="hidden" name="action" value="list">
 
-            <!-- Tỉnh -->
-            <div>
-                <label for="province">Tỉnh</label>
-                <select name="province" id="province" onchange="this.form.submit()">
-                    <option value="">Tất cả</option>
-                    <?php foreach ($provinces as $p): ?>
-                        <option value="<?= $p['province_id'] ?>" <?= ($_GET['province'] ?? '') == $p['province_id'] ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($p['name']) ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
+                <!-- Tỉnh -->
+                <div>
+                    <label for="province">Tỉnh</label>
+                    <select name="province" id="province" onchange="this.form.submit()">
+                        <option value="">Tất cả</option>
+                        <?php foreach ($provinces as $p): ?>
+                            <option value="<?= $p['province_id'] ?>" <?= ($_GET['province'] ?? '') == $p['province_id'] ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($p['name']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
 
-            <!-- Quận -->
-            <div>
-                <label for="district">Quận</label>
-                <select name="district" id="district" onchange="this.form.submit()">
-                    <option value="">Tất cả</option>
-                    <?php foreach ($districts as $d): ?>
-                        <option value="<?= $d['district_id'] ?>" <?= ($_GET['district'] ?? '') == $d['district_id'] ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($d['name']) ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
+                <!-- Quận -->
+                <div>
+                    <label for="district">Quận</label>
+                    <select name="district" id="district" onchange="this.form.submit()">
+                        <option value="">Tất cả</option>
+                        <?php foreach ($districts as $d): ?>
+                            <option value="<?= $d['district_id'] ?>" <?= ($_GET['district'] ?? '') == $d['district_id'] ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($d['name']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
 
-            <!-- Phường -->
-            <div>
-                <label for="ward">Phường</label>
-                <select name="ward" id="ward">
-                    <option value="">Tất cả</option>
-                    <?php foreach ($wards as $w): ?>
-                        <option value="<?= $w['wards_id'] ?>" <?= ($_GET['ward'] ?? '') == $w['wards_id'] ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($w['name']) ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
+                <!-- Phường -->
+                <div>
+                    <label for="ward">Phường</label>
+                    <select name="ward" id="ward">
+                        <option value="">Tất cả</option>
+                        <?php foreach ($wards as $w): ?>
+                            <option value="<?= $w['wards_id'] ?>" <?= ($_GET['ward'] ?? '') == $w['wards_id'] ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($w['name']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
 
-            <!-- Ngày -->
-            <div>
-                <label for="date_from">Từ ngày</label>
-                <input type="date" name="date_from" value="<?= $_GET['date_from'] ?? '' ?>">
-            </div>
-            <div>
-                <label for="date_to">Đến ngày</label>
-                <input type="date" name="date_to" value="<?= $_GET['date_to'] ?? '' ?>">
-            </div>
+                <!-- Ngày -->
+                <div>
+                    <label for="date_from">Từ ngày</label>
+                    <input type="date" name="date_from" value="<?= $_GET['date_from'] ?? '' ?>">
+                </div>
+                <div>
+                    <label for="date_to">Đến ngày</label>
+                    <input type="date" name="date_to" value="<?= $_GET['date_to'] ?? '' ?>">
+                </div>
 
-            <!-- Trạng thái -->
-            <div>
-                <label for="status">Trạng thái</label>
-                <select name="status" id="status">
-                    <option value="">Tất cả</option>
-                    <option value="Pending" <?= ($_GET['status'] ?? '') === 'Pending' ? 'selected' : '' ?>>Chờ xác nhận</option>
-                    <option value="Processing" <?= ($_GET['status'] ?? '') === 'Processing' ? 'selected' : '' ?>>Đang xử lý</option>
-                    <option value="Delivering" <?= ($_GET['status'] ?? '') === 'Delivering' ? 'selected' : '' ?>>Đang giao hàng</option>
-                    <option value="Completed" <?= ($_GET['status'] ?? '') === 'Completed' ? 'selected' : '' ?>>Đã giao hàng thành công</option>
-                    <option value="Cancelled" <?= ($_GET['status'] ?? '') === 'Cancelled' ? 'selected' : '' ?>>Đã hủy</option>
-                </select>
-            </div>
+                <!-- Trạng thái -->
+                <div>
+                    <label for="status">Trạng thái</label>
+                    <select name="status" id="status">
+                        <option value="">Tất cả</option>
+                        <option value="Pending" <?= ($_GET['status'] ?? '') === 'Pending' ? 'selected' : '' ?>>Chờ xác nhận</option>
+                        <option value="Processing" <?= ($_GET['status'] ?? '') === 'Processing' ? 'selected' : '' ?>>Đang xử lý</option>
+                        <option value="Delivering" <?= ($_GET['status'] ?? '') === 'Delivering' ? 'selected' : '' ?>>Đang giao hàng</option>
+                        <option value="Completed" <?= ($_GET['status'] ?? '') === 'Completed' ? 'selected' : '' ?>>Đã giao hàng thành công</option>
+                        <option value="Cancelled" <?= ($_GET['status'] ?? '') === 'Cancelled' ? 'selected' : '' ?>>Đã hủy</option>
+                    </select>
+                </div>
 
-            <div class="flex items-end">
-                <button type="submit" class="px-4 py-2 text-sm text-white bg-blue-600 rounded hover:bg-blue-700">
-                    Lọc
-                </button>
-            </div>
-        </form>
+                <div class="flex items-end">
+                    <button type="submit" class="px-4 py-2 text-sm text-white bg-blue-600 rounded hover:bg-blue-700">
+                        Lọc
+                    </button>
+                </div>
+            </form>
 
-        <!-- TABLE -->
-        <div class="overflow-x-auto">
-            <?php if (!empty($orders)): ?>
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Khách hàng</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ngày đặt</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hành động</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        <?php foreach ($orders as $order): ?>
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <?= $order['OrderID'] ?>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    <?= htmlspecialchars($order['UserFullname']) ?>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <?= $order['OrderDate'] ?>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-200">
-                                        <?= $order['Status'] ?>
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    <a href="admin.php?page=orders&action=detail&id=<?= $order['OrderID'] ?>"
-                                        class="text-blue-600 hover:text-blue-900">
-                                        <i class="fas fa-eye mr-1"></i> Chi tiết
-                                    </a>                   
+            <!-- TABLE -->
+            <div class="overflow-x-auto">
+                <?php if (!empty($orders)): ?>
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Khách hàng</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ngày đặt</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <?php foreach ($orders as $order): ?>
+                                <tr class="hover:bg-gray-50 data-order-row">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <?= $order['OrderID'] ?>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        <?= htmlspecialchars($order['UserFullname']) ?>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <?= $order['OrderDate'] ?>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-200">
+                                            <?= $order['Status'] ?>
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <a href="admin.php?page=orders&action=detail&id=<?= $order['OrderID'] ?>"
+                                            class="text-blue-600 hover:text-blue-900">
+                                            <i class="fas fa-eye mr-1"></i> Chi tiết
+                                        </a>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="100%">
+                                    <div id="pagination" class="flex justify-center mt-4 space-x-2"></div>
                                 </td>
                             </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            <?php else: ?>
-                <p class="mt-4 text-gray-500 text-sm">Không có đơn hàng nào phù hợp.</p>
-            <?php endif; ?>
+                        </tfoot>
+                    </table>
+                <?php else: ?>
+                    <p class="mt-4 text-gray-500 text-sm">Không có đơn hàng nào phù hợp.</p>
+                <?php endif; ?>
+            </div>
         </div>
     </div>
-</div>
 <?php endif; ?>
