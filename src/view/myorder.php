@@ -13,11 +13,11 @@
         }
 
         $.ajax({
-            url: 'http://localhost/Web2/src/controller/db_controller/cancel_order.php',
+            url: '../src/controller/db_controller/cancel_order.php',
             type: 'POST',
             data: { order_id: orderID },
             success: function (response) {
-                alert("🗑️ Đơn hàng đã được hủy!");
+                toastMsg({ title: "Success", message: "Your order has been canceled successfully!", type: "success" });
                 $button.remove();
                 $(`#${orderID}`).html(`
                     <div style="background-color: var(--stat-cancel)">
@@ -31,10 +31,46 @@
 
             },
             error: function (xhr, status, error) {
-                alert("❌ Hủy đơn hàng thất bại: " + error);
+                toastMsg({ title: "ERROR", message: "Error occured. Cancel order failed!", type: "error" });
+                // alert("❌ Hủy đơn hàng thất bại: " + error)
             }
         });
     }
+
+    $(document).on('click', '.btn-confirm', function () {
+        const orderID = $(this).data('id');
+        const $button = $(this); // Save reference to the button
+        confirmOrder(orderID, $button);
+    });
+
+
+    function confirmOrder(orderID, $button) {
+    toastMsg({ title: "THANK YOU", message: "Thanks for choosing us. We hope to see you again soon!", type: "info" });
+    
+    $.ajax({
+        url: '../src/controller/db_controller/confirm_order.php',
+        type: 'POST',
+        data: { order_id: orderID },
+        success: function (response) {
+            toastMsg({ title: "Success", message: "Your order has been received!", type: "success" });
+            // alert("Đơn hàng đã được xác nhận!");
+            $button.remove();
+            $(`#${orderID}`).html(`
+                <div style="background-color: var(--stat-received)">
+                    <p class="display-order-status">
+                        Status: <span>Completed</span>
+                        <span><i class="fa-solid fa-circle-check"></i></span>
+                    </p>
+                </div> 
+                <button onclick="showOrderDetail('${orderID}')">Details</button>
+            `);
+        },
+        error: function (xhr, status, error) {
+            // alert("❌ Xác nhận đơn hàng thất bại: " + error);
+            toastMsg({ title: "ERROR", message: "Error occcured. Receive order failed.", type: "error" });
+        }
+    });
+}
 
 
     function showOrderDetail(orderID) {
@@ -109,9 +145,11 @@ function order_statusColor($status) {
     switch ($status) {
         case "Pending":
             return "--stat-pending";
-        case "Processed":
-            return "--stat-delivering";
-        case "Received":
+        case "Processing":
+            return "--stat-pending";
+        case "Delivering":
+            return "--stat-pending";
+        case "Completed":
             return "--stat-received";
         case "Cancelled":
             return "--stat-cancel";
@@ -123,9 +161,11 @@ function order_statusIcon($status) {
     switch ($status) {
         case "Pending":
             return "fa-regular fa-hourglass-half";
-        case "Processed":
-            return "fa-solid fa-truck";
-        case "Received":
+        case "Processing":
+            return "fa-regular fa-hourglass-half";
+        case 'Delivering':
+            return "fa-regular fa-hourglass-half";
+        case "Completed":
             return "fa-solid fa-circle-check";
         case "Cancelled":
             return "fa-solid fa-xmark";
@@ -172,10 +212,15 @@ function getSizeByProductSizeID($ProductSizeID){
     $stmt->execute();
     return $stmt->fetch(PDO::FETCH_ASSOC)['Size'];
 }
+
+
+
 ?>
 <!-- USER - ORDER HISTORY -->
+<div class="container toast" id="toast"></div>
 <div class="container order-history toggle-page" id="order-history">
                 <div class="main-account">
+                <a href = "index.php?pg=home" class = "back2HomeBtn"><span> < Back </span></a>  
                     <div class="main-account-header">
                         <h2>ORDER HISTORY</h2>
                         <?php
@@ -194,11 +239,13 @@ function getSizeByProductSizeID($ProductSizeID){
                                     extract($order); // Lấy các thông tin từ đơn hàng
                                     $kqdetail = ""; // Bắt đầu chuỗi chi tiết đơn hàng
                                     $total = 0;
-                                    $cancelBtn = "";
+                                    $Btn = "";
                                     if($Status == "Pending"){
-                                        $cancelBtn = '<button style="background-color: var(--stat-cancel); color: #f5f5f5" class="btn-cancel" data-id="' . $OrderID . '">Cancel</button>';
+                                        $Btn = '<button style="background-color: var(--stat-cancel); color: #f5f5f5" class="btn-cancel" data-id="' . $OrderID . '">Cancel your order</button>';
                                     }
-
+                                    if($Status == "Delivering"){
+                                        $Btn = '<button style="background-color: var(--stat-received); color: black" class="btn-confirm" data-id="' . $OrderID . '">Received your order?</button>';
+                                    }
                                     $orderdetail = getOrderDetailByOrderID($order_id);
                                     foreach ($orderdetail as $item) {
                                         $product = getProductBySizeID($item['ProductSizeID']);
@@ -238,8 +285,10 @@ function getSizeByProductSizeID($ProductSizeID){
                                                                 <p class="display-order-status">Status: <span>'.$Status.'</span>
                                                                 <span><i class="'.$order_statusIcon.'"></i></span></p>
                                                             </div> 
-                                                            '.$cancelBtn.'
+                                                            <div class = "btnContainer">
+                                                            '.$Btn.'
                                                             <button onclick="showOrderDetail('.$OrderID.')">Details</button>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>

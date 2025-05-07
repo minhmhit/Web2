@@ -6,14 +6,21 @@ function toggleSidebarDropdown(elementId) {
 }
 
 function toggleModal(elementId) {
-    let x = document.getElementById(elementId);
+    const modal = document.getElementById(elementId);
+    const isOpen = modal.classList.contains("open");
 
-    x.classList.toggle("open");
-
-    Array.from(document.getElementsByClassName("modal")).forEach((modal) => {
-        if (modal.id !== elementId)
-            modal.classList.remove("open");
+    // Đóng tất cả modal khác
+    document.querySelectorAll(".modal").forEach((m) => {
+        m.classList.remove("open");
     });
+
+    if (!isOpen) {
+        modal.classList.add("open");
+        document.body.style.overflow = "hidden"; // Khoá scroll
+    } else {
+        modal.classList.remove("open");
+        document.body.style.overflow = "auto"; // Trả lại scroll
+    }
 }
 
 function togglePage(elementId) {

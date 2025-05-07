@@ -1,10 +1,3 @@
-let productlist = [];
-fetch("controller/db_controller/api.php?action=get_products")
-  .then((response) => response.json())
-  .then((data) => {
-    productlist = data;
-  });
-
 function vnd(price) {
   return new Intl.NumberFormat("vi-VN", {
     style: "currency",
@@ -12,18 +5,145 @@ function vnd(price) {
   }).format(price);
 }
 
+function getfilter() {
+  let nameOption = document.querySelector("#search-bar").value.trim();
+  nameOption = nameOption == "" ? "" : ' and name like "%' + nameOption + '%"';
+  let categoryOption = document.querySelector(".filter-category.active").dataset
+    .filter;
+  categoryOption =
+    categoryOption.trim() == "Product"
+      ? ""
+      : ' and category = "' + categoryOption + '"';
+  let brandOption = Array.from(
+    document.querySelectorAll(".filter-brand.active")
+  )
+    .map((option) => option.getAttribute("data-filter"))
+    .join('" or brand = "');
+  brandOption =
+    brandOption.trim() == "" ? "" : ' and ( brand ="' + brandOption + '" )';
+
+  let sizeOption = Array.from(document.querySelectorAll(".filter-size.active"))
+    .map(
+      (option) =>
+        ' and find_in_set ("' +
+        option.getAttribute("data-filter") +
+        '",size) > 0'
+    )
+    .join("");
+
+  let genderOption = Array.from(
+    document.querySelectorAll(".filter-gender.active")
+  )
+    .map((option) => option.getAttribute("data-filter"))
+    .join('" or sex = "');
+  genderOption =
+    genderOption.trim() == "" ? "" : 'and ( sex = "' + genderOption + '" )';
+
+  let priceMinimum = document.querySelector("#price-lowerbound");
+  priceMinimum = priceMinimum
+    ? priceMinimum.value.trim() == ""
+      ? ""
+      : " and price >= " + priceMinimum.value.trim()
+    : "";
+
+  let priceMaximum = document.querySelector("#price-upperbound");
+  priceMaximum = priceMaximum
+    ? priceMaximum.value.trim() == ""
+      ? ""
+      : " and price <= " + priceMaximum.value.trim()
+    : "";
+
+  let sortby = document.querySelector("#sortby-mode-display").textContent;
+  sortby = sortby.includes("Price")
+    ? sortby.includes("low to")
+      ? " price asc"
+      : " price desc "
+    : sortby.includes("A-Z")
+    ? " name asc"
+    : " name desc";
+  sortby = " order by" + sortby;
+  return (
+    "" +
+    nameOption +
+    categoryOption +
+    brandOption +
+    sizeOption +
+    genderOption +
+    priceMinimum +
+    priceMaximum +
+    sortby
+  );
+}
+
+function filter() {
+  fetch("controller/db_controller/api.php", {
+    method: "POST",
+    headers: {
+      "Content-Type": "text/plain",
+    },
+    body: JSON.stringify({ action: "filter_product", filter: getfilter()}),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      displayList(data, per_Page, 1);
+      setupPagination(data, per_Page);
+      document.querySelector("#display-catalogue-amount").innerText =
+        data.length;
+      console.log(data.length);
+    });
+}
+
+function addListener_filterOption() {
+  const filterOptions = document.querySelectorAll(".filter-option");
+
+  filterOptions.forEach((option) => {
+    option.addEventListener("click", (event) => {
+      let clickedElement = event.target;
+      clickedElement.classList.toggle("active"); // Gọn hơn xíu
+    });
+  });
+
+  // Cho PC
+  document.querySelectorAll(".apply-filter-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      if (btn.id == "apply1") {
+        document
+          .querySelector("#details-search-sidebar")
+          .querySelectorAll(".filter-option")
+          .forEach((option) => {
+            option.classList.remove("active");
+          });
+        setTimeout(() => {
+          filter();
+        }, 0);
+      } else {
+        document
+          .querySelector("#details-search-sidebar1")
+          .querySelectorAll(".filter-option")
+          .forEach((option) => {
+            option.classList.remove("active");
+          });
+        setTimeout(() => {
+          filter();
+        }, 0);
+      }
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  });
+}
+
 // filter category
 document.querySelectorAll(".filter-category").forEach((category) => {
   category.addEventListener("click", (event) => {
     // If header-sidebar is open, toggle it off
-    if(event.target.dataset.filter == "Home"){
+    if (event.target.dataset.filter == "Home") {
       document.querySelector(".main-container-home").classList.add("Active");
       document.querySelector(".banner").style.display = "block";
       document.querySelector(".product-page").classList.remove("Active");
-    }else{
-        document.querySelector(".main-container-home").classList.remove("Active");
-        document.querySelector(".product-page").classList.add("Active");
-        document.querySelector(".banner").style.display = "none";
+    } else {
+      document.querySelector(".main-container-home").classList.remove("Active");
+      document.querySelector(".product-page").classList.add("Active");
+      document.querySelector(".banner").style.display = "none";
     }
 
     document.querySelector(".search-bar").style.display = "flex";
@@ -31,7 +151,9 @@ document.querySelectorAll(".filter-category").forEach((category) => {
 
     //  main_container
     html_mainc();
-
+    setTimeout(() => {
+      filter();
+    }, 0);
     // them nut nhan cho filter option
     addListener_filterOption();
     let headerSideabar = document.getElementById("header-sidebar");
@@ -63,22 +185,51 @@ document.querySelectorAll(".filter-category").forEach((category) => {
     resetFilter();
   });
 });
+
+// sort by
+
+document.querySelectorAll(".sortby-option").forEach((option) => {
+  option.addEventListener("click", () => {
+    document.querySelector("#sortby-mode-display").innerText =
+      option.querySelector("a").textContent;
+    setTimeout(() => {
+      filter();
+    }, 0);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+});
+
+function resetFilter() {
+  document.querySelectorAll(".filter-option").forEach((ele) => {
+    ele.classList.remove("active");
+  });
+  document.querySelector("#price-lowerbound").value = "";
+  document.querySelector("#price-upperbound").value = "";
+  document.querySelector("#search-bar").value = "";
+  document.querySelector("#sortby-mode-display").innerText =
+    "Alphabetically, A-Z";
+  setTimeout(() => {
+    filter();
+  }, 0);
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
 function detailProduct(id) {
-  let modal = document.querySelector('.modal.product-detail');
+  let modal = document.querySelector(".modal.product-detail");
   let body = document.body;
 
   // Gọi API để lấy chi tiết sản phẩm từ `productdetail.php`
   fetch(`view/productdetail.php?id=${id}`)
-      .then(response => response.text()) // Lấy HTML từ productdetail.php
-      .then(html => {
-          document.querySelector('#product-detail-content').innerHTML = html;
-          modal.classList.add('open'); // Hiện modal
-          body.style.overflow = "hidden"; // Ẩn scroll của body
+    .then((response) => response.text()) // Lấy HTML từ productdetail.php
+    .then((html) => {
+      document.querySelector("#product-detail-content").innerHTML = html;
+      modal.classList.add("open"); // Hiện modal
+      body.style.overflow = "hidden"; // Ẩn scroll của body
 
-          // Đăng ký sự kiện chọn size và xử lý add-to-cart sau khi modal được mở
-          setupEventListeners();
-      })
-      .catch(error => console.error("Lỗi khi tải sản phẩm:", error));
+      // Đăng ký sự kiện chọn size và xử lý add-to-cart sau khi modal được mở
+      setupEventListeners();
+    })
+    .catch((error) => console.error("Lỗi khi tải sản phẩm:", error));
 }
 // PHAN TRANG
 let per_Page = 8;
@@ -90,15 +241,17 @@ function displayProducts(productList) {
   let html = "";
   productList.forEach((product) => {
     // Kiểm tra trạng thái "hết hàng" và áp dụng class "disabled"
-    const isOutOfStock = product.stockStatus?.toLowerCase() === 'out of stock'; // Sửa "hết hàng" thành 'out of stock' nếu cần
-    const stockStatusClass = product.stockStatus?.toLowerCase().replace(/\s+/g, '-');
+    const isOutOfStock = product.stockStatus?.toLowerCase() === "out of stock"; // Sửa "hết hàng" thành 'out of stock' nếu cần
+    const stockStatusClass = product.stockStatus
+      ?.toLowerCase()
+      .replace(/\s+/g, "-");
 
     // Tạo chuỗi HTML giống PHP của bạn
     html += `
-      <div class="product-box ${isOutOfStock ? 'disabled' : ''}" 
-           ${isOutOfStock ? '' : `onclick="detailProduct('${product.id}')"`}>
+      <div class="product-box ${isOutOfStock ? "disabled" : ""}" 
+           ${isOutOfStock ? "" : `onclick="detailProduct('${product.id}')"`}>
         <div class="img-container">
-          <div class="stock-status ${stockStatusClass}">
+          <div class="stock-status ${stockStatusClass}">    
             ${product.stockStatus}
           </div>
           <img src="${product.image}" alt="${product.name}"
@@ -114,12 +267,10 @@ function displayProducts(productList) {
   displayWhenEmpty(".product-box-container", displayEmptyHTML_catalogue);
 }
 
-
-///
-
 document.getElementById("search-bar").addEventListener("keyup", () => {
-  window.scrollTo({ top: 0, behavior: "smooth" });
-  showHomeProduct(productlist);
+  setTimeout(() => {
+    filter();
+  }, 0);
 });
 // fill san pham
 function displayList(productList, per_Page, currentPage) {
@@ -150,7 +301,7 @@ function setupPagination(productList, per_Page) {
     }
     pageNav.innerHTML = html;
     document.querySelector(".page-nav").style.display = "flex";
-    addclick(productList);
+    addclick_Pav(productList);
   } else {
     document.querySelector(".page-nav").style.display = "none";
   }
@@ -158,7 +309,7 @@ function setupPagination(productList, per_Page) {
 
 // listener click button pagination
 
-function addclick(products) {
+function addclick_Pav(products) {
   let list = document.querySelectorAll(".page-nav-list .page-nav-item");
   list.forEach((element, index) => {
     element.addEventListener("click", function () {
@@ -172,182 +323,7 @@ function addclick(products) {
   });
 }
 
-function showHomeProduct(products) {
-  const filters = getFilterOption();
-
-  let filteredProducts = filterProducts(products, filters);
-
-  filteredProducts = sortProducts(filteredProducts, filters.sortbyOption);
-
-  let displayCatalogueAmount = document.getElementById(
-    "display-catalogue-amount"
-  );
-
-  displayCatalogueAmount.textContent = filteredProducts.length + " ";
-
-  displayList(filteredProducts, per_Page, 1);
-  setupPagination(filteredProducts, per_Page);
-  window.scrollTo({ top: 0 });
-}
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-//  SORT BY
-document.querySelectorAll(".menu-list .sortby-option a").forEach((option) => {
-  option.addEventListener("click", (event) => {
-    document.querySelector("#sortby-mode-display").innerText =
-      option.textContent;
-    showHomeProduct(productlist);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  });
-});
-function sortProducts(products, sortbyOption) {
-  if (sortbyOption === "Alphabetically, A-Z") {
-    return products.sort((a, b) => a.name.localeCompare(b.name));
-  } else if (sortbyOption === "Alphabetically, Z-A") {
-    return products.sort((a, b) => b.name.localeCompare(a.name));
-  } else if (sortbyOption === "Price, low to high") {
-    return products.sort((a, b) => a.price - b.price);
-  } else if (sortbyOption === "Price, high to low") {
-    return products.sort((a, b) => b.price - a.price);
-  }
-  return products;
-}
-
-function getFilterOption() {
-  const brandOption = Array.from(
-    document.querySelectorAll(".filter-brand.active")
-  ).map((option) => option.getAttribute("data-filter"));
-
-  const sizeOption = Array.from(
-    document.querySelectorAll(".filter-size.active")
-  ).map((option) => option.getAttribute("data-filter"));
-  const genderOption = Array.from(
-    document.querySelectorAll(".filter-gender.active")
-  ).map((option) => option.getAttribute("data-filter"));
-
-  // Check if user is on mobile based on the display style if the details-search-bar
-  const isMobile =
-    window.getComputedStyle(
-      document.querySelector(".details-search-bar.show-on-mobile.hide-on-pc")
-    ).display !== "none";
-  console.log("Is mobile device: ", isMobile);
-
-  let categoryOption = document
-    .querySelector(".filter-category.active")
-    .getAttribute("data-filter");
-  if (categoryOption == "Product")
-    categoryOption = ["Sneaker", "Sandal", "Kid"];
-  else
-    categoryOption = [
-      document
-        .querySelector(".filter-category.active")
-        .getAttribute("data-filter"),
-    ];
-
-  const nameOption = document.getElementById("search-bar").value.trim();
-  const sortbyOption = document
-    .getElementById("sortby-mode-display")
-    .innerText.trim();
-
-  // Read from field based on isMobile
-  let minprice = isMobile
-    ? parseInt(
-        document.getElementById("price-lowerbound-sidebar").value.trim()
-      ) || 0
-    : parseInt(document.getElementById("price-lowerbound").value.trim()) || 0;
-  let maxprice = isMobile
-    ? parseInt(
-        document.getElementById("price-upperbound-sidebar").value.trim()
-      ) || Infinity
-    : parseInt(document.getElementById("price-upperbound").value.trim()) ||
-      Infinity;
-
-  console.log(
-    "Filter options:",
-    brandOption,
-    sizeOption,
-    genderOption,
-    sortbyOption,
-    nameOption,
-    categoryOption,
-    minprice,
-    maxprice
-  );
-
-  return {
-    brandOption,
-    sizeOption,
-    genderOption,
-    sortbyOption,
-    nameOption,
-    categoryOption,
-    minprice,
-    maxprice,
-  };
-}
-
-function filterProducts(products, filters) {
-  return products.filter((product) => {
-    // If the product is marked "deleted" with attribute isDeleted = true
-    if (product.isDeleted) return false;
-
-    // Check matching name
-    if (
-      filters.nameOption &&
-      !product.name.toLowerCase().includes(filters.nameOption.toLowerCase())
-    ) {
-      return false;
-    }
-
-    // Check price range
-    if (product.price < filters.minprice || product.price > filters.maxprice) {
-      return false;
-    }
-
-    // Check category
-    if (!filters.categoryOption.includes(product.category)) {
-      return false;
-    }
-
-    // Check brand
-    if (
-      filters.brandOption.length > 0 &&
-      !filters.brandOption.includes(product.brand)
-    ) {
-      return false;
-    }
-
-    // Check gender
-    if (
-      filters.genderOption.length > 0 &&
-      !filters.genderOption.includes(product.sex)
-    ) {
-      return false;
-    }
-
-    // Check size (at least one matching size is required)
-    if (
-      filters.sizeOption.length > 0 &&
-      !filters.sizeOption.every((size) => product.size.includes(size))
-    ) {
-      return false;
-    }
-
-    return true;
-  });
-}
-
-function resetFilter() {
-  let filterOptions = document.querySelectorAll(".filter-option");
-  filterOptions.forEach((option) => {
-    option.classList.remove("active");
-    option.value = "";
-  });
-  window.scrollTo({ top: 0 });
-  showHomeProduct(productlist);
-}
-
 
 // left menu
 function toggleDropdown(menuId) {
@@ -379,47 +355,17 @@ $(document).ready(function () {
   document.querySelectorAll(".dropdown-menu").forEach((dropdown) => {
     dropdown.style.display = "none";
   });
-  addclick();
+  addclick_Pav();
 });
 
 // CATALOGUE - FILTER - BEGIN DEFINE /////////////////////////////////////////////////////
 // Toggle filter options
-function addListener_filterOption() {
-  const filterOptions = document.querySelectorAll(".filter-option");
-
-  filterOptions.forEach((option) => {
-    option.addEventListener("click", (event) => {
-      let clickedElement = event.target;
-      clickedElement.classList.toggle("active"); // Gọn hơn xíu
-    });
-  });
-
-  // Cho PC
-  document.querySelector(".apply-filter-btn").addEventListener("click", () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    showHomeProduct(productlist);
-  });
-
-  // Cho mobile
-  const mobileApplyBtn = document.querySelector(".modal.details-search.sidebar .apply-filter-btn");
-  if (mobileApplyBtn) {
-    mobileApplyBtn.addEventListener("click", () => {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      toggleModal('details-search-sidebar'); // Ẩn modal
-      showHomeProduct(productlist); // Refresh product list theo filter mới
-    });
-  }
-}
-
-
-// product detail
-//
 
 function html_mainc() {
   let container = document.querySelector(".main-container");
   container.innerHTML = ""; // Clear the container
   let html = ""; // Initialize HTML string
-  html += `<div class="details-search hide-on-mobile">
+  html += `<div class="details-search hide-on-mobile" id="details-search-sidebar1">
                               <div class="dropdown">
                                   <ul class="dropdown-header">
                                       <li onclick="toggleDropdown('brand-menu')">BRAND</li>
@@ -482,7 +428,7 @@ function html_mainc() {
                                   </ul>
                               </div>                              
                               <div class="details-search-control">
-                                  <button class="apply-filter-btn">APPLY FILTER</button>
+                                  <button class="apply-filter-btn" id="apply1">APPLY FILTER</button>
                                   <a id="reset" onclick="resetFilter()">RESET FILTER</a>
                               </div>
                           </div>

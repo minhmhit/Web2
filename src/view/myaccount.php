@@ -212,6 +212,7 @@
 
                 <div class="container account-user" id="account-user">
                 <div class="main-account">
+                    <a href = "index.php?pg=home" class = "back2HomeBtn"><span> < Back </span></a>
                     <div class="main-account-header">
                         <h2>MANAGE YOUR ACCOUNT</h2>
                         <p>Hi there, <span class="display-username">'.$Username.'</span>!</p>

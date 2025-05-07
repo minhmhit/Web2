@@ -77,7 +77,7 @@ function handleCheckout() {
         try {
             const jsonData = JSON.parse(data);
             if (jsonData.success) {
-                toastMsg({ title: "Success", message: "Your order has been recorded!", type: "success" });
+                toastMsg({ title: "Success", message: "We have received your order!", type: "success" });
                 window.checkoutMode = null;
                 toggleModal("checkout-page");
                 fetch("/Web2/src/controller/db_controller/cart.php?action=clear_checkout_session", {

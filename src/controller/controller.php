@@ -163,7 +163,7 @@ if(isset($_GET['pg'])&&($_GET['pg'])!=""){
 
         default:
             //include home
-            $productBestSellerlist = getBestSellerProduct();
+            $newproductlist = getNewProduct();
             $productlist = getProduct();
             // $productNewlist = getNewProduct();
             include_once("view/home.php");
