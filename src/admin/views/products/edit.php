@@ -148,7 +148,7 @@
                     <?php foreach ($sizes as $size): ?>
                         <div class="flex space-x-4 items-center">
                             <!-- Ẩn ProductSizeID để submit cùng -->
-                            <input type="hidden" name="product_size_ids[]" value="<?= $size['ProductSizeID'] ?>">
+                            <input type="hidden" name="product_size_ids[]"  value="<?= $size['ProductSizeID'] ?>">
 
                             <div class="w-1/2">
                                 <input type="text" name="sizes[]" value="<?= htmlspecialchars($size['Size']) ?>" required

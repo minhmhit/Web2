@@ -4,9 +4,7 @@ require_once 'models/Employee.php';
 require_once 'db_connection.php';
 require_once 'models/Permission.php';
 require_once 'models/Product.php';
-require_once 'models/Supplier.php';
-$suppliermodel = new Supplier($pdo);
-$productmodel = new Product($pdo);
+
 $permissionModel = new Permission($pdo);
 $userRoleId = $_SESSION['user']['RoleID'] ?? null;
 $permissions = $permissionModel->getPermissionsByRole($userRoleId);
@@ -16,6 +14,7 @@ $hasImportEditPermission = in_array('import_edit', $permissions);
 $hasImportDeletePermission = in_array('import_delete', $permissions);
 $importModel = new Import($pdo);
 $employeeModel = new Employee($pdo);
+$productmodel = new Product($pdo);
 
 if (isset($_GET['action'])) {
     $action = $_GET['action'];
@@ -26,26 +25,23 @@ if (isset($_GET['action'])) {
             break;
 
         case 'detail':
-            if(!$hasImportViewPermission) {
+            if (!$hasImportViewPermission) {
                 header('Location: admin.php?page=imports&action=list');
                 exit;
             }
             $id = $_GET['id'];
             $import = $importModel->getById($id);
             $importDetails = $importModel->getImportDetails($id);
-            $suppliername = $importModel->getSupplierName($id);
             include 'views/imports/detail.php';
             break;
 
         case 'add':
-            if(!$hasImportAddPermission) {
+            if (!$hasImportAddPermission) {
                 header('Location: admin.php?page=imports&action=list');
                 exit;
             }
             $employees = $employeeModel->getAll();
             $productSizes = $importModel->getProductSizes();
-            $supplier = $suppliermodel->getAll();
-
 
             if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $details = [];
@@ -87,19 +83,17 @@ if (isset($_GET['action'])) {
                 foreach ($productSellPrices as $productID => $sellPrice) {
                     $productmodel->updatePrice($productID, $sellPrice);
                 }
-
                 $data = [
                     'EmployeeID' => $_POST['EmployeeID'],
                     'Total' => $total,
-                    'details' => $details,
-                    'SupplierID'=> $_POST['SupplierID']
+                    'details' => $details
                 ];
 
                 $importModel->add($data);
-                // ✅ Cập nhật tồn kho
-                 foreach ($details as $detail) {
-                    $productmodel->updateStockQuantity($detail['ProductSizeID'], $detail['Quantity']);
-                }
+
+                $importModel->updateStock($details);
+
+
                 header('Location: admin.php?page=imports&action=list');
                 exit;
             } else {

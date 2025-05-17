@@ -11,7 +11,7 @@
     --stat-pending: #b0b0b0;
     --stat-cancel: #eb5454;
     --stat-delivering: #20dab8;
-    --stat-received: #4CAF50;
+    --stat-received: #2af534;
 }
 *,
 *::before,
@@ -700,14 +700,7 @@ header {
     background-color: var(--theme-color-2);
     font-weight: bold;
 }
-.btnContainer{
-    display: flex;
-    align-items: center;
-    /* justify-content: space-between; */
-    flex-wrap: wrap;
-    gap: 12px;
-    font-weight: bold;
-}
+
 
 /* CART */
 .cart.sidebar {
@@ -2137,33 +2130,15 @@ h2.product-title {
   }
   
   .back2HomeBtn{
-    margin-top: 15px;
-    margin-left: 15px;
+    margin-top: 10px;
+    margin-left: 10px;
     }  
 .back2HomeBtn span{
-    background-color: #111;
-    color:white;
-    padding: 5px;
-    border-radius: 16px;
-    /* border-bottom: 1px solid black; */
+    border-bottom: 1px solid black;
     }  
 .back2HomeBtn:hover{
     font-weight: bold;
     }
-    .stars {
-        display: flex;
-        flex-direction: row-reverse;
-        justify-content: flex-start;
-        font-size: 24px;
-        cursor: pointer;
-        color: #ccc;
-    }
-    
-    .stars .star.selected,
-    .stars .star:hover,
-    .stars .star:hover ~ .star {
-        color: gold;
-    }
-    
+  
   
 /* ///////////////////////////////// FOOTER - END ///////////////////////////////// */

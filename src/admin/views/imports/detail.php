@@ -23,8 +23,6 @@
 
             <div class="bg-gray-50 p-4 rounded-lg">
                 <h3 class="font-medium text-gray-700 mb-3">Thông tin phiếu nhập</h3>
-                <p class="text-gray-600 mb-2"><span class="font-medium">Nhà cung cấp:</span> <?= $suppliername['SupplierName'] ?></p>
-                
                 <p class="text-gray-600 mb-2"><span class="font-medium">Ngày nhập:</span> <?= date('d/m/Y H:i', strtotime($import['ImportDate'])) ?></p>
                 <p class="text-gray-600 mb-2"><span class="font-medium">Tổng tiền:</span>
                     <span class="font-bold text-blue-600"><?= number_format($import['Total'], 0, ',', '.') ?> ₫</span>

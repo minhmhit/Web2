@@ -10,38 +10,12 @@ if (!$orderID) {
 //    - Khi người dùng submit, sẽ có $_POST['status']
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status'])) {
     $newStatus = $_POST['status'];
-    // Lấy trạng thái hiện tại để so sánh
-    $currentStatus = $order['Status'] ?? null;
 
-    $allowedTransitions = [
-        'Pending' => ['Pending', 'Processing', 'Delivering', 'Cancelled'],
-        'Processing' => ['Processing','Delivering' , 'Cancelled'],
-        'Delivering' => ['Delivering'],
-        'Completed' => ['Completed'],
-        'Cancelled' => ['Cancelled']
-    ];
+    // Cập nhật vào bảng orders
+    $stmt = $pdo->prepare("UPDATE `orders` SET `Status` = ? WHERE `OrderID` = ?");
+    $stmt->execute([$newStatus, $orderID]);
 
-    // Nếu trạng thái mới hợp lệ với trạng thái hiện tại
-    if (in_array($newStatus, $allowedTransitions[$currentStatus] ?? [])) {
-        // Cập nhật trạng thái
-        $stmt = $pdo->prepare("UPDATE `orders` SET `Status` = ? WHERE `OrderID` = ?");
-        $stmt->execute([$newStatus, $orderID]);
-
-        // ✅ Nếu chuyển sang trạng thái hủy, hoàn tồn kho
-        if ($newStatus === 'Cancelled') {
-            $stmtDetail = $pdo->prepare("SELECT ProductSizeID, Quantity FROM orderdetail WHERE OrderID = ?");
-            $stmtDetail->execute([$orderID]);
-            $items = $stmtDetail->fetchAll(PDO::FETCH_ASSOC);
-
-            $stmtUpdateStock = $pdo->prepare("UPDATE productsize SET StockQuantity = StockQuantity + ? WHERE ProductSizeID = ?");
-
-            foreach ($items as $item) {
-                $stmtUpdateStock->execute([$item['Quantity'], $item['ProductSizeID']]);
-            }
-        }
-    }
-
-    // PRG tránh resubmit
+    // PRG: redirect về lại detail để tránh resubmit khi reload
     header("Location: admin.php?page=orders&action=detail&id={$orderID}");
     exit;
 }
@@ -80,58 +54,22 @@ try {
     echo "<p style='color:red;'>Lỗi SQL: " . $e->getMessage() . "</p>";
     $orderdetail = [];
 }
-$statuses = [
-    'Pending' => 'Chờ xác nhận',
-    'Processing' => 'xác nhận đơn',
-    'Delivering' => 'Đang giao hàng',
-    'Completed' => 'Thành công',
-    'Cancelled' => 'Đã hủy'
-];
-if(!$hasOrderEditPermission){
-    $statuses = [
-        'Pending' => 'Chờ xác nhận',
-        'Processing' => 'xác nhận đơn',
-        'Cancelled' => 'Đã hủy'
-    ];
-}else{
-    $statuses = [
-        'Processing' => 'xác nhận đơn',
-        'Delivering' => 'Đang giao hàng',
-        'Cancelled' => 'Đã hủy'
-    ];
-}
 
-$allowedTransitions = [
-    'Pending' => ['Pending', 'Processing', 'Delivering', 'Cancelled'],
-    'Processing' => ['Processing', 'Delivering', 'Cancelled'],
-    'Delivering' => ['Delivering'],
-    'Completed' => ['Completed'], // locked
-    'Cancelled' => ['Cancelled']  // locked
-];
 
+
+// Lấy trạng thái hiện tại
 $currentStatus = $order['Status'];
-$allowed = $allowedTransitions[$currentStatus] ?? [];
 
-$city = getAll("SELECT * FROM province");
-$district = getAll("SELECT * FROM district");
-$ward = getAll("SELECT * FROM wards");
-function getNameAddressById($arr, $id ,$nameID) {
-    $left = 0;
-    $right = count($arr) - 1;
-    while ($left <= $right) {
-        $mid = intval(($left + $right) / 2);
-        $currentId = $arr[$mid][$nameID]; 
-
-        if ($currentId == $id) {
-            return $arr[$mid];
-        } elseif ($currentId < $id) {
-            $left = $mid + 1;
-        } else {
-            $right = $mid - 1;
-        }
-    }
-    return null; // Không tìm thấy
+// Định nghĩa các tùy chọn cho dropdown dựa trên trạng thái hiện tại
+$statusOptions = [];
+if ($currentStatus == 'Pending') {
+    $statusOptions = ['Processing', 'Completed', 'Cancelled'];
+} elseif ($currentStatus == 'Processing') {
+    $statusOptions = ['Completed', 'Cancelled'];
+} elseif ($currentStatus == 'Completed' || $currentStatus == 'Cancelled') {
+    $statusOptions = []; // Không có tùy chọn nào để chỉnh sửa
 }
+
 
 ?>
 <div class="max-w-4xl mx-auto p-6">
@@ -146,8 +84,8 @@ function getNameAddressById($arr, $id ,$nameID) {
             </div>
             <div class="flex items-center space-x-3">
                 <span class="px-3 py-1 rounded-full text-sm font-medium 
-                <?= $order['Status'] == 'Completed' ? 'bg-green-100 text-green-800' : ($order['Status'] == 'Delivering' ? 'bg-blue-100 text-blue-800' : ($order['Status'] == 'Processing' ? 'bg-yellow-100 text-yellow-800' : ($order['Status'] == 'Cancelled' ? 'bg-red-100 text-red-800':'bg-yellow-100 text-yellow-800'))) ?>">
-                <?= $order['Status'] == 'Completed' ? 'Đã giao hàng thành công' : ($order['Status'] == 'Delivering' ? 'Đang giao hàng' : ($order['Status'] == 'Processing' ? 'Đã xử lý' : ($order['Status'] == 'Cancelled' ? 'Đã hủy' : 'Chờ xác nhận'))) ?>
+                    <?= $order['Status'] == 'Completed' ? 'bg-green-100 text-green-800' : ($order['Status'] == 'Processing' ? 'bg-blue-100 text-blue-800' : ($order['Status'] == 'Cancelled' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800')) ?>">
+                    <?= $order['Status'] == 'Completed' ? 'Đã giao hàng' : ($order['Status'] == 'Processing' ? 'Đang giao hàng' : ($order['Status'] == 'Cancelled' ? 'Đã hủy' : 'Chờ xác nhận')) ?>
                 </span>
             </div>
         </div>
@@ -174,39 +112,40 @@ function getNameAddressById($arr, $id ,$nameID) {
         <div class="mb-8 bg-gray-50 p-4 rounded-lg">
             <h3 class="font-medium text-gray-700 mb-3">Thông tin giao hàng</h3>
             <p class="text-gray-600 mb-2"><span class="font-medium">Địa chỉ:</span> <?= htmlspecialchars($order['ShippingAddress']) ?></p>
-            <p class="text-gray-600 mb-2"><span class="font-medium">ID Tỉnh/Thành:</span> <?= htmlspecialchars($order['ProvinceID']) ?> | <?= htmlspecialchars(getNameAddressById($city,$order['ProvinceID'],'province_id')['name']) ?></p>
-            <p class="text-gray-600 mb-2"><span class="font-medium">ID Quận/Huyện:</span> <?= htmlspecialchars($order['DistrictID']) ?> | <?= htmlspecialchars(getNameAddressById($district,$order['DistrictID'],'district_id')['name']) ?></p>
-            <p class="text-gray-600"><span class="font-medium">ID Phường/Xã:</span> <?= htmlspecialchars($order['WardID']) ?> | <?= htmlspecialchars(getNameAddressById($ward,$order['WardID'],'wards_id')['name']) ?></p>
+            <p class="text-gray-600 mb-2"><span class="font-medium">ID Tỉnh/Thành:</span> <?= htmlspecialchars($order['ProvinceID']) ?></p>
+            <p class="text-gray-600 mb-2"><span class="font-medium">ID Quận/Huyện:</span> <?= htmlspecialchars($order['DistrictID']) ?></p>
+            <p class="text-gray-600"><span class="font-medium">ID Phường/Xã:</span> <?= htmlspecialchars($order['WardID']) ?></p>
         </div>
 
         <!-- Quick status update form -->
-        <form method="POST" action="admin.php?page=orders&action=detail&id=<?= $order['OrderID'] ?>" class="border-t pt-6 mb-8">
-            <input type="hidden" name="id" value="<?= $order['OrderID'] ?>">
+        <?php if (!empty($statusOptions)): ?>
+            <form method="POST" action="admin.php?page=orders&action=detail&id=<?= $order['OrderID'] ?>" class="border-t pt-6 mb-8">
+                <input type="hidden" name="id" value="<?= $order['OrderID'] ?>">
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
-                <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Cập nhật nhanh trạng thái</label>
-                    <select name="status" 
-                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-                        <?php foreach ($statuses as $status => $label): ?>
-                            <?php if (in_array($status, $allowed)): ?>
-                                <option value="<?= $status ?>" <?= $currentStatus === $status ? 'selected' : '' ?>>
-                                    <?= $label ?>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Cập nhật nhanh trạng thái</label>
+                        <select name="status" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                            <?php foreach ($statusOptions as $option): ?>
+                                <option value="<?= $option ?>" <?= $option == $currentStatus ? 'selected' : '' ?>>
+                                    <?= $option == 'Processing' ? 'Đang giao hàng' : ($option == 'Completed' ? 'Đã giao hàng' : 'Đã hủy') ?>
                                 </option>
-                            <?php endif; ?>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
 
-                <div class="flex justify-end">
-                <button type="submit"
-                    class="w-full md:w-auto px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition">
-                    <i class="fas fa-sync-alt mr-2"></i> Cập nhật nhanh
-                </button>
-
+                    <div class="flex justify-end">
+                        <button type="submit" class="w-full md:w-auto px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition">
+                            <i class="fas fa-sync-alt mr-2"></i> Cập nhật nhanh
+                        </button>
+                    </div>
                 </div>
+            </form>
+        <?php else: ?>
+            <div class="border-t pt-6 mb-8 text-gray-500">
+                <p>Đơn hàng đã ở trạng thái cuối (<?= $currentStatus == 'Completed' ? 'Đã giao hàng' : 'Đã hủy' ?>), không thể cập nhật trạng thái.</p>
             </div>
-        </form>
+        <?php endif; ?>
 
         <!-- Products list section -->
         <div class="mt-8">
@@ -268,8 +207,8 @@ function getNameAddressById($arr, $id ,$nameID) {
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-    let total = 0;
-    // Duyệt qua tất cả input subtotal-value
+        let total = 0;
+        // Duyệt qua tất cả input subtotal-value
         document.querySelectorAll('.subtotal-value').forEach(function(el) {
             const v = parseFloat(el.value);
             if (!isNaN(v)) total += v;

@@ -1,12 +1,16 @@
 <?php
-class Product {
+class Product
+{
     private $pdo;
 
-    public function __construct($pdo) {
+    public function __construct($pdo)
+    {
         $this->pdo = $pdo;
     }
 
-    public function getAll() {
+
+    public function getAll()
+    {
         $stmt = $this->pdo->query("SELECT p.*, c.CategoryName, b.BrandName 
                                    FROM product p 
                                    LEFT JOIN categories c ON p.CategoryID = c.CategoryID 
@@ -15,15 +19,11 @@ class Product {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getById($id) {
+    public function getById($id)
+    {
         $stmt = $this->pdo->prepare("SELECT * FROM product WHERE ProductID = ? AND IsDeleted = 0");
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-    public function updatePrice($productID, $price)
-    {
-        $stmt = $this->pdo->prepare("UPDATE product SET Price = ? WHERE ProductID = ?");
-        $stmt->execute([$price, $productID]);
     }
 
     public function add($data)
@@ -42,8 +42,7 @@ class Product {
                 $data['Price'],
                 $data['ImageURL']
             ]);
-            
-            
+
             $productId = $this->pdo->lastInsertId(); // Lấy ID sản phẩm vừa tạo
 
             // Insert nhiều dòng vào bảng productsize
@@ -69,7 +68,7 @@ class Product {
     public function update($id, $data)
     {
         try {
-            
+
             $this->pdo->beginTransaction();
 
             // Update bảng product
@@ -133,22 +132,17 @@ class Product {
             throw $e;
         }
     }
-    public function updateStockQuantity($productSizeId, $quantityChange)
-    {
-        try {
-            $stmt = $this->pdo->prepare("
-                UPDATE productsize 
-                SET StockQuantity = GREATEST(StockQuantity + ?, 0)
-                WHERE ProductSizeID = ?
-            ");
-            $stmt->execute([$quantityChange, $productSizeId]);
-        } catch (Exception $e) {
-            throw $e;
-        }
-    }
 
-    public function delete($id) {
+
+    public function delete($id)
+    {
         $stmt = $this->pdo->prepare("UPDATE product SET IsDeleted = 1 WHERE ProductID = ?");
         $stmt->execute([$id]);
+    }
+
+    public function updatePrice($productID, $price)
+    {
+        $stmt = $this->pdo->prepare("UPDATE product SET Price = ? WHERE ProductID = ?");
+        $stmt->execute([$price, $productID]);
     }
 }

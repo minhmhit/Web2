@@ -36,8 +36,8 @@ class Import
 
             // Thêm chi tiết nhập hàng
             if (isset($data['details']) && is_array($data['details'])) {
-                $detailStmt = $this->pdo->prepare("INSERT INTO `importdetail` (ImportID, ProductSizeID, Quantity, UnitPrice, Subtotal,SupplierID) 
-                                                VALUES (?, ?, ?, ?, ?, ?)");
+                $detailStmt = $this->pdo->prepare("INSERT INTO `importdetail` (ImportID, ProductSizeID, Quantity, UnitPrice, Subtotal) 
+                                                VALUES (?, ?, ?, ?, ?)");
                 foreach ($data['details'] as $detail) {
                     $subtotal = $detail['Quantity'] * $detail['UnitPrice'];
                     $detailStmt->execute([
@@ -45,8 +45,7 @@ class Import
                         $detail['ProductSizeID'],
                         $detail['Quantity'],
                         $detail['UnitPrice'],
-                        $subtotal,
-                        $data['SupplierID']
+                        $subtotal
                     ]);
                 }
             }
@@ -69,25 +68,10 @@ class Import
         $stmt->execute([$importId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    function getSupplierName($importId)
-    {
-        $stmt = $this->pdo->prepare("
-        SELECT s.SupplierName
-        FROM `importdetail` id
-        JOIN `supplier` s ON id.SupplierID = s.SupplierID
-        WHERE id.ImportID = ? LIMIT  1 ");
-
-
-        $stmt->execute([$importId]);
-
-        
-        return  $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-
 
     public function getProductSizes()
     {
-        $stmt = $this->pdo->query("SELECT ps.*, p.ProductName, p.ImageURL 
+        $stmt = $this->pdo->query("SELECT ps.*, p.ProductName, p.ImageURL, p.ProductID
                                   FROM `productsize` ps 
                                   JOIN `product` p ON ps.ProductID = p.ProductID");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

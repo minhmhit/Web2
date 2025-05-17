@@ -77,7 +77,7 @@ if (isset($_POST['btnRegister'])) {
                     "title" => "Success",
                     "message" => "Account created successfully!",
                     "type" => "success",
-                    "redirect" => "index.php?pg=home" // Chuyển hướng đến trang chủ hoặc giỏ hàng
+                    "redirect" => "index.php?pg=home"
                 ]);
             } else {
                 $toastMessage = json_encode([

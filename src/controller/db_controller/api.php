@@ -296,7 +296,7 @@ function getCatalogName($catalogID) {
 function getOrdersByUserID(){
     $conn = connectdb();
     $userID = $_SESSION['user']['userID'];
-    $sql = "SELECT * FROM orders WHERE UserID = :userID ORDER BY orders.OrderID DESC";    
+    $sql = "SELECT * FROM orders WHERE UserID = :userID";    
     $stmt = $conn->prepare($sql);
     $stmt->bindParam(':userID', $userID, PDO::PARAM_INT);
     $stmt->execute();
@@ -356,38 +356,28 @@ function updatePassword($userID, $password) {
 }
 
 
-function getNewProduct(){
+function getBestSellerProduct(){
     $sql = "
         SELECT p.ProductID AS id, p.ProductName AS name, p.Price AS price, p.ImageURL AS image, 
                c.CategoryName AS category, b.BrandName AS brand, p.Gender AS sex,
-               GROUP_CONCAT(ps.Size) AS size,
-        SUM(ps.StockQuantity) AS totalStock
+               GROUP_CONCAT(ps.Size) AS size
         FROM Product p
         LEFT JOIN Categories c ON p.CategoryID = c.CategoryID
         LEFT JOIN Brand b ON p.BrandID = b.BrandID
         LEFT JOIN ProductSize ps ON p.ProductID = ps.ProductID
-        WHERE p.New = 1 AND IsDeleted = 0
-        GROUP BY p.ProductID;
+        JOIN orderdetail od ON ps.ProductSizeID = od.ProductSizeID
+        JOIN orders o ON od.OrderID = o.OrderID
+        WHERE o.Status = 'Processed'
+        ORDER BY SUM(od.Quantity) DESC
+        LIMIT 10;
     ";
 
     $products = getAll($sql);
 
     // Chuyển kích thước thành mảng và thêm thuộc tính isDeleted
-    // Chuyển kích thước thành mảng và thêm thuộc tính isDeleted
     foreach ($products as &$product) {
-        // Chuyển kích thước thành mảng
         $product['size'] = !empty($product['size']) ? explode(',', $product['size']) : [];
-        // Thêm thuộc tính isDeleted mặc định
         $product['isDeleted'] = false;
-    
-        // Xác định trạng thái tồn kho dựa trên tổng số lượng tồn kho
-        if ($product['totalStock'] == 0) {
-            $product['stockStatus'] = 'Out of Stock';
-        } elseif ($product['totalStock'] <= 5) {
-            $product['stockStatus'] = 'Low Stock';
-        } else {
-            $product['stockStatus'] = 'In Stock';
-        }
     }
 
     return $products;
@@ -501,7 +491,6 @@ function filterProduct($pdo,$condition){
         LEFT JOIN Categories c ON p.CategoryID = c.CategoryID
         LEFT JOIN Brand b ON p.BrandID = b.BrandID
         LEFT JOIN ProductSize ps ON p.ProductID = ps.ProductID
-        WHERE p.IsDeleted = 0
         GROUP BY p.ProductID
         having 1 ' . $condition );
     $stmt->execute();

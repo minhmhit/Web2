@@ -1,8 +1,6 @@
 <?php if (!$hasProductViewPermission): ?>
-    <div style="margin-top: 15px; color: red; font-weight: bold;">
-        Bạn không có quyền truy cập trang này.
-    </div>
-<?php else: ?>
+    <div style="filter: blur(3px); pointer-events: none;">
+    <?php endif; ?>
     <?php
     function renderButton($text, $href = '#', $iconClass = '', $itemclass = '', $disabled = false, $dltBtn = false)
     {
@@ -28,21 +26,6 @@
         echo htmlspecialchars($text);
         echo '</a>';
     }
-
-    function getTotalStockQuantity($productId) {
-        $sql = "SELECT SUM(StockQuantity) AS total_quantity 
-                FROM productsize 
-                WHERE ProductID = :id";
-        
-        $result = executeQuery($sql, [':id' => $productId]);
-    
-        if ($result && count($result) > 0) {
-            return $result[0]['total_quantity'] ?? 0;
-        }
-    
-        return 0;
-    }
-    
     ?>
 
 
@@ -64,7 +47,6 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Danh mục</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thương hiệu</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Giá</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Số lượng</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hành động</th>
                         </tr>
                     </thead>
@@ -89,10 +71,9 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?= htmlspecialchars($product['CategoryName']) ?></td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?= htmlspecialchars($product['BrandName']) ?></td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium"><?= number_format($product['Price'], 0, ',', '.') ?> VND</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium"><?= getTotalStockQuantity($product['ProductID'])?></td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-3">
 
-                                    <?php renderButton('Chi tiết', 'admin.php?page=products&action=edit&id= ' . $product['ProductID'] . '', 'fas fa-edit', 'text-yellow-600 hover:text-yellow-900', !$hasProductEditPermission) ?>
+                                    <?php renderButton('Sửa', 'admin.php?page=products&action=edit&id= ' . $product['ProductID'] . '', 'fas fa-edit', 'text-yellow-600 hover:text-yellow-900', !$hasProductEditPermission) ?>
 
                                     <?= ($hasProductDeletePermission) ? '<a href="admin.php?page=products&action=delete&id=' . $product['ProductID'] . '" 
                                         class="text-red-600 hover:text-red-900" onclick="return confirm(\'Bạn chắc chắn muốn xóa sản phẩm này?\')">
@@ -118,5 +99,9 @@
             </div>
         </div>
     </div>
-    
+    <?php if (!$hasProductViewPermission): ?>
+    </div>
+    <div style="margin-top: 15px; color: red; font-weight: bold;">
+        Bạn không được quyền xem nội dung này.
+    </div>
 <?php endif; ?>

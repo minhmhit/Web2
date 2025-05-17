@@ -77,36 +77,32 @@ foreach ($allFunctions as $function) {
                     <table class="min-w-full border border-gray-200 rounded-lg divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Tên chức năng</th>
-                                <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Xem</th>
-                                <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Thêm</th>
-                                <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Sửa</th>
-                                <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Xóa</th>
+                                <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Chức năng</th>
+                                <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Chọn</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-100">
                             <?php 
                             $str = '';
                             foreach ($groupedFunctions as $category => $permissions){
-                                $strpermission = '';
+                                $str .= '<tr class="bg-blue-50">
+                                    <td colspan="2" class="px-6 py-2 font-bold text-blue-900">'.$category.'</td>
+                                </tr>';
                                 foreach ($permissions as $permission){
                                     extract($permission); 
-                                    $strpermission .= '
-                                    <td class="px-6 py-2">
-                                        <input type="checkbox"
-                                            name="function_ids[]"
-                                            value="'.$id.'"
-                                            class="h-4 w-4 text-blue-600 border-gray-300 rounded">
-                                    </td>';
-                                }
-                                $str .= '<tr class="bg-white">
-                                    <td colspleft" class="px-6 py-2 font-bold text-blue-900">'.$category.'</td>
-                                    '.$strpermission.'
-                                </tr>';
-                            }
+                                    $str .= '<tr>
+                                        <td class="px-6 py-2 text-sm">'.($ten_quyen).'</td>
+                                        <td class="px-6 py-2">
+                                            <input type="checkbox"
+                                                name="function_ids[]"
+                                                value="'.$id.'"
+                                                class="h-4 w-4 text-blue-600 border-gray-300 rounded">
+                                        </td>
+                                    </tr>';
+                                }}
                                 echo $str;
                                     ?> 
-                            <tr class="bg-white">
+                            <tr class="bg-blue-50">
                                     <td colspan="1" class="px-6 py-2 font-bold text-blue-900">Chọn tất cả</td>
                                     <td class="px-6 py-2">
                                         <input type="checkbox" id="checkAll"class="h-4 w-4 text-blue-600 border-gray-300 rounded">

@@ -43,12 +43,11 @@ switch ($_SERVER['REQUEST_METHOD']) {
                                     JOIN product p ON ps.ProductID = p.ProductID
                                     WHERE c.UserID = $user_id");
 
-            if (count($cart_items) > 0) {
-                echo json_encode(['success' => true, 'cart' => $cart_items]);
-            } else {
-                echo json_encode(['success' => false, 'cart' => []]);
-            }
-            exit();
+                                echo json_encode([
+                                    'success' => true, // luôn true
+                                    'cart' => $cart_items
+                                ]);
+                                exit();
         }
 
         if ($_GET['action'] == 'get_cart_summary') {

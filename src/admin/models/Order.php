@@ -14,32 +14,7 @@ class Order
                                   e.Fullname AS EmployeeFullname
                                   FROM `orders` o 
                                   LEFT JOIN `user` u ON o.UserID = u.UserID 
-                                  LEFT JOIN `employee` e ON o.SaleID = e.EmployeeID
-                                  ORDER BY o.OrderID DESC;");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public function getAllOfStorageStaff()
-    {
-        $stmt = $this->pdo->query("SELECT o.*, u.Fullname AS UserFullname, u.Email AS UserEmail, u.PhoneNumber AS UserPhoneNumber,
-                                  e.Fullname AS EmployeeFullname
-                                  FROM `orders` o 
-                                  LEFT JOIN `user` u ON o.UserID = u.UserID 
-                                  LEFT JOIN `employee` e ON o.SaleID = e.EmployeeID
-                                  WHERE o.Status = 'Processing'
-                                  ORDER BY o.OrderID DESC");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public function getAllOfSales()
-    {
-        $stmt = $this->pdo->query("SELECT o.*, u.Fullname AS UserFullname, u.Email AS UserEmail, u.PhoneNumber AS UserPhoneNumber,
-                                  e.Fullname AS EmployeeFullname
-                                  FROM `orders` o 
-                                  LEFT JOIN `user` u ON o.UserID = u.UserID 
-                                  LEFT JOIN `employee` e ON o.SaleID = e.EmployeeID
-                                  WHERE o.Status = 'Pending'
-                                  ORDER BY o.OrderID DESC");
+                                  LEFT JOIN `employee` e ON o.SaleID = e.EmployeeID");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     // public function getTotalOrders($orderId)
@@ -81,18 +56,7 @@ class Order
         ]);
         return $this->pdo->lastInsertId();
     }
-    public function decreaseStock($productSizeID, $quantity)
-    {
-        $stmt = $this->pdo->prepare("
-        UPDATE productsize
-        SET StockQuantity = StockQuantity - ?
-        WHERE ProductSizeID = ? AND StockQuantity >= ?
-    ");
-        $stmt->execute([$quantity, $productSizeID, $quantity]);
-        if ($stmt->rowCount() == 0) {
-            error_log("Insufficient stock for ProductSizeID: $productSizeID");
-        }
-    }
+
     public function updateStatus($id, $status)
     {
         $stmt = $this->pdo->prepare("UPDATE `orders` SET Status = ? WHERE OrderID = ?");
@@ -144,6 +108,19 @@ class Order
         } catch (Exception $e) {
             $this->pdo->rollBack();
             return false;
+        }
+    }
+
+    public function decreaseStock($productSizeID, $quantity)
+    {
+        $stmt = $this->pdo->prepare("
+        UPDATE productsize
+        SET StockQuantity = StockQuantity - ?
+        WHERE ProductSizeID = ? AND StockQuantity >= ?
+    ");
+        $stmt->execute([$quantity, $productSizeID, $quantity]);
+        if ($stmt->rowCount() == 0) {
+            error_log("Insufficient stock for ProductSizeID: $productSizeID");
         }
     }
 

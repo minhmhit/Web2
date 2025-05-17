@@ -27,7 +27,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'summary') {
     $orderCount = $pdo->query("SELECT COUNT(*) as count FROM orders")->fetch()['count'];
 
     // Phân loại đơn hàng theo trạng thái
-    $pendingOrderCount = $pdo->query("SELECT COUNT(*) as count FROM orders WHERE Status = 'Processing'")->fetch()['count'];
+    $pendingOrderCount = $pdo->query("SELECT COUNT(*) as count FROM orders WHERE Status = 'Pending'")->fetch()['count'];
     $processedOrderCount = $pdo->query("SELECT COUNT(*) as count FROM orders WHERE Status = 'Completed'")->fetch()['count'];
     $cancelledOrderCount = $pdo->query("SELECT COUNT(*) as count FROM orders WHERE Status = 'Cancelled'")->fetch()['count'];
 

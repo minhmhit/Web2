@@ -1,8 +1,6 @@
 <?php if (!$hasStatisticViewPermission): ?>
-    <div style="margin-top: 15px; color: red; font-weight: bold;">
-        Bạn không có quyền truy cập trang này.
-    </div>
-<?php else: ?>
+    <div style="filter: blur(3px); pointer-events: none;">
+<?php endif; ?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -177,4 +175,9 @@
     </script>
 </body>
 </html>
+<?php if (!$hasStatisticViewPermission): ?>
+    </div>
+    <div style="margin-top: 15px; color: red; font-weight: bold;">
+        Bạn không được quyền xem nội dung này.
+    </div>
 <?php endif; ?>

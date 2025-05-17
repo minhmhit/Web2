@@ -1,8 +1,6 @@
 <?php if (!$hasSupplierViewPermission): ?>
-    <div style="margin-top: 15px; color: red; font-weight: bold;">
-        Bạn không có quyền truy cập trang này.
-    </div>
-<?php else: ?>
+    <div style="filter: blur(3px); pointer-events: none;">
+<?php endif; ?>
 <?php
 function renderButton($text, $href = '#', $iconClass = '', $itemclass= '',$disabled = false )
 {
@@ -88,5 +86,9 @@ function renderButton($text, $href = '#', $iconClass = '', $itemclass= '',$disab
 </body>
 
 </html>
-
+<?php if (!$hasSupplierViewPermission): ?>
+    </div>
+    <div style="margin-top: 15px; color: red; font-weight: bold;">
+        Bạn không được quyền xem nội dung này.
+    </div>
 <?php endif; ?>

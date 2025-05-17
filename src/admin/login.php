@@ -10,18 +10,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt->execute([$username]);
     $employee = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    
+    // if ($employee && password_verify($password, $employee['PasswordHash']) && $employee['RoleID'] == 1) {
+    //     $_SESSION['user'] = $employee;
+    //     header('Location: admin.php');
+    //     exit;
+    // } else {
+    //     echo "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.";
+    // }
 
-    if ($employee && password_verify($password, $employee['PasswordHash']) && $employee['RoleID'] > 0) {
+    if ($employee && password_verify($password, $employee['PasswordHash'])) {
         $_SESSION['user'] = $employee;
-        $_SESSION['user']['RoleID'] = $employee['RoleID'];
         header('Location: admin.php');
         exit;
     } else {
         echo "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.";
     }
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -310,11 +314,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <div class="circle circle-4"></div>
                 
                 <div class="company-name">BRO SHOES</div>
+
                 
                 <div class="welcome-content">
                     <h1>WELCOME BACK</h1>
                     <hr>
                     <p class="subtitle">Chức năng quản trị của shop bán giày BRO SHOES</p>
+
                 </div>
             </div>
             

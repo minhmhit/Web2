@@ -1,44 +1,30 @@
 <script>
+    
     document.addEventListener("click", (e) => {
-        const seeMore = e.target.closest(".see-more");
-        if (!seeMore) return;
-        document.querySelector(".main-container-home").classList.remove("Active");
-        document.querySelector(".product-page").classList.add("Active");
-        document.querySelector(".banner").style.display = "none";
-        document.querySelector(".search-bar").style.display = "flex";
-        document.querySelector(".catalogue-info").style.display = "flex";
-        const filter = seeMore.dataset.filter;
-        document.getElementById("display-catalogue-name").innerText = e.target.id == "AirizonaCollection" ? "Airizona Collection" : e.target.id;
-        html_mainc();
-        if(e.target.id == "AirizonaCollection"){
-            fetch("controller/db_controller/api.php", {
-            method: "POST",
-            headers: {
-            "Content-Type": "text/plain",
-            },
-            body: JSON.stringify({ action: "filter_product", filter: ` and ( brand ="BirkenStock")
-                                                                        order by price asc
-                                                                        `}),
-            })
-            .then((response) => response.json())
-            .then((data) => {
-            displayList(data, per_Page, 1);
-            setupPagination(data, per_Page);
-            document.querySelector("#display-catalogue-amount").innerText = data.length;
-            console.log(data.length);
-            });    
-        }
-        addListener_filterOption();
-        // resetFilter();
-        document.querySelectorAll(".filter-option").forEach((ele) => {
-        ele.classList.remove("active");
-        });
-        document.querySelector("#price-lowerbound").value = "";
-        document.querySelector("#price-upperbound").value = "";
-        document.querySelector("#search-bar").value = "";
-        document.querySelector("#sortby-mode-display").innerText =
-            "Alphabetically, A-Z";
-        window.scrollTo({ top: 0, behavior: "smooth" });
+    const seeMore = e.target.closest(".see-more");
+    if (!seeMore) return;
+
+    document.querySelector(".main-container-home").classList.remove("Active");
+    document.querySelector(".product-page").classList.add("Active");
+    document.querySelector(".banner").style.display = "none";
+
+    const id = seeMore.id;
+    const filter = seeMore.dataset.filter; // có thể dùng .dataset
+
+    document.querySelector(".search-bar").style.display = "flex";
+    document.querySelector(".catalogue-info").style.display = "flex";
+    
+    let displayCatalogueName = document.getElementById(
+      "display-catalogue-name"
+    );
+    displayCatalogueName.innerText = e.target.id;
+    //  main_container
+    html_mainc();
+    
+    // them nut nhan cho filter option
+    addListener_filterOption();
+    
+    resetFilter();
     });
 </script>
 <?php 
@@ -203,7 +189,7 @@ require_once "./controller/controller.php";
                             <h3>ARIZONA TOBACCO BROWN OILDED LEATHER</h3>
                         </div>
                     </div>
-                    <div class="see-more" id="AirizonaCollection" data-filter="Product">see more</div>
+                    <div class="see-more filter-category" id="Airizona Collection" data-filter="Sandal">see more</div>
                     
                     <div class="new-products-header">
                     <div class="line"></div>
@@ -241,7 +227,7 @@ require_once "./controller/controller.php";
                     <div class="product-box-container-home slicker" id="home-product"> 
                         <?php
                             $kq = "";
-                            foreach ($newproductlist as $item) {
+                            foreach ($productlist as $item) {
                                 extract($item);
                                 $kq .= '
                                 <div class="product-box-home" onclick= "detailProduct('. $id .')">

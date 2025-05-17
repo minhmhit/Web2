@@ -12,27 +12,20 @@ if (isset($_GET['action'])) {
         case 'list':      
             // Kiểm tra có quyền xem đơn hàng hay không
             $hasOrderViewPermission = in_array('order_view', $permissions);
-            $hasOrderEditPermission = in_array('order_edit', $permissions);
-            $orders = $orderModel->getAllOfSales();
-            if($userRoleId == 1){
-                $orders = $orderModel->getAll();
-            }
-            else if(!$hasOrderEditPermission){
-                $orders = $orderModel->getAllOfStorageStaff();
-            }
+            $orders = $orderModel->getAll();
             include 'views/orders/list.php';
             break;
         case 'detail':
             $hasOrderViewPermission = in_array('order_view', $permissions);
-            if(!$hasOrderViewPermission) {
+            if (!$hasOrderViewPermission) {
                 header('Location: admin.php?page=orders&action=list');
                 exit;
             }
-            // Kiểm tra có quyền cập nhật đơn hàng hay không
             $hasOrderEditPermission = in_array('order_edit', $permissions);
             $id = $_GET['id'];
             $order = $orderModel->getById($id);
             $orderDetails = $orderModel->getOrderDetails($id);
+
             if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id']) && isset($_POST['status'])) {
                 $id = $_POST['id'];
                 $newStatus = $_POST['status'];
@@ -54,12 +47,13 @@ if (isset($_GET['action'])) {
                 header("Location: admin.php?page=orders&action=detail&id=$id&success=Cập nhật trạng thái thành công");
                 exit;
             }
+
             include 'views/orders/detail.php';
             break;
         case 'update':
             // Kiểm tra có quyền cập nhật đơn hàng hay không
             $hasOrderEditPermission = in_array('order_edit', $permissions);
-            if (!$hasOrderEditPermission) {
+            if(!$hasOrderEditPermission) {
                 header('Location: admin.php?page=orders&action=list');
                 exit;
             }

@@ -1,8 +1,6 @@
 <?php if (!$hasReportViewPermission): ?>
-    <div style="margin-top: 15px; color: red; font-weight: bold;">
-        Bạn không có quyền truy cập trang này.
-    </div>
-<?php else: ?>
+    <div style="filter: blur(3px); pointer-events: none;">
+<?php endif; ?>
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <h2 class="text-2xl font-bold text-gray-800 mb-8">Báo cáo tổng hợp hệ thống</h2>
 
@@ -137,5 +135,9 @@
         </div>
     </div>
 </div>
-
+<?php if (!$hasReportViewPermission): ?>
+    </div>
+    <div style="margin-top: 15px; color: red; font-weight: bold;">
+        Bạn không được quyền xem nội dung này.
+    </div>
 <?php endif; ?>

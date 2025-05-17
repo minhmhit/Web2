@@ -1,8 +1,6 @@
 <?php if (!$hasStaffViewPermission): ?>
-    <div style="margin-top: 15px; color: red; font-weight: bold;">
-        Bạn không có quyền truy cập trang này.
-    </div>
-<?php else: ?>
+    <div style="filter: blur(3px); pointer-events: none;">
+<?php endif; ?>
 <?php
 function renderButton($text, $href = '#', $iconClass = '', $itemclass= '',$disabled = false , $dltBtn = false)
 {
@@ -75,11 +73,11 @@ function renderButton($text, $href = '#', $iconClass = '', $itemclass= '',$disab
             </div>
             <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                 <div>
-                    <!-- <p class="text-sm text-gray-700">
+                    <p class="text-sm text-gray-700">
                         Hiển thị <span class="font-medium">1</span> đến <span class="font-medium">10</span> của <span class="font-medium"><?= count($employees) ?></span> kết quả
-                    </p> -->
+                    </p>
                 </div>
-                <!-- <div>
+                <div>
                     <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
                         <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
                             <span class="sr-only">Trước</span>
@@ -93,10 +91,14 @@ function renderButton($text, $href = '#', $iconClass = '', $itemclass= '',$disab
                             <i class="fas fa-chevron-right"></i>
                         </a>
                     </nav>
-                </div> -->
+                </div>
             </div>
         </div>
     </div>
 </div>
-
+<?php if (!$hasStaffViewPermission): ?>
+    </div>
+    <div style="margin-top: 15px; color: red; font-weight: bold;">
+        Bạn không được quyền xem nội dung này.
+    </div>
 <?php endif; ?>

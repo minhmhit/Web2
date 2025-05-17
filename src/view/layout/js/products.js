@@ -81,7 +81,7 @@ function filter() {
     headers: {
       "Content-Type": "text/plain",
     },
-    body: JSON.stringify({ action: "filter_product", filter: getfilter()}),
+    body: JSON.stringify({ action: "filter_product", filter: getfilter() }),
   })
     .then((response) => response.json())
     .then((data) => {

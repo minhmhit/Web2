@@ -1,7 +1,6 @@
 <?php
 session_start();
-
-if (!isset($_SESSION['user']) || !is_array($_SESSION['user']) || !isset($_SESSION['user']['RoleID'])) {
+if (!isset($_SESSION['user'])) {
     header('Location: login.php');
     exit;
 }
@@ -84,7 +83,6 @@ $page = $_GET['page'] ?? 'home';
         <div class="bg-white rounded-lg shadow-md p-6">
             <?php
             switch ($page) {
-
                 case 'products':
                     include 'controllers/ProductsController.php';
                     break;
@@ -138,7 +136,6 @@ $page = $_GET['page'] ?? 'home';
                           <p class="text-gray-600">Vui lòng chọn một mục từ menu bên trái để bắt đầu.</p>';
                     break;
             }
-            
             ?>
         </div>
     </main>
