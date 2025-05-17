@@ -10,13 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt->execute([$username]);
     $employee = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // if ($employee && password_verify($password, $employee['PasswordHash']) && $employee['RoleID'] == 1) {
-    //     $_SESSION['user'] = $employee;
-    //     header('Location: admin.php');
-    //     exit;
-    // } else {
-    //     echo "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.";
-    // }
+    
 
     if ($employee && password_verify($password, $employee['PasswordHash']) && $employee['RoleID'] > 0) {
         $_SESSION['user'] = $employee;
@@ -27,6 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         echo "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.";
     }
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1:3307
--- Generation Time: Apr 17, 2025 at 02:30 AM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- Máy chủ: 127.0.0.1:3306
+-- Thời gian đã tạo: Th5 14, 2025 lúc 02:17 AM
+-- Phiên bản máy phục vụ: 10.4.32-MariaDB
+-- Phiên bản PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,13 +18,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `bangiay_db`
+-- Cơ sở dữ liệu: `bangiay_db2`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `brand`
+-- Cấu trúc bảng cho bảng `brand`
 --
 
 CREATE TABLE `brand` (
@@ -33,7 +33,7 @@ CREATE TABLE `brand` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `brand`
+-- Đang đổ dữ liệu cho bảng `brand`
 --
 
 INSERT INTO `brand` (`BrandID`, `BrandName`) VALUES
@@ -47,7 +47,7 @@ INSERT INTO `brand` (`BrandID`, `BrandName`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `cart`
+-- Cấu trúc bảng cho bảng `cart`
 --
 
 CREATE TABLE `cart` (
@@ -59,18 +59,16 @@ CREATE TABLE `cart` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `cart`
+-- Đang đổ dữ liệu cho bảng `cart`
 --
 
 INSERT INTO `cart` (`UserID`, `ProductSizeID`, `Quantity`, `UnitPrice`, `AddedAt`) VALUES
-(4, 7, 2, 2400000, '2025-04-17 07:28:22'),
-(4, 15, 1, 3500000, '2025-04-17 07:28:28'),
-(4, 22, 6, 3200000, '2025-04-17 07:28:41');
+(4, 86, 1, 1800000, '2025-04-28 09:35:57');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `categories`
+-- Cấu trúc bảng cho bảng `categories`
 --
 
 CREATE TABLE `categories` (
@@ -79,7 +77,7 @@ CREATE TABLE `categories` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `categories`
+-- Đang đổ dữ liệu cho bảng `categories`
 --
 
 INSERT INTO `categories` (`CategoryID`, `CategoryName`) VALUES
@@ -90,7 +88,84 @@ INSERT INTO `categories` (`CategoryID`, `CategoryName`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `district`
+-- Cấu trúc bảng cho bảng `chitiet_vaitro_quyen`
+--
+
+CREATE TABLE `chitiet_vaitro_quyen` (
+  `id_vaitro` int(11) NOT NULL,
+  `id_quyen` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `chitiet_vaitro_quyen`
+--
+
+INSERT INTO `chitiet_vaitro_quyen` (`id_vaitro`, `id_quyen`) VALUES
+(1, 1),
+(1, 2),
+(1, 3),
+(1, 4),
+(1, 5),
+(1, 6),
+(1, 7),
+(1, 8),
+(1, 9),
+(1, 10),
+(1, 11),
+(1, 12),
+(1, 13),
+(1, 14),
+(1, 16),
+(1, 17),
+(1, 18),
+(1, 19),
+(1, 20),
+(1, 21),
+(1, 22),
+(1, 23),
+(1, 24),
+(1, 25),
+(1, 26),
+(1, 27),
+(1, 28),
+(1, 29),
+(2, 1),
+(2, 2),
+(2, 5),
+(3, 1),
+(3, 5),
+(3, 16);
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `chuc_nang`
+--
+
+CREATE TABLE `chuc_nang` (
+  `id` int(11) NOT NULL,
+  `ten_chuc_nang` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `chuc_nang`
+--
+
+INSERT INTO `chuc_nang` (`id`, `ten_chuc_nang`) VALUES
+(2, 'Đơn hàng'),
+(3, 'Sản phẩm'),
+(4, 'Người dùng'),
+(5, 'Nhân viên'),
+(6, 'Nhà cung cấp'),
+(7, 'Nhập hàng'),
+(8, 'Thống kê'),
+(9, 'Báo cáo'),
+(10, 'Phân quyền');
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `district`
 --
 
 CREATE TABLE `district` (
@@ -100,10 +175,484 @@ CREATE TABLE `district` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Quận huyện';
 
 --
--- Dumping data for table `district`
+-- Đang đổ dữ liệu cho bảng `district`
 --
 
-
+INSERT INTO `district` (`district_id`, `province_id`, `name`) VALUES
+(1, 1, 'Quận Ba Đình'),
+(2, 1, 'Quận Hoàn Kiếm'),
+(3, 1, 'Quận Tây Hồ'),
+(4, 1, 'Quận Long Biên'),
+(5, 1, 'Quận Cầu Giấy'),
+(6, 1, 'Quận Đống Đa'),
+(7, 1, 'Quận Hai Bà Trưng'),
+(8, 1, 'Quận Hoàng Mai'),
+(9, 1, 'Quận Thanh Xuân'),
+(10, 1, 'Huyện Sóc Sơn'),
+(11, 1, 'Huyện Đông Anh'),
+(12, 1, 'Huyện Gia Lâm'),
+(13, 1, 'Quận Nam Từ Liêm'),
+(14, 1, 'Huyện Thanh Trì'),
+(15, 1, 'Quận Bắc Từ Liêm'),
+(16, 1, 'Huyện Mê Linh'),
+(17, 1, 'Quận Hà Đông'),
+(18, 1, 'Thị xã Sơn Tây'),
+(19, 1, 'Huyện Ba Vì'),
+(20, 1, 'Huyện Phúc Thọ'),
+(21, 1, 'Huyện Đan Phượng'),
+(22, 1, 'Huyện Hoài Đức'),
+(23, 1, 'Huyện Quốc Oai'),
+(24, 1, 'Huyện Thạch Thất'),
+(25, 1, 'Huyện Chương Mỹ'),
+(26, 1, 'Huyện Thanh Oai'),
+(27, 1, 'Huyện Thường Tín'),
+(28, 1, 'Huyện Phú Xuyên'),
+(29, 1, 'Huyện Ứng Hòa'),
+(30, 1, 'Huyện Mỹ Đức'),
+(31, 2, 'Thành phố Hà Giang'),
+(32, 2, 'Huyện Đồng Văn'),
+(33, 2, 'Huyện Mèo Vạc'),
+(34, 2, 'Huyện Yên Minh'),
+(35, 2, 'Huyện Quản Bạ'),
+(36, 2, 'Huyện Vị Xuyên'),
+(37, 2, 'Huyện Bắc Mê'),
+(38, 2, 'Huyện Hoàng Su Phì'),
+(39, 2, 'Huyện Xín Mần'),
+(40, 2, 'Huyện Bắc Quang'),
+(41, 2, 'Huyện Quang Bình'),
+(42, 3, 'Thành phố Cao Bằng'),
+(43, 3, 'Huyện Bảo Lâm'),
+(44, 3, 'Huyện Bảo Lạc'),
+(45, 3, 'Huyện Hà Quảng'),
+(46, 3, 'Huyện Trùng Khánh'),
+(47, 3, 'Huyện Hạ Lang'),
+(48, 3, 'Huyện Quảng Hòa'),
+(49, 3, 'Huyện Hoà An'),
+(50, 3, 'Huyện Nguyên Bình'),
+(51, 3, 'Huyện Thạch An'),
+(52, 4, 'Thành Phố Bắc Kạn'),
+(53, 4, 'Huyện Pác Nặm'),
+(54, 4, 'Huyện Ba Bể'),
+(55, 4, 'Huyện Ngân Sơn'),
+(56, 4, 'Huyện Bạch Thông'),
+(57, 4, 'Huyện Chợ Đồn'),
+(58, 4, 'Huyện Chợ Mới'),
+(59, 4, 'Huyện Na Rì'),
+(60, 5, 'Thành phố Tuyên Quang'),
+(61, 5, 'Huyện Lâm Bình'),
+(62, 5, 'Huyện Na Hang'),
+(63, 5, 'Huyện Chiêm Hóa'),
+(64, 5, 'Huyện Hàm Yên'),
+(65, 5, 'Huyện Yên Sơn'),
+(66, 5, 'Huyện Sơn Dương'),
+(67, 6, 'Thành phố Lào Cai'),
+(68, 6, 'Huyện Bát Xát'),
+(69, 6, 'Huyện Mường Khương'),
+(70, 6, 'Huyện Si Ma Cai'),
+(71, 6, 'Huyện Bắc Hà'),
+(72, 6, 'Huyện Bảo Thắng'),
+(73, 6, 'Huyện Bảo Yên'),
+(74, 6, 'Thị xã Sa Pa'),
+(75, 6, 'Huyện Văn Bàn'),
+(76, 7, 'Thành phố Điện Biên Phủ'),
+(77, 7, 'Thị Xã Mường Lay'),
+(78, 7, 'Huyện Mường Nhé'),
+(79, 7, 'Huyện Mường Chà'),
+(80, 7, 'Huyện Tủa Chùa'),
+(81, 7, 'Huyện Tuần Giáo'),
+(82, 7, 'Huyện Điện Biên'),
+(83, 7, 'Huyện Điện Biên Đông'),
+(84, 7, 'Huyện Mường Ảng'),
+(85, 7, 'Huyện Nậm Pồ'),
+(86, 8, 'Thành phố Lai Châu'),
+(87, 8, 'Huyện Tam Đường'),
+(88, 8, 'Huyện Mường Tè'),
+(89, 8, 'Huyện Sìn Hồ'),
+(90, 8, 'Huyện Phong Thổ'),
+(91, 8, 'Huyện Than Uyên'),
+(92, 8, 'Huyện Tân Uyên'),
+(93, 8, 'Huyện Nậm Nhùn'),
+(94, 9, 'Thành phố Sơn La'),
+(95, 9, 'Huyện Quỳnh Nhai'),
+(96, 9, 'Huyện Thuận Châu'),
+(97, 9, 'Huyện Mường La'),
+(98, 9, 'Huyện Bắc Yên'),
+(99, 9, 'Huyện Phù Yên'),
+(100, 9, 'Huyện Mộc Châu'),
+(101, 9, 'Huyện Yên Châu'),
+(102, 9, 'Huyện Mai Sơn'),
+(103, 9, 'Huyện Sông Mã'),
+(104, 9, 'Huyện Sốp Cộp'),
+(105, 9, 'Huyện Vân Hồ'),
+(106, 10, 'Thành phố Yên Bái'),
+(107, 10, 'Thị xã Nghĩa Lộ'),
+(108, 10, 'Huyện Lục Yên'),
+(109, 10, 'Huyện Văn Yên'),
+(110, 10, 'Huyện Mù Căng Chải'),
+(111, 10, 'Huyện Trấn Yên'),
+(112, 10, 'Huyện Trạm Tấu'),
+(113, 10, 'Huyện Văn Chấn'),
+(114, 10, 'Huyện Yên Bình'),
+(115, 11, 'Thành phố Hòa Bình'),
+(116, 11, 'Huyện Đà Bắc'),
+(117, 11, 'Huyện Lương Sơn'),
+(118, 11, 'Huyện Kim Bôi'),
+(119, 11, 'Huyện Cao Phong'),
+(120, 11, 'Huyện Tân Lạc'),
+(121, 11, 'Huyện Mai Châu'),
+(122, 11, 'Huyện Lạc Sơn'),
+(123, 11, 'Huyện Yên Thủy'),
+(124, 11, 'Huyện Lạc Thủy'),
+(125, 12, 'Thành phố Thái Nguyên'),
+(126, 12, 'Thành phố Sông Công'),
+(127, 12, 'Huyện Định Hóa'),
+(128, 12, 'Huyện Phú Lương'),
+(129, 12, 'Huyện Đồng Hỷ'),
+(130, 12, 'Huyện Võ Nhai'),
+(131, 12, 'Huyện Đại Từ'),
+(132, 12, 'Thị xã Phổ Yên'),
+(133, 12, 'Huyện Phú Bình'),
+(134, 13, 'Thành phố Lạng Sơn'),
+(135, 13, 'Huyện Tràng Định'),
+(136, 13, 'Huyện Bình Gia'),
+(137, 13, 'Huyện Văn Lãng'),
+(138, 13, 'Huyện Cao Lộc'),
+(139, 13, 'Huyện Văn Quan'),
+(140, 13, 'Huyện Bắc Sơn'),
+(141, 13, 'Huyện Hữu Lũng'),
+(142, 13, 'Huyện Chi Lăng'),
+(143, 13, 'Huyện Lộc Bình'),
+(144, 13, 'Huyện Đình Lập'),
+(145, 14, 'Thành phố Hạ Long'),
+(146, 14, 'Thành phố Móng Cái'),
+(147, 14, 'Thành phố Cẩm Phả'),
+(148, 14, 'Thành phố Uông Bí'),
+(149, 14, 'Huyện Bình Liêu'),
+(150, 14, 'Huyện Tiên Yên'),
+(151, 14, 'Huyện Đầm Hà'),
+(152, 14, 'Huyện Hải Hà'),
+(153, 14, 'Huyện Ba Chẽ'),
+(154, 14, 'Huyện Vân Đồn'),
+(155, 14, 'Thị xã Đông Triều'),
+(156, 14, 'Thị xã Quảng Yên'),
+(157, 14, 'Huyện Cô Tô'),
+(158, 15, 'Thành phố Bắc Giang'),
+(159, 15, 'Huyện Yên Thế'),
+(160, 15, 'Huyện Tân Yên'),
+(161, 15, 'Huyện Lạng Giang'),
+(162, 15, 'Huyện Lục Nam'),
+(163, 15, 'Huyện Lục Ngạn'),
+(164, 15, 'Huyện Sơn Động'),
+(165, 15, 'Huyện Yên Dũng'),
+(166, 15, 'Huyện Việt Yên'),
+(167, 15, 'Huyện Hiệp Hòa'),
+(168, 16, 'Thành phố Việt Trì'),
+(169, 16, 'Thị xã Phú Thọ'),
+(170, 16, 'Huyện Đoan Hùng'),
+(171, 16, 'Huyện Hạ Hoà'),
+(172, 16, 'Huyện Thanh Ba'),
+(173, 16, 'Huyện Phù Ninh'),
+(174, 16, 'Huyện Yên Lập'),
+(175, 16, 'Huyện Cẩm Khê'),
+(176, 16, 'Huyện Tam Nông'),
+(177, 16, 'Huyện Lâm Thao'),
+(178, 16, 'Huyện Thanh Sơn'),
+(179, 16, 'Huyện Thanh Thuỷ'),
+(180, 16, 'Huyện Tân Sơn'),
+(181, 17, 'Thành phố Vĩnh Yên'),
+(182, 17, 'Thành phố Phúc Yên'),
+(183, 17, 'Huyện Lập Thạch'),
+(184, 17, 'Huyện Tam Dương'),
+(185, 17, 'Huyện Tam Đảo'),
+(186, 17, 'Huyện Bình Xuyên'),
+(187, 17, 'Huyện Yên Lạc'),
+(188, 17, 'Huyện Vĩnh Tường'),
+(189, 17, 'Huyện Sông Lô'),
+(190, 18, 'Thành phố Bắc Ninh'),
+(191, 18, 'Huyện Yên Phong'),
+(192, 18, 'Huyện Quế Võ'),
+(193, 18, 'Huyện Tiên Du'),
+(194, 18, 'Thành phố Từ Sơn'),
+(195, 18, 'Huyện Thuận Thành'),
+(196, 18, 'Huyện Gia Bình'),
+(197, 18, 'Huyện Lương Tài'),
+(198, 19, 'Thành phố Hải Dương'),
+(199, 19, 'Thành phố Chí Linh'),
+(200, 19, 'Huyện Nam Sách'),
+(201, 19, 'Thị xã Kinh Môn'),
+(202, 19, 'Huyện Kim Thành'),
+(203, 19, 'Huyện Thanh Hà'),
+(204, 19, 'Huyện Cẩm Giàng'),
+(205, 19, 'Huyện Bình Giang'),
+(206, 19, 'Huyện Gia Lộc'),
+(207, 19, 'Huyện Tứ Kỳ'),
+(208, 19, 'Huyện Ninh Giang'),
+(209, 19, 'Huyện Thanh Miện'),
+(210, 20, 'Quận Hồng Bàng'),
+(211, 20, 'Quận Ngô Quyền'),
+(212, 20, 'Quận Lê Chân'),
+(213, 20, 'Quận Hải An'),
+(214, 20, 'Quận Kiến An'),
+(215, 20, 'Quận Đồ Sơn'),
+(216, 20, 'Quận Dương Kinh'),
+(217, 20, 'Huyện Thuỷ Nguyên'),
+(218, 20, 'Huyện An Dương'),
+(219, 20, 'Huyện An Lão'),
+(220, 20, 'Huyện Kiến Thuỵ'),
+(221, 20, 'Huyện Tiên Lãng'),
+(222, 20, 'Huyện Vĩnh Bảo'),
+(223, 20, 'Huyện Cát Hải'),
+(224, 20, 'Huyện Bạch Long Vĩ'),
+(225, 21, 'Thành phố Hưng Yên'),
+(226, 21, 'Huyện Văn Lâm'),
+(227, 21, 'Huyện Văn Giang'),
+(228, 21, 'Huyện Yên Mỹ'),
+(229, 21, 'Thị xã Mỹ Hào'),
+(230, 21, 'Huyện Ân Thi'),
+(231, 21, 'Huyện Khoái Châu'),
+(232, 21, 'Huyện Kim Động'),
+(233, 21, 'Huyện Tiên Lữ'),
+(234, 21, 'Huyện Phù Cừ'),
+(235, 22, 'Thành phố Thái Bình'),
+(236, 22, 'Huyện Quỳnh Phụ'),
+(237, 22, 'Huyện Hưng Hà'),
+(238, 22, 'Huyện Đông Hưng'),
+(239, 22, 'Huyện Thái Thụy'),
+(240, 22, 'Huyện Tiền Hải'),
+(241, 22, 'Huyện Kiến Xương'),
+(242, 22, 'Huyện Vũ Thư'),
+(243, 23, 'Thành phố Phủ Lý'),
+(244, 23, 'Thị xã Duy Tiên'),
+(245, 23, 'Huyện Kim Bảng'),
+(246, 23, 'Huyện Thanh Liêm'),
+(247, 23, 'Huyện Bình Lục'),
+(248, 23, 'Huyện Lý Nhân'),
+(249, 24, 'Thành phố Nam Định'),
+(250, 24, 'Huyện Mỹ Lộc'),
+(251, 24, 'Huyện Vụ Bản'),
+(252, 24, 'Huyện Ý Yên'),
+(253, 24, 'Huyện Nghĩa Hưng'),
+(254, 24, 'Huyện Nam Trực'),
+(255, 24, 'Huyện Trực Ninh'),
+(256, 24, 'Huyện Xuân Trường'),
+(257, 24, 'Huyện Giao Thủy'),
+(258, 24, 'Huyện Hải Hậu'),
+(259, 25, 'Thành phố Ninh Bình'),
+(260, 25, 'Thành phố Tam Điệp'),
+(261, 25, 'Huyện Nho Quan'),
+(262, 25, 'Huyện Gia Viễn'),
+(263, 25, 'Huyện Hoa Lư'),
+(264, 25, 'Huyện Yên Khánh'),
+(265, 25, 'Huyện Kim Sơn'),
+(266, 25, 'Huyện Yên Mô'),
+(267, 26, 'Thành phố Thanh Hóa'),
+(268, 26, 'Thị xã Bỉm Sơn'),
+(269, 26, 'Thành phố Sầm Sơn'),
+(270, 26, 'Huyện Mường Lát'),
+(271, 26, 'Huyện Quan Hóa'),
+(272, 26, 'Huyện Bá Thước'),
+(273, 26, 'Huyện Quan Sơn'),
+(274, 26, 'Huyện Lang Chánh'),
+(275, 26, 'Huyện Ngọc Lặc'),
+(276, 26, 'Huyện Cẩm Thủy'),
+(277, 26, 'Huyện Thạch Thành'),
+(278, 26, 'Huyện Hà Trung'),
+(279, 26, 'Huyện Vĩnh Lộc'),
+(280, 26, 'Huyện Yên Định'),
+(281, 26, 'Huyện Thọ Xuân'),
+(282, 26, 'Huyện Thường Xuân'),
+(283, 26, 'Huyện Triệu Sơn'),
+(284, 26, 'Huyện Thiệu Hóa'),
+(285, 26, 'Huyện Hoằng Hóa'),
+(286, 26, 'Huyện Hậu Lộc'),
+(287, 26, 'Huyện Nga Sơn'),
+(288, 26, 'Huyện Như Xuân'),
+(289, 26, 'Huyện Như Thanh'),
+(290, 26, 'Huyện Nông Cống'),
+(291, 26, 'Huyện Đông Sơn'),
+(292, 26, 'Huyện Quảng Xương'),
+(293, 26, 'Thị xã Nghi Sơn'),
+(294, 27, 'Thành phố Vinh'),
+(295, 27, 'Thị xã Cửa Lò'),
+(296, 27, 'Thị xã Thái Hoà'),
+(297, 27, 'Huyện Quế Phong'),
+(298, 27, 'Huyện Quỳ Châu'),
+(299, 27, 'Huyện Kỳ Sơn'),
+(300, 27, 'Huyện Tương Dương'),
+(301, 27, 'Huyện Nghĩa Đàn'),
+(302, 27, 'Huyện Quỳ Hợp'),
+(303, 27, 'Huyện Quỳnh Lưu'),
+(304, 27, 'Huyện Con Cuông'),
+(305, 27, 'Huyện Tân Kỳ'),
+(306, 27, 'Huyện Anh Sơn'),
+(307, 27, 'Huyện Diễn Châu'),
+(308, 27, 'Huyện Yên Thành'),
+(309, 27, 'Huyện Đô Lương'),
+(310, 27, 'Huyện Thanh Chương'),
+(311, 27, 'Huyện Nghi Lộc'),
+(312, 27, 'Huyện Nam Đàn'),
+(313, 27, 'Huyện Hưng Nguyên'),
+(314, 27, 'Thị xã Hoàng Mai'),
+(315, 28, 'Thành phố Hà Tĩnh'),
+(316, 28, 'Thị xã Hồng Lĩnh'),
+(317, 28, 'Huyện Hương Sơn'),
+(318, 28, 'Huyện Đức Thọ'),
+(319, 28, 'Huyện Vũ Quang'),
+(320, 28, 'Huyện Nghi Xuân'),
+(321, 28, 'Huyện Can Lộc'),
+(322, 28, 'Huyện Hương Khê'),
+(323, 28, 'Huyện Thạch Hà'),
+(324, 28, 'Huyện Cẩm Xuyên'),
+(325, 28, 'Huyện Kỳ Anh'),
+(326, 28, 'Huyện Lộc Hà'),
+(327, 28, 'Thị xã Kỳ Anh'),
+(328, 29, 'Thành Phố Đồng Hới'),
+(329, 29, 'Huyện Minh Hóa'),
+(330, 29, 'Huyện Tuyên Hóa'),
+(331, 29, 'Huyện Quảng Trạch'),
+(332, 29, 'Huyện Bố Trạch'),
+(333, 29, 'Huyện Quảng Ninh'),
+(334, 29, 'Huyện Lệ Thủy'),
+(335, 29, 'Thị xã Ba Đồn'),
+(336, 30, 'Thành phố Đông Hà'),
+(337, 30, 'Thị xã Quảng Trị'),
+(338, 30, 'Huyện Vĩnh Linh'),
+(339, 30, 'Huyện Hướng Hóa'),
+(340, 30, 'Huyện Gio Linh'),
+(341, 30, 'Huyện Đa Krông'),
+(342, 30, 'Huyện Cam Lộ'),
+(343, 30, 'Huyện Triệu Phong'),
+(344, 30, 'Huyện Hải Lăng'),
+(345, 30, 'Huyện Cồn Cỏ'),
+(346, 31, 'Thành phố Huế'),
+(347, 31, 'Huyện Phong Điền'),
+(348, 31, 'Huyện Quảng Điền'),
+(349, 31, 'Huyện Phú Vang'),
+(350, 31, 'Thị xã Hương Thủy'),
+(351, 31, 'Thị xã Hương Trà'),
+(352, 31, 'Huyện A Lưới'),
+(353, 31, 'Huyện Phú Lộc'),
+(354, 31, 'Huyện Nam Đông'),
+(355, 32, 'Quận Liên Chiểu'),
+(356, 32, 'Quận Thanh Khê'),
+(357, 32, 'Quận Hải Châu'),
+(358, 32, 'Quận Sơn Trà'),
+(359, 32, 'Quận Ngũ Hành Sơn'),
+(360, 32, 'Quận Cẩm Lệ'),
+(361, 32, 'Huyện Hòa Vang'),
+(362, 32, 'Huyện Hoàng Sa'),
+(363, 33, 'Thành phố Tam Kỳ'),
+(364, 33, 'Thành phố Hội An'),
+(365, 33, 'Huyện Tây Giang'),
+(366, 33, 'Huyện Đông Giang'),
+(367, 33, 'Huyện Đại Lộc'),
+(368, 33, 'Thị xã Điện Bàn'),
+(369, 33, 'Huyện Duy Xuyên'),
+(370, 33, 'Huyện Quế Sơn'),
+(371, 33, 'Huyện Nam Giang'),
+(372, 33, 'Huyện Phước Sơn'),
+(373, 33, 'Huyện Hiệp Đức'),
+(374, 33, 'Huyện Thăng Bình'),
+(375, 33, 'Huyện Tiên Phước'),
+(376, 33, 'Huyện Bắc Trà My'),
+(377, 33, 'Huyện Nam Trà My'),
+(378, 33, 'Huyện Núi Thành'),
+(379, 33, 'Huyện Phú Ninh'),
+(380, 33, 'Huyện Nông Sơn'),
+(381, 34, 'Thành phố Quảng Ngãi'),
+(382, 34, 'Huyện Bình Sơn'),
+(383, 34, 'Huyện Trà Bồng'),
+(384, 34, 'Huyện Sơn Tịnh'),
+(385, 34, 'Huyện Tư Nghĩa'),
+(386, 34, 'Huyện Sơn Hà'),
+(387, 34, 'Huyện Sơn Tây'),
+(388, 34, 'Huyện Minh Long'),
+(389, 34, 'Huyện Nghĩa Hành'),
+(390, 34, 'Huyện Mộ Đức'),
+(391, 34, 'Thị xã Đức Phổ'),
+(392, 34, 'Huyện Ba Tơ'),
+(393, 34, 'Huyện Lý Sơn'),
+(394, 35, 'Thành phố Quy Nhơn'),
+(395, 35, 'Huyện An Lão'),
+(396, 35, 'Thị xã Hoài Nhơn'),
+(397, 35, 'Huyện Hoài Ân'),
+(398, 35, 'Huyện Phù Mỹ'),
+(399, 35, 'Huyện Vĩnh Thạnh'),
+(400, 35, 'Huyện Tây Sơn'),
+(401, 35, 'Huyện Phù Cát'),
+(402, 35, 'Thị xã An Nhơn'),
+(403, 35, 'Huyện Tuy Phước'),
+(404, 35, 'Huyện Vân Canh'),
+(405, 36, 'Thành phố Tuy Hoà'),
+(406, 36, 'Thị xã Sông Cầu'),
+(407, 36, 'Huyện Đồng Xuân'),
+(408, 36, 'Huyện Tuy An'),
+(409, 36, 'Huyện Sơn Hòa'),
+(410, 36, 'Huyện Sông Hinh'),
+(411, 36, 'Huyện Tây Hoà'),
+(412, 36, 'Huyện Phú Hoà'),
+(413, 36, 'Thị xã Đông Hòa'),
+(414, 37, 'Thành phố Nha Trang'),
+(415, 37, 'Thành phố Cam Ranh'),
+(416, 37, 'Huyện Cam Lâm'),
+(417, 37, 'Huyện Vạn Ninh'),
+(418, 37, 'Thị xã Ninh Hòa'),
+(419, 37, 'Huyện Khánh Vĩnh'),
+(420, 37, 'Huyện Diên Khánh'),
+(421, 37, 'Huyện Khánh Sơn'),
+(422, 37, 'Huyện Trường Sa'),
+(423, 38, 'Thành phố Phan Rang-Tháp Chàm'),
+(424, 38, 'Huyện Bác Ái'),
+(425, 38, 'Huyện Ninh Sơn'),
+(426, 38, 'Huyện Ninh Hải'),
+(427, 38, 'Huyện Ninh Phước'),
+(428, 38, 'Huyện Thuận Bắc'),
+(429, 38, 'Huyện Thuận Nam'),
+(430, 39, 'Thành phố Phan Thiết'),
+(431, 39, 'Thị xã La Gi'),
+(432, 39, 'Huyện Tuy Phong'),
+(433, 39, 'Huyện Bắc Bình'),
+(434, 39, 'Huyện Hàm Thuận Bắc'),
+(435, 39, 'Huyện Hàm Thuận Nam'),
+(436, 39, 'Huyện Tánh Linh'),
+(437, 39, 'Huyện Đức Linh'),
+(438, 39, 'Huyện Hàm Tân'),
+(439, 39, 'Huyện Phú Quí'),
+(440, 40, 'Thành phố Kon Tum'),
+(441, 40, 'Huyện Đắk Glei'),
+(442, 40, 'Huyện Ngọc Hồi'),
+(443, 40, 'Huyện Đắk Tô'),
+(444, 40, 'Huyện Kon Plông'),
+(445, 40, 'Huyện Kon Rẫy'),
+(446, 40, 'Huyện Đắk Hà'),
+(447, 40, 'Huyện Sa Thầy'),
+(448, 40, 'Huyện Tu Mơ Rông'),
+(449, 40, 'Huyện Ia H\' Drai'),
+(450, 41, 'Thành phố Pleiku'),
+(451, 41, 'Thị xã An Khê'),
+(452, 41, 'Thị xã Ayun Pa'),
+(453, 41, 'Huyện KBang'),
+(454, 41, 'Huyện Đăk Đoa'),
+(455, 41, 'Huyện Chư Păh'),
+(456, 41, 'Huyện Ia Grai'),
+(457, 41, 'Huyện Mang Yang'),
+(458, 41, 'Huyện Kông Chro'),
+(459, 41, 'Huyện Đức Cơ'),
+(460, 41, 'Huyện Chư Prông'),
+(461, 41, 'Huyện Chư Sê'),
+(462, 41, 'Huyện Đăk Pơ'),
+(463, 41, 'Huyện Ia Pa'),
+(464, 41, 'Huyện Krông Pa'),
+(465, 41, 'Huyện Phú Thiện'),
+(466, 41, 'Huyện Chư Pưh'),
+(467, 42, 'Thành phố Buôn Ma Thuột'),
+(468, 42, 'Thị Xã Buôn Hồ'),
+(469, 42, 'Huyện Ea H\'leo'),
+(470, 42, 'Huyện Ea Súp'),
+(471, 42, 'Huyện Buôn Đôn'),
+(472, 42, 'Huyện Cư M\'gar'),
+(473, 42, 'Huyện Krông Búk'),
+(474, 42, 'Huyện Krông Năng'),
 (475, 42, 'Huyện Ea Kar'),
 (476, 42, 'Huyện M\'Đrắk'),
 (477, 42, 'Huyện Krông Bông'),
@@ -339,7 +888,7 @@ CREATE TABLE `district` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `employee`
+-- Cấu trúc bảng cho bảng `employee`
 --
 
 CREATE TABLE `employee` (
@@ -351,43 +900,24 @@ CREATE TABLE `employee` (
   `Address` text DEFAULT NULL,
   `PasswordHash` varchar(255) NOT NULL,
   `CreatedAt` datetime DEFAULT current_timestamp(),
-  `PermissionID` int(11) DEFAULT NULL,
-  `isActivate` int(11) NOT NULL
+  `isActivate` int(11) NOT NULL,
+  `RoleID` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `employee`
+-- Đang đổ dữ liệu cho bảng `employee`
 --
 
-INSERT INTO `employee` (`EmployeeID`, `Username`, `Fullname`, `PhoneNumber`, `Email`, `Address`, `PasswordHash`, `CreatedAt`, `PermissionID`, `isActivate`) VALUES
+INSERT INTO `employee` (`EmployeeID`, `Username`, `Fullname`, `PhoneNumber`, `Email`, `Address`, `PasswordHash`, `CreatedAt`, `isActivate`, `RoleID`) VALUES
 (1, 'admin1', 'Nguyễn Văn A', '0925123456', 'admin1@gmail.com', '56 Nguyễn Trãi, Thanh Xuân, Hà Nội', '$2y$10$5v57Tc5wkqtLU7HtPzJZEOV/QsIkT0Zoz5V7wXdH5mmSqFsqpms0y', '2024-01-01 08:00:00', 1, 1),
-(2, 'sale1', 'Trần Thị Bích', '0945123456', 'sale1@gmail.com', '89 Lê Lợi, TP Huế', 'hashsale1', '2024-01-02 09:00:00', 2, 0),
-(3, 'kho1', 'Phạm Văn Cường', '0965123456', 'kho1@gmail.com', '12 Tôn Đức Thắng, TP Đà Nẵng', 'hashkho1', '2024-01-03 10:00:00', 3, 0);
+(2, 'sale1', 'Trần Thị Bích', '0945123456', 'sale1@gmail.com', '89 Lê Lợi, TP Huế', 'hashsale1', '2024-01-02 09:00:00', 0, NULL),
+(3, 'kho1', 'Phạm Văn Cường', '0965123456', 'kho1@gmail.com', '12 Tôn Đức Thắng, TP Đà Nẵng', 'hashkho1', '2024-01-03 10:00:00', 0, NULL),
+(8, 'peter', 'Nguyễn Văn B', '0941234567', 'fake@gmail.com', '123A abc', '$2y$10$Cd4Y3Z4m5y2WS3IDYDp3S.rAXhDwQYfcf7VBmGSRRVXzCrVI1c48i', '2025-04-27 20:30:35', 1, 3);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `function`
---
-
-CREATE TABLE `function` (
-  `FunctionID` int(11) NOT NULL,
-  `FunctionDescription` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `function`
---
-
-INSERT INTO `function` (`FunctionID`, `FunctionDescription`) VALUES
-(1, 'Quản lý sản phẩm'),
-(2, 'Quản lý đơn hàng'),
-(3, 'Quản lý kho');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `import`
+-- Cấu trúc bảng cho bảng `import`
 --
 
 CREATE TABLE `import` (
@@ -397,19 +927,69 @@ CREATE TABLE `import` (
   `ImportDate` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Đang đổ dữ liệu cho bảng `import`
+--
+
+INSERT INTO `import` (`ImportID`, `EmployeeID`, `Total`, `ImportDate`) VALUES
+(1, 1, 40000000.00, '2025-04-28 13:18:49'),
+(2, 8, 75000000.00, '2025-05-01 18:20:40'),
+(3, 8, 4000000.00, '2025-05-01 18:24:40'),
+(4, 8, 4000000.00, '2025-05-01 18:25:49'),
+(5, 8, 4000000.00, '2025-05-01 18:25:54'),
+(6, 1, 4000000.00, '2025-05-01 18:26:15'),
+(7, 1, 4000000.00, '2025-05-01 18:27:19'),
+(8, 1, 4000000.00, '2025-05-01 18:27:37'),
+(9, 1, 400000.00, '2025-05-01 20:35:29'),
+(10, 8, 4000000.00, '2025-05-01 20:43:50'),
+(11, 8, 4000000.00, '2025-05-01 21:13:50'),
+(12, 1, 4000000.00, '2025-05-01 21:14:12'),
+(13, 1, 4000000.00, '2025-05-02 14:36:40'),
+(14, 1, 40000000.00, '2025-05-03 21:45:16'),
+(15, 8, 2000000.00, '2025-05-07 20:41:21'),
+(16, 1, 2000000.00, '2025-05-07 20:45:33');
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `importdetail`
+--
 
 CREATE TABLE `importdetail` (
   `ImportID` int(11) NOT NULL,
   `ProductSizeID` int(11) NOT NULL,
   `Quantity` int(11) NOT NULL,
   `UnitPrice` decimal(10,2) NOT NULL,
-  `Subtotal` decimal(10,2) NOT NULL
+  `Subtotal` decimal(10,2) NOT NULL,
+  `SupplierID` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `importdetail`
+--
+
+INSERT INTO `importdetail` (`ImportID`, `ProductSizeID`, `Quantity`, `UnitPrice`, `Subtotal`, `SupplierID`) VALUES
+(1, 1, 20, 2000000.00, 40000000.00, 2),
+(2, 185, 50, 1500000.00, 75000000.00, 1),
+(3, 185, 20, 200000.00, 4000000.00, 1),
+(4, 185, 20, 200000.00, 4000000.00, 1),
+(5, 185, 20, 200000.00, 4000000.00, 1),
+(6, 185, 20, 200000.00, 4000000.00, 1),
+(7, 185, 20, 200000.00, 4000000.00, 1),
+(8, 185, 20, 200000.00, 4000000.00, 1),
+(9, 184, 20, 20000.00, 400000.00, 1),
+(10, 185, 20, 200000.00, 4000000.00, 1),
+(11, 185, 20, 200000.00, 4000000.00, 1),
+(12, 181, 20, 200000.00, 4000000.00, 2),
+(13, 184, 20, 200000.00, 4000000.00, 2),
+(14, 185, 200, 200000.00, 40000000.00, 2),
+(15, 185, 10, 200000.00, 2000000.00, 2),
+(16, 1, 10, 200000.00, 2000000.00, 1);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `orderdetail`
+-- Cấu trúc bảng cho bảng `orderdetail`
 --
 
 CREATE TABLE `orderdetail` (
@@ -421,7 +1001,7 @@ CREATE TABLE `orderdetail` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `orderdetail`
+-- Đang đổ dữ liệu cho bảng `orderdetail`
 --
 
 INSERT INTO `orderdetail` (`OrderID`, `ProductSizeID`, `Quantity`, `UnitPrice`, `Subtotal`) VALUES
@@ -429,12 +1009,23 @@ INSERT INTO `orderdetail` (`OrderID`, `ProductSizeID`, `Quantity`, `UnitPrice`, 
 (21, 20, 1, 4600000, 4600000),
 (21, 37, 2, 3500000, 7000000),
 (22, 53, 1, 2800000, 2800000),
-(23, 47, 1, 4200000, 4200000);
+(23, 47, 1, 4200000, 4200000),
+(24, 7, 2, 2400000, 4800000),
+(24, 15, 1, 3500000, 3500000),
+(24, 22, 6, 3200000, 19200000),
+(25, 71, 1, 3200000, 3200000),
+(26, 28, 4, 3200000, 12800000),
+(27, 19, 2, 4600000, 9200000),
+(27, 22, 2, 3200000, 6400000),
+(28, 27, 4, 3500000, 14000000),
+(29, 28, 1, 3200000, 3200000),
+(30, 29, 1, 3200000, 3200000),
+(31, 68, 1, 3200000, 3200000);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `orders`
+-- Cấu trúc bảng cho bảng `orders`
 --
 
 CREATE TABLE `orders` (
@@ -452,18 +1043,26 @@ CREATE TABLE `orders` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `orders`
+-- Đang đổ dữ liệu cho bảng `orders`
 --
 
 INSERT INTO `orders` (`OrderID`, `UserID`, `OrderDate`, `ShippingAddress`, `ProvinceID`, `DistrictID`, `WardID`, `Status`, `SaleID`, `WarehouseID`, `ExportDate`) VALUES
-(21, 4, '2025-04-15 20:29:54', '10A An Dương Vương', 50, 562, 8855, 'Pending', NULL, NULL, NULL),
-(22, 4, '2025-04-15 20:32:46', 'TPHCM', 1, 1, 1, 'Pending', NULL, NULL, NULL),
-(23, 4, '2025-04-15 20:37:50', 'TPHCM', 1, 1, 1, 'Pending', NULL, NULL, NULL);
+(21, 4, '2025-04-15 20:29:54', '10A An Dương Vương', 50, 562, 8855, 'Cancelled', NULL, NULL, NULL),
+(22, 4, '2025-04-15 20:32:46', 'TPHCM', 1, 1, 1, 'Cancelled', NULL, NULL, NULL),
+(23, 4, '2025-04-15 20:37:50', 'TPHCM', 1, 1, 1, 'Cancelled', NULL, NULL, NULL),
+(24, 4, '2025-04-18 10:33:27', 'TPHCM', 1, 1, 1, 'Cancelled', NULL, NULL, NULL),
+(25, 4, '2025-04-18 12:52:41', 'TPHCM', 1, 1, 1, 'Completed', NULL, NULL, NULL),
+(26, 4, '2025-04-18 15:42:01', 'TPHCM', 1, 1, 1, 'Completed', NULL, NULL, NULL),
+(27, 4, '2025-04-18 15:47:00', 'TPHCM', 1, 1, 1, 'Completed', NULL, NULL, NULL),
+(28, 4, '2025-04-18 15:47:05', 'TPHCM', 1, 1, 1, 'Completed', NULL, NULL, NULL),
+(29, 4, '2025-04-18 17:25:42', 'TPHCM', 1, 1, 1, 'Completed', NULL, NULL, NULL),
+(30, 4, '2025-04-18 17:25:48', 'TPHCM', 1, 1, 1, 'Delivering', NULL, NULL, NULL),
+(31, 6, '2025-04-18 17:52:41', '12A3NoWhere', 15, 165, 2811, 'Completed', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `paymentdetail`
+-- Cấu trúc bảng cho bảng `paymentdetail`
 --
 
 CREATE TABLE `paymentdetail` (
@@ -477,39 +1076,26 @@ CREATE TABLE `paymentdetail` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `paymentdetail`
+-- Đang đổ dữ liệu cho bảng `paymentdetail`
 --
 
 INSERT INTO `paymentdetail` (`OrderID`, `PaymentMethod`, `CardOwner`, `CardNumber`, `CVV`, `ExpiryDate`, `PaymentDate`) VALUES
 (21, 'Card', 'DABEO', '1234543451325231', '123', '2029-05', '2025-04-15 20:29:54'),
 (22, 'COD', NULL, NULL, NULL, NULL, '2025-04-15 20:32:46'),
-(23, 'Card', 'DABEO', '0987654321235678', '345', '2029-07', '2025-04-15 20:37:50');
+(23, 'Card', 'DABEO', '0987654321235678', '345', '2029-07', '2025-04-15 20:37:50'),
+(24, 'COD', NULL, NULL, NULL, NULL, '2025-04-18 10:33:27'),
+(25, 'COD', NULL, NULL, NULL, NULL, '2025-04-18 12:52:41'),
+(26, 'COD', NULL, NULL, NULL, NULL, '2025-04-18 15:42:01'),
+(27, 'COD', NULL, NULL, NULL, NULL, '2025-04-18 15:47:00'),
+(28, 'COD', NULL, NULL, NULL, NULL, '2025-04-18 15:47:05'),
+(29, 'COD', NULL, NULL, NULL, NULL, '2025-04-18 17:25:42'),
+(30, 'COD', NULL, NULL, NULL, NULL, '2025-04-18 17:25:48'),
+(31, 'COD', NULL, NULL, NULL, NULL, '2025-04-18 17:52:41');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `permission`
---
-
-CREATE TABLE `permission` (
-  `PermissionID` int(11) NOT NULL,
-  `PermissionName` varchar(50) NOT NULL,
-  `FunctionID` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `permission`
---
-
-INSERT INTO `permission` (`PermissionID`, `PermissionName`, `FunctionID`) VALUES
-(1, 'Admin', 1),
-(2, 'Nhân viên bán hàng', 2),
-(3, 'Nhân viên kho', 3);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `product`
+-- Cấu trúc bảng cho bảng `product`
 --
 
 CREATE TABLE `product` (
@@ -521,52 +1107,57 @@ CREATE TABLE `product` (
   `Price` decimal(10,2) NOT NULL,
   `ImageURL` varchar(255) DEFAULT NULL,
   `CreatedAt` datetime DEFAULT current_timestamp(),
-  `IsDeleted` tinyint(1) DEFAULT 0
+  `IsDeleted` tinyint(1) DEFAULT 0,
+  `New` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `product`
+-- Đang đổ dữ liệu cho bảng `product`
 --
 
-INSERT INTO `product` (`ProductID`, `ProductName`, `CategoryID`, `BrandID`, `Gender`, `Price`, `ImageURL`, `CreatedAt`, `IsDeleted`) VALUES
-(1, '70 COURT CANVAS HI', 1, 1, 'U', 2000000.00, './view/layout/asset/img/catalogue/70-COURT-CANVAS-HI.jpg', '2025-03-06 08:27:41', 0),
-(2, 'AIR FLIGHT 89 (GS)', 1, 2, 'M', 2400000.00, './view/layout/asset/img/catalogue/AIR-FLIGHT-89-(GS).jpg', '2025-03-06 08:27:41', 0),
-(3, 'AIR FORCE 1 LV8-3 (GS)', 1, 2, 'U', 3200000.00, './view/layout/asset/img/catalogue/AIR-FORCE-1-LV8-3-(GS).jpg', '2025-03-06 08:27:41', 0),
-(4, 'AIR FORCE 1\'07', 1, 2, 'U', 3500000.00, './view/layout/asset/img/catalogue/AIR-FORCE-1\'07.jpg', '2025-03-06 08:27:41', 0),
-(5, 'AIR MAX 90 LTR', 1, 2, 'M', 4600000.00, './view/layout/asset/img/catalogue/AIR-MAX-90-LTR.jpg', '2025-03-06 08:27:41', 0),
-(6, 'AIR TERRRA HUMARA', 1, 2, 'M', 3200000.00, './view/layout/asset/img/catalogue/AIR-TERRA-HUMARA.jpg', '2025-03-06 08:27:41', 0),
-(7, 'AIRIZONA VEG THYME', 2, 3, 'M', 3500000.00, './view/layout/asset/img/catalogue/AIRIZONA-VEG-THYME.jpg', '2025-03-06 08:27:41', 0),
-(8, 'ARIZONA BLACKBIRKO FLOR SFB', 2, 3, 'M', 3200000.00, './view/layout/asset/img/catalogue/ARIZONA-BLACKBIRKO-FLOR-SFB.jpg', '2025-03-06 08:27:41', 0),
-(9, 'ARIZONA TOBACCO BROWN OILDED LEATHER', 2, 3, 'M', 4000000.00, './view/layout/asset/img/catalogue/ARIZONA-TOBACCO-BROWN-OILED-LEATHER.jpg', '2025-03-06 08:27:41', 0),
-(10, 'CHUCK 70 SEASONAL', 1, 1, 'M', 1650000.00, './view/layout/asset/img/catalogue/CHUCK-70-SEASONAL.jpg', '2025-03-06 08:27:41', 0),
-(11, 'DUNK LOW (W)', 1, 2, 'M', 3500000.00, './view/layout/asset/img/catalogue/DUNK-LOW-(W).jpg', '2025-03-06 08:27:41', 0),
-(12, 'FASTBREAK PRO SUEDE MID', 1, 1, 'M', 2800000.00, './view/layout/asset/img/catalogue/FASTBREAK-PRO-SUEDE-MID.jpg', '2025-03-06 08:27:41', 0),
-(13, 'FENG CHENG WANG QS', 1, 1, 'U', 4200000.00, './view/layout/asset/img/catalogue/FENG-CHENG-WANG-QS.jpg', '2025-03-06 08:27:41', 0),
-(14, 'GAZELLE (PS)', 3, 4, 'U', 1800000.00, './view/layout/asset/img/catalogue/GAZELLE-(PS).jpg', '2025-03-06 08:27:41', 0),
-(15, 'GAZELLE INDOOR (W)', 1, 4, 'F', 2800000.00, './view/layout/asset/img/catalogue/GAZELLE-INDOOR-(W).jpg', '2025-03-06 08:27:41', 0),
-(16, 'HANDBALL SPEZIAL (W)', 1, 4, 'F', 2500000.00, './view/layout/asset/img/catalogue/HANDBALL-SPEZIAL-(W).jpg', '2025-03-06 08:27:41', 0),
-(17, 'NIKE CALM BEIGE (W)', 2, 2, 'F', 2349000.00, './view/layout/asset/img/catalogue/Nike_Calm_Be(w).jpg', '2025-03-06 08:27:41', 0),
-(18, 'NMD S1', 1, 4, 'M', 3000000.00, './view/layout/asset/img/catalogue/NMD_S1.jpg', '2025-03-06 08:27:41', 0),
-(19, 'RUN STAR HIKE HI', 1, 1, 'U', 3200000.00, './view/layout/asset/img/catalogue/RUN-STAR-HIKE-HI.jpg', '2025-03-06 08:27:41', 0),
-(20, 'SAMBA OG', 1, 4, 'U', 2500000.00, './view/layout/asset/img/catalogue/SAMBA-OG.jpg', '2025-03-06 08:27:41', 0),
-(21, 'SABA XLG', 1, 4, 'M', 3500000.00, './view/layout/asset/img/catalogue/SAMBA-XLG.jpg', '2025-03-06 08:27:41', 0),
-(22, 'SL72 RS (PS)', 3, 4, 'U', 2000000.00, './view/layout/asset/img/catalogue/SL-72-RS-(PS).jpg', '2025-03-06 08:27:41', 0),
-(23, 'SL72 RS (TD)', 3, 4, 'U', 1800000.00, './view/layout/asset/img/catalogue/SL72-RS-(TD).jpg', '2025-03-06 08:27:41', 0),
-(24, 'SL72 RS', 1, 4, 'M', 2500000.00, './view/layout/asset/img/catalogue/SL72-RS.jpg', '2025-03-06 08:27:41', 0),
-(25, 'STAN SMITH (TD)', 3, 4, 'U', 1500000.00, './view/layout/asset/img/catalogue/STAN-SMITH-(TD).jpg', '2025-03-06 08:27:41', 0),
-(26, 'SUPERSTAR', 1, 4, 'M', 2500000.00, './view/layout/asset/img/catalogue/SUPERSTAR.jpg', '2025-03-06 08:27:41', 0),
-(27, 'TEVA HURRICANE DRIFT (M)', 2, 5, 'M', 990000.00, './view/layout/asset/img/catalogue/Teva_Hurricane_Drift(m)-990k.jpg', '2025-03-06 08:27:41', 0),
-(28, 'TEVA TERRA FI 5 UNIVERSAL', 2, 5, 'M', 2099000.00, './view/layout/asset/img/catalogue/Teva_Terra_Fi_5_Universal-2099k.jpg', '2025-03-06 08:27:41', 0),
-(29, 'TEVA VOYA STRAPPY (W)', 2, 5, 'F', 845000.00, './view/layout/asset/img/catalogue/Teva_Voya_Strappy(w)-845k.jpg', '2025-03-06 08:27:41', 0),
-(30, 'TEVA ZYMIC (W)', 2, 5, 'F', 1600000.00, './view/layout/asset/img/catalogue/Teva_Zymic-1600k(w).jpg', '2025-03-06 08:27:41', 0),
-(31, 'TEVA SANDALS HURRICANE (W)', 2, 5, 'F', 1900000.00, './view/layout/asset/img/catalogue/TevaSandalsHunrricane(w).jpg', '2025-03-06 08:27:41', 0),
-(32, 'UNISEX FILA PONG SD (W)', 2, 6, 'F', 1595000.00, './view/layout/asset/img/catalogue/Unisex_Fila_Pong_Sd-1595k(w).jpg', '2025-03-06 08:27:41', 0),
-(33, 'UNISEX FILA TORI (M)', 2, 6, 'M', 1995000.00, './view/layout/asset/img/catalogue/unisex_fila_tori-1995k(m).jpg', '2025-03-06 08:27:41', 0);
+INSERT INTO `product` (`ProductID`, `ProductName`, `CategoryID`, `BrandID`, `Gender`, `Price`, `ImageURL`, `CreatedAt`, `IsDeleted`, `New`) VALUES
+(1, '70 COURT CANVAS HI', 1, 1, 'Nam', 2000000.00, './view/layout/asset/img/catalogue/70-COURT-CANVAS-HI.jpg', '2025-03-06 08:27:41', 0, 1),
+(2, 'AIR FLIGHT 89 (GS)', 1, 2, 'M', 2400000.00, './view/layout/asset/img/catalogue/AIR-FLIGHT-89-(GS).jpg', '2025-03-06 08:27:41', 0, 0),
+(3, 'AIR FORCE 1 LV8-3 (GS)', 1, 2, 'U', 3200000.00, './view/layout/asset/img/catalogue/AIR-FORCE-1-LV8-3-(GS).jpg', '2025-03-06 08:27:41', 0, 1),
+(4, 'AIR FORCE 1\'07', 1, 2, 'U', 3500000.00, './view/layout/asset/img/catalogue/AIR-FORCE-1\'07.jpg', '2025-03-06 08:27:41', 0, 0),
+(5, 'AIR MAX 90 LTR', 1, 2, 'M', 4600000.00, './view/layout/asset/img/catalogue/AIR-MAX-90-LTR.jpg', '2025-03-06 08:27:41', 0, 0),
+(6, 'AIR TERRRA HUMARA', 1, 2, 'M', 3200000.00, './view/layout/asset/img/catalogue/AIR-TERRA-HUMARA.jpg', '2025-03-06 08:27:41', 0, 0),
+(7, 'AIRIZONA VEG THYME', 2, 3, 'M', 3500000.00, './view/layout/asset/img/catalogue/AIRIZONA-VEG-THYME.jpg', '2025-03-06 08:27:41', 0, 0),
+(8, 'ARIZONA BLACKBIRKO FLOR SFB', 2, 3, 'M', 3200000.00, './view/layout/asset/img/catalogue/ARIZONA-BLACKBIRKO-FLOR-SFB.jpg', '2025-03-06 08:27:41', 0, 0),
+(9, 'ARIZONA TOBACCO BROWN OILDED LEATHER', 2, 3, 'M', 4000000.00, './view/layout/asset/img/catalogue/ARIZONA-TOBACCO-BROWN-OILED-LEATHER.jpg', '2025-03-06 08:27:41', 0, 0),
+(10, 'CHUCK 70 SEASONAL', 1, 1, 'M', 1650000.00, './view/layout/asset/img/catalogue/CHUCK-70-SEASONAL.jpg', '2025-03-06 08:27:41', 0, 0),
+(11, 'DUNK LOW (W)', 1, 2, 'M', 3500000.00, './view/layout/asset/img/catalogue/DUNK-LOW-(W).jpg', '2025-03-06 08:27:41', 0, 0),
+(12, 'FASTBREAK PRO SUEDE MID', 1, 1, 'M', 2800000.00, './view/layout/asset/img/catalogue/FASTBREAK-PRO-SUEDE-MID.jpg', '2025-03-06 08:27:41', 0, 0),
+(13, 'FENG CHENG WANG QS', 1, 1, 'U', 4200000.00, './view/layout/asset/img/catalogue/FENG-CHENG-WANG-QS.jpg', '2025-03-06 08:27:41', 0, 0),
+(14, 'GAZELLE (PS)', 3, 4, 'U', 1800000.00, './view/layout/asset/img/catalogue/GAZELLE-(PS).jpg', '2025-03-06 08:27:41', 0, 0),
+(15, 'GAZELLE INDOOR (W)', 1, 4, 'F', 2800000.00, './view/layout/asset/img/catalogue/GAZELLE-INDOOR-(W).jpg', '2025-03-06 08:27:41', 0, 0),
+(16, 'HANDBALL SPEZIAL (W)', 1, 4, 'F', 2500000.00, './view/layout/asset/img/catalogue/HANDBALL-SPEZIAL-(W).jpg', '2025-03-06 08:27:41', 0, 0),
+(17, 'NIKE CALM BEIGE (W)', 2, 2, 'F', 2349000.00, './view/layout/asset/img/catalogue/Nike_Calm_Be(w).jpg', '2025-03-06 08:27:41', 0, 0),
+(18, 'NMD S1', 1, 4, 'M', 3000000.00, './view/layout/asset/img/catalogue/NMD_S1.jpg', '2025-03-06 08:27:41', 0, 0),
+(19, 'RUN STAR HIKE HI', 1, 1, 'U', 3200000.00, './view/layout/asset/img/catalogue/RUN-STAR-HIKE-HI.jpg', '2025-03-06 08:27:41', 0, 0),
+(20, 'SAMBA OG', 1, 4, 'U', 2500000.00, './view/layout/asset/img/catalogue/SAMBA-OG.jpg', '2025-03-06 08:27:41', 0, 0),
+(21, 'SABA XLG', 1, 4, 'M', 3500000.00, './view/layout/asset/img/catalogue/SAMBA-XLG.jpg', '2025-03-06 08:27:41', 0, 0),
+(22, 'SL72 RS (PS)', 3, 4, 'U', 2000000.00, './view/layout/asset/img/catalogue/SL-72-RS-(PS).jpg', '2025-03-06 08:27:41', 0, 0),
+(23, 'SL72 RS (TD)', 3, 4, 'U', 1800000.00, './view/layout/asset/img/catalogue/SL72-RS-(TD).jpg', '2025-03-06 08:27:41', 0, 0),
+(24, 'SL72 RS', 1, 4, 'M', 2500000.00, './view/layout/asset/img/catalogue/SL72-RS.jpg', '2025-03-06 08:27:41', 0, 0),
+(25, 'STAN SMITH (TD)', 3, 4, 'U', 1500000.00, './view/layout/asset/img/catalogue/STAN-SMITH-(TD).jpg', '2025-03-06 08:27:41', 0, 0),
+(26, 'SUPERSTAR', 1, 4, 'M', 2500000.00, './view/layout/asset/img/catalogue/SUPERSTAR.jpg', '2025-03-06 08:27:41', 0, 0),
+(27, 'TEVA HURRICANE DRIFT (M)', 2, 5, 'M', 990000.00, './view/layout/asset/img/catalogue/Teva_Hurricane_Drift(m)-990k.jpg', '2025-03-06 08:27:41', 0, 0),
+(28, 'TEVA TERRA FI 5 UNIVERSAL', 2, 5, 'M', 2099000.00, './view/layout/asset/img/catalogue/Teva_Terra_Fi_5_Universal-2099k.jpg', '2025-03-06 08:27:41', 0, 0),
+(29, 'TEVA VOYA STRAPPY (W)', 2, 5, 'F', 845000.00, './view/layout/asset/img/catalogue/Teva_Voya_Strappy(w)-845k.jpg', '2025-03-06 08:27:41', 0, 0),
+(30, 'TEVA ZYMIC (W)', 2, 5, 'F', 1600000.00, './view/layout/asset/img/catalogue/Teva_Zymic-1600k(w).jpg', '2025-03-06 08:27:41', 0, 0),
+(31, 'TEVA SANDALS HURRICANE (W)', 2, 5, 'F', 1900000.00, './view/layout/asset/img/catalogue/TevaSandalsHunrricane(w).jpg', '2025-03-06 08:27:41', 0, 0),
+(32, 'UNISEX FILA PONG SD (W)', 2, 6, 'F', 1595000.00, './view/layout/asset/img/catalogue/Unisex_Fila_Pong_Sd-1595k(w).jpg', '2025-03-06 08:27:41', 0, 0),
+(33, 'UNISEX FILA TORI (M)', 2, 6, 'M', 1995000.00, './view/layout/asset/img/catalogue/unisex_fila_tori-1995k(m).jpg', '2025-03-06 08:27:41', 0, 0),
+(34, 'Giày unisex', 1, 4, 'Nam', 500000.00, './view/layout/asset/img/catalogue/Giy-unisex_681041e5d87c4.jpg', '2025-04-29 10:05:09', 0, 0),
+(35, 'Giày unisex1', 2, 2, 'Nam', 1500000.00, './view/layout/asset/img/catalogue/Giy-unisex2_68104688144e7.jpg', '2025-04-29 10:24:56', 0, 0),
+(36, 'Giày unisex2', 2, 2, 'Nam', 1000000.00, './view/layout/asset/img/catalogue/Giy-unisex2_681047464fb6e.jpg', '2025-04-29 10:28:06', 0, 0),
+(37, 'Giày unisex3', 3, 4, 'Unisex', 2000000.00, './view/layout/asset/img/catalogue/Giy-unisex3_681350ac78f5b.jpg', '2025-05-01 17:45:00', 0, 0);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `productsize`
+-- Cấu trúc bảng cho bảng `productsize`
 --
 
 CREATE TABLE `productsize` (
@@ -577,15 +1168,12 @@ CREATE TABLE `productsize` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `productsize`
+-- Đang đổ dữ liệu cho bảng `productsize`
 --
 
 INSERT INTO `productsize` (`ProductSizeID`, `ProductID`, `Size`, `StockQuantity`) VALUES
-(1, 1, '36', 50),
+(1, 1, '36', 60),
 (2, 1, '37', 30),
-(3, 1, '38', 20),
-(4, 1, '41', 15),
-(5, 1, '42', 10),
 (6, 2, '41', 10),
 (7, 2, '42', 10),
 (8, 2, '43', 10),
@@ -608,7 +1196,7 @@ INSERT INTO `productsize` (`ProductSizeID`, `ProductID`, `Size`, `StockQuantity`
 (25, 7, '41', 10),
 (26, 7, '42', 10),
 (27, 7, '43', 10),
-(28, 8, '41', 10),
+(28, 8, '41', 9),
 (29, 8, '42', 10),
 (30, 8, '43', 10),
 (31, 9, '41', 10),
@@ -648,7 +1236,7 @@ INSERT INTO `productsize` (`ProductSizeID`, `ProductID`, `Size`, `StockQuantity`
 (65, 18, '41', 10),
 (66, 18, '42', 10),
 (67, 18, '43', 10),
-(68, 19, '36', 10),
+(68, 19, '36', 9),
 (69, 19, '37', 10),
 (70, 19, '38', 10),
 (71, 19, '41', 10),
@@ -706,12 +1294,27 @@ INSERT INTO `productsize` (`ProductSizeID`, `ProductID`, `Size`, `StockQuantity`
 (123, 32, '39', 10),
 (124, 33, '41', 10),
 (125, 33, '42', 10),
-(126, 33, '43', 10);
+(126, 33, '43', 10),
+(131, 34, '40', 30),
+(137, 1, '38', 20),
+(140, 1, '35', 50),
+(142, 35, '36', 25),
+(144, 35, '35', 20),
+(147, 35, '38', 30),
+(150, 1, '41', 15),
+(163, 36, '30', 40),
+(164, 36, '31', 40),
+(165, 36, '32', 32),
+(171, 36, '33', 20),
+(180, 36, '35', 10),
+(181, 36, '36', 40),
+(184, 37, '30', 21),
+(185, 37, '35', 260);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `province`
+-- Cấu trúc bảng cho bảng `province`
 --
 
 CREATE TABLE `province` (
@@ -720,7 +1323,7 @@ CREATE TABLE `province` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Tỉnh thành';
 
 --
--- Dumping data for table `province`
+-- Đang đổ dữ liệu cho bảng `province`
 --
 
 INSERT INTO `province` (`province_id`, `name`) VALUES
@@ -791,7 +1394,54 @@ INSERT INTO `province` (`province_id`, `name`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `savedpayments`
+-- Cấu trúc bảng cho bảng `quyen`
+--
+
+CREATE TABLE `quyen` (
+  `id` int(11) NOT NULL,
+  `ma_quyen` varchar(50) NOT NULL,
+  `ten_quyen` varchar(100) NOT NULL,
+  `id_chuc_nang` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `quyen`
+--
+
+INSERT INTO `quyen` (`id`, `ma_quyen`, `ten_quyen`, `id_chuc_nang`) VALUES
+(1, 'order_view', 'Xem đơn hàng', 2),
+(2, 'order_add', 'Thêm đơn hàng', 2),
+(3, 'order_edit', 'Sửa đơn hàng', 2),
+(4, 'order_delete', 'Xoá đơn hàng', 2),
+(5, 'product_view', 'Xem sản phẩm', 3),
+(6, 'product_add', 'Thêm sản phẩm', 3),
+(7, 'product_edit', 'Sửa sản phẩm', 3),
+(8, 'product_delete', 'Xoá sản phẩm', 3),
+(9, 'user_view', 'Xem người dùng', 4),
+(10, 'user_add', 'Thêm người dùng', 4),
+(11, 'user_edit', 'Sửa người dùng', 4),
+(12, 'user_delete', 'Xoá người dùng', 4),
+(13, 'permission_view', 'Xem phân quyền', 10),
+(14, 'permission_edit', 'Gán quyền', 10),
+(16, 'staff_view', 'Xem nhân viên', 5),
+(17, 'staff_add', 'Thêm nhân viên', 5),
+(18, 'staff_edit', 'Sửa nhân viên', 5),
+(19, 'staff_delete', 'Xoá nhân viên', 5),
+(20, 'supplier_view', 'Xem nhà cung cấp', 6),
+(21, 'supplier_add', 'Thêm nhà cung cấp', 6),
+(22, 'supplier_edit', 'Sửa nhà cung cấp', 6),
+(23, 'supplier_delete', 'Xoá nhà cung cấp', 6),
+(24, 'import_view', 'Xem nhập hàng', 7),
+(25, 'import_add', 'Tạo phiếu nhập hàng', 7),
+(26, 'statistic_view', 'Xem thống kê', 8),
+(27, 'report_view', 'Xem báo cáo', 9),
+(28, 'permission_add', 'Thêm quyền', 10),
+(29, 'permission_delete', 'Xóa quyền', 10);
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `savedpayments`
 --
 
 CREATE TABLE `savedpayments` (
@@ -804,7 +1454,7 @@ CREATE TABLE `savedpayments` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `savedpayments`
+-- Đang đổ dữ liệu cho bảng `savedpayments`
 --
 
 INSERT INTO `savedpayments` (`UserID`, `CardOwner`, `CardNumber`, `ExpiryDate`, `CVV`, `CreatedAt`) VALUES
@@ -813,7 +1463,7 @@ INSERT INTO `savedpayments` (`UserID`, `CardOwner`, `CardNumber`, `ExpiryDate`, 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `supplier`
+-- Cấu trúc bảng cho bảng `supplier`
 --
 
 CREATE TABLE `supplier` (
@@ -822,18 +1472,17 @@ CREATE TABLE `supplier` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `supplier`
+-- Đang đổ dữ liệu cho bảng `supplier`
 --
 
 INSERT INTO `supplier` (`SupplierID`, `SupplierName`) VALUES
-(1, 'Công ty TNHH Uniqlo Việt Nam'),
-(2, 'Công ty TNHH Levi\'s Việt Nam'),
-(3, 'Công ty TNHH Adidas Việt Nam');
+(1, 'Chợ Xóm Chiếu'),
+(2, 'Chợ Lớn');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `supplierproduct`
+-- Cấu trúc bảng cho bảng `supplierproduct`
 --
 
 CREATE TABLE `supplierproduct` (
@@ -846,7 +1495,7 @@ CREATE TABLE `supplierproduct` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user`
+-- Cấu trúc bảng cho bảng `user`
 --
 
 CREATE TABLE `user` (
@@ -865,20 +1514,43 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `user`
+-- Đang đổ dữ liệu cho bảng `user`
 --
 
 INSERT INTO `user` (`UserID`, `Username`, `Fullname`, `PhoneNumber`, `Email`, `Address`, `ProvinceID`, `DistrictID`, `WardID`, `PasswordHash`, `CreatedAt`, `isActivate`) VALUES
 (1, 'nguyenminh', 'Nguyễn Minh Anh', '0905123456', 'minhanh@gmail.com', '123 Đường Láng, Đống Đa, Hà Nội', 1, 1, 1, 'hash123', '2024-01-10 10:00:00', 0),
 (2, 'tranthanh', 'Trần Thanh Tâm', '0916123456', 'thanhtam@gmail.com', '45 Nguyễn Huệ, TP Huế', 1, 1, 1, 'hash456', '2024-02-15 14:30:00', 1),
 (3, 'levan', 'Lê Văn Hùng', '0935123456', 'vanhung@gmail.com', '78 Phạm Văn Đồng, TP Đà Nẵng', 1, 1, 1, 'hash789', '2024-03-20 09:15:00', 0),
-(4, 'dabeo', 'Gia Bao', '0761283360', NULL, 'TPHCM', 1, 1, 1, '$2y$10$5PlQ1TqYZSW25Y0ofXmYPOrz6F3BeYlV/9HIUNEj2cO8nMlqAidS2', '2025-04-10 07:58:24', 1),
-(5, 'test1', 'Test', '07435622561', NULL, '1A Street B', 17, 182, 3091, '$2y$10$58REMaXsF43uZVAk4bXX9eAnl5uTf6Gv73hU.OIVAlUQEkfnGtXAe', '2025-04-11 21:49:01', 1);
+(4, 'dabeo', 'Gia Bao', '0761283360', '', 'TPHCM', 2, 31, 580, '$2y$10$5PlQ1TqYZSW25Y0ofXmYPOrz6F3BeYlV/9HIUNEj2cO8nMlqAidS2', '2025-04-10 07:58:24', 1),
+(5, 'test1', 'Test', '07435622561', NULL, '1A Street B', 17, 182, 3091, '$2y$10$58REMaXsF43uZVAk4bXX9eAnl5uTf6Gv73hU.OIVAlUQEkfnGtXAe', '2025-04-11 21:49:01', 1),
+(6, 'thaiphan', 'phan vinh thai', '0941234567', NULL, '12A3NoWhere', 15, 165, 2811, '$2y$10$u0Ppqp8snIqOxWLfEzQ78.a6RvzcPTnmYKUPaXem/Anv9IH7weQ/e', '2025-04-18 17:42:27', 1),
+(7, 'minhmh', 'Mai Minh', '0935704208', NULL, 'HCM', 42, 468, 7753, '$2y$10$JGqqT/zKuGreOq/dBHfiguJqotGXHdD1YAQeZHxATo6UkhgLVj06m', '2025-04-29 15:54:41', 1);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `wards`
+-- Cấu trúc bảng cho bảng `vai_tro`
+--
+
+CREATE TABLE `vai_tro` (
+  `id` int(11) NOT NULL,
+  `ten_vai_tro` varchar(100) NOT NULL,
+  `trangthai` tinyint(1) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `vai_tro`
+--
+
+INSERT INTO `vai_tro` (`id`, `ten_vai_tro`, `trangthai`) VALUES
+(1, 'Quản trị viên', 1),
+(2, 'Nhân viên bán hàng', 1),
+(3, 'Kế toán', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `wards`
 --
 
 CREATE TABLE `wards` (
@@ -888,7 +1560,7 @@ CREATE TABLE `wards` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Xã Phường';
 
 --
--- Dumping data for table `wards`
+-- Đang đổ dữ liệu cho bảng `wards`
 --
 
 INSERT INTO `wards` (`wards_id`, `district_id`, `name`) VALUES
@@ -11483,17 +12155,17 @@ INSERT INTO `wards` (`wards_id`, `district_id`, `name`) VALUES
 (10584, 705, 'Xã Đất Mũi');
 
 --
--- Indexes for dumped tables
+-- Chỉ mục cho các bảng đã đổ
 --
 
 --
--- Indexes for table `brand`
+-- Chỉ mục cho bảng `brand`
 --
 ALTER TABLE `brand`
   ADD PRIMARY KEY (`BrandID`);
 
 --
--- Indexes for table `cart`
+-- Chỉ mục cho bảng `cart`
 --
 ALTER TABLE `cart`
   ADD PRIMARY KEY (`UserID`,`ProductSizeID`),
@@ -11501,49 +12173,57 @@ ALTER TABLE `cart`
   ADD KEY `cart_ibfk_2` (`ProductSizeID`);
 
 --
--- Indexes for table `categories`
+-- Chỉ mục cho bảng `categories`
 --
 ALTER TABLE `categories`
   ADD PRIMARY KEY (`CategoryID`);
 
 --
--- Indexes for table `district`
+-- Chỉ mục cho bảng `chitiet_vaitro_quyen`
+--
+ALTER TABLE `chitiet_vaitro_quyen`
+  ADD PRIMARY KEY (`id_vaitro`,`id_quyen`),
+  ADD KEY `id_quyen` (`id_quyen`);
+
+--
+-- Chỉ mục cho bảng `chuc_nang`
+--
+ALTER TABLE `chuc_nang`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Chỉ mục cho bảng `district`
 --
 ALTER TABLE `district`
   ADD PRIMARY KEY (`district_id`),
   ADD KEY `fk_province` (`province_id`);
 
 --
--- Indexes for table `employee`
+-- Chỉ mục cho bảng `employee`
 --
 ALTER TABLE `employee`
   ADD PRIMARY KEY (`EmployeeID`),
   ADD UNIQUE KEY `Email` (`Email`),
-  ADD KEY `PermissionID` (`PermissionID`);
+  ADD KEY `RoleID` (`RoleID`);
 
 --
--- Indexes for table `function`
---
-ALTER TABLE `function`
-  ADD PRIMARY KEY (`FunctionID`);
-
---
--- Indexes for table `import`
+-- Chỉ mục cho bảng `import`
 --
 ALTER TABLE `import`
   ADD PRIMARY KEY (`ImportID`),
   ADD KEY `EmployeeID` (`EmployeeID`);
 
 --
--- Indexes for table `importdetail`
+-- Chỉ mục cho bảng `importdetail`
 --
 ALTER TABLE `importdetail`
   ADD PRIMARY KEY (`ImportID`,`ProductSizeID`),
   ADD KEY `ImportID` (`ImportID`),
-  ADD KEY `ProductSizeID` (`ProductSizeID`);
+  ADD KEY `ProductSizeID` (`ProductSizeID`),
+  ADD KEY `fk_importdetail_supplier` (`SupplierID`);
 
 --
--- Indexes for table `orderdetail`
+-- Chỉ mục cho bảng `orderdetail`
 --
 ALTER TABLE `orderdetail`
   ADD PRIMARY KEY (`OrderID`,`ProductSizeID`),
@@ -11551,7 +12231,7 @@ ALTER TABLE `orderdetail`
   ADD KEY `fk_orderdetail_productsize` (`ProductSizeID`);
 
 --
--- Indexes for table `orders`
+-- Chỉ mục cho bảng `orders`
 --
 ALTER TABLE `orders`
   ADD PRIMARY KEY (`OrderID`),
@@ -11563,21 +12243,14 @@ ALTER TABLE `orders`
   ADD KEY `fk_ward` (`WardID`);
 
 --
--- Indexes for table `paymentdetail`
+-- Chỉ mục cho bảng `paymentdetail`
 --
 ALTER TABLE `paymentdetail`
   ADD PRIMARY KEY (`OrderID`),
   ADD KEY `OrderID` (`OrderID`);
 
 --
--- Indexes for table `permission`
---
-ALTER TABLE `permission`
-  ADD PRIMARY KEY (`PermissionID`),
-  ADD KEY `FunctionID` (`FunctionID`);
-
---
--- Indexes for table `product`
+-- Chỉ mục cho bảng `product`
 --
 ALTER TABLE `product`
   ADD PRIMARY KEY (`ProductID`),
@@ -11585,32 +12258,40 @@ ALTER TABLE `product`
   ADD KEY `BrandID` (`BrandID`);
 
 --
--- Indexes for table `productsize`
+-- Chỉ mục cho bảng `productsize`
 --
 ALTER TABLE `productsize`
   ADD PRIMARY KEY (`ProductSizeID`),
   ADD KEY `ProductID` (`ProductID`);
 
 --
--- Indexes for table `province`
+-- Chỉ mục cho bảng `province`
 --
 ALTER TABLE `province`
   ADD PRIMARY KEY (`province_id`);
 
 --
--- Indexes for table `savedpayments`
+-- Chỉ mục cho bảng `quyen`
+--
+ALTER TABLE `quyen`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `ma_quyen` (`ma_quyen`),
+  ADD KEY `id_chuc_nang` (`id_chuc_nang`);
+
+--
+-- Chỉ mục cho bảng `savedpayments`
 --
 ALTER TABLE `savedpayments`
   ADD PRIMARY KEY (`UserID`);
 
 --
--- Indexes for table `supplier`
+-- Chỉ mục cho bảng `supplier`
 --
 ALTER TABLE `supplier`
   ADD PRIMARY KEY (`SupplierID`);
 
 --
--- Indexes for table `supplierproduct`
+-- Chỉ mục cho bảng `supplierproduct`
 --
 ALTER TABLE `supplierproduct`
   ADD PRIMARY KEY (`SupplierID`,`ProductID`),
@@ -11618,7 +12299,7 @@ ALTER TABLE `supplierproduct`
   ADD KEY `ProductID` (`ProductID`);
 
 --
--- Indexes for table `user`
+-- Chỉ mục cho bảng `user`
 --
 ALTER TABLE `user`
   ADD PRIMARY KEY (`UserID`),
@@ -11627,106 +12308,118 @@ ALTER TABLE `user`
   ADD KEY `fk_user_ward` (`WardID`);
 
 --
--- Indexes for table `wards`
+-- Chỉ mục cho bảng `vai_tro`
+--
+ALTER TABLE `vai_tro`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Chỉ mục cho bảng `wards`
 --
 ALTER TABLE `wards`
   ADD PRIMARY KEY (`wards_id`),
   ADD KEY `fk_district` (`district_id`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT cho các bảng đã đổ
 --
 
 --
--- AUTO_INCREMENT for table `brand`
+-- AUTO_INCREMENT cho bảng `brand`
 --
 ALTER TABLE `brand`
   MODIFY `BrandID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
--- AUTO_INCREMENT for table `categories`
+-- AUTO_INCREMENT cho bảng `categories`
 --
 ALTER TABLE `categories`
   MODIFY `CategoryID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT for table `district`
+-- AUTO_INCREMENT cho bảng `chuc_nang`
+--
+ALTER TABLE `chuc_nang`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT cho bảng `district`
 --
 ALTER TABLE `district`
   MODIFY `district_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=706;
 
 --
--- AUTO_INCREMENT for table `employee`
+-- AUTO_INCREMENT cho bảng `employee`
 --
 ALTER TABLE `employee`
-  MODIFY `EmployeeID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `EmployeeID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
--- AUTO_INCREMENT for table `function`
---
-ALTER TABLE `function`
-  MODIFY `FunctionID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- AUTO_INCREMENT for table `import`
+-- AUTO_INCREMENT cho bảng `import`
 --
 ALTER TABLE `import`
-  MODIFY `ImportID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ImportID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
--- AUTO_INCREMENT for table `orders`
+-- AUTO_INCREMENT cho bảng `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `OrderID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `OrderID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
--- AUTO_INCREMENT for table `permission`
---
-ALTER TABLE `permission`
-  MODIFY `PermissionID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT for table `product`
+-- AUTO_INCREMENT cho bảng `product`
 --
 ALTER TABLE `product`
-  MODIFY `ProductID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `ProductID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
--- AUTO_INCREMENT for table `productsize`
+-- AUTO_INCREMENT cho bảng `productsize`
 --
 ALTER TABLE `productsize`
-  MODIFY `ProductSizeID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=131;
+  MODIFY `ProductSizeID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=186;
 
 --
--- AUTO_INCREMENT for table `province`
+-- AUTO_INCREMENT cho bảng `province`
 --
 ALTER TABLE `province`
   MODIFY `province_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
 
 --
--- AUTO_INCREMENT for table `supplier`
+-- AUTO_INCREMENT cho bảng `quyen`
+--
+ALTER TABLE `quyen`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+
+--
+-- AUTO_INCREMENT cho bảng `supplier`
 --
 ALTER TABLE `supplier`
   MODIFY `SupplierID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT for table `user`
+-- AUTO_INCREMENT cho bảng `user`
 --
 ALTER TABLE `user`
-  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
--- AUTO_INCREMENT for table `wards`
+-- AUTO_INCREMENT cho bảng `vai_tro`
+--
+ALTER TABLE `vai_tro`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT cho bảng `wards`
 --
 ALTER TABLE `wards`
   MODIFY `wards_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10585;
 
 --
--- Constraints for dumped tables
+-- Các ràng buộc cho các bảng đã đổ
 --
 
 --
--- Constraints for table `cart`
+-- Các ràng buộc cho bảng `cart`
 --
 ALTER TABLE `cart`
   ADD CONSTRAINT `cart_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `user` (`UserID`),
@@ -11734,33 +12427,41 @@ ALTER TABLE `cart`
   ADD CONSTRAINT `fk_cart_productsize` FOREIGN KEY (`ProductSizeID`) REFERENCES `productsize` (`ProductSizeID`);
 
 --
--- Constraints for table `employee`
+-- Các ràng buộc cho bảng `chitiet_vaitro_quyen`
 --
-ALTER TABLE `employee`
-  ADD CONSTRAINT `employee_ibfk_1` FOREIGN KEY (`PermissionID`) REFERENCES `permission` (`PermissionID`);
+ALTER TABLE `chitiet_vaitro_quyen`
+  ADD CONSTRAINT `chitiet_vaitro_quyen_ibfk_1` FOREIGN KEY (`id_vaitro`) REFERENCES `vai_tro` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `chitiet_vaitro_quyen_ibfk_2` FOREIGN KEY (`id_quyen`) REFERENCES `quyen` (`id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `import`
+-- Các ràng buộc cho bảng `employee`
+--
+ALTER TABLE `employee`
+  ADD CONSTRAINT `employee_ibfk_1` FOREIGN KEY (`RoleID`) REFERENCES `vai_tro` (`id`);
+
+--
+-- Các ràng buộc cho bảng `import`
 --
 ALTER TABLE `import`
   ADD CONSTRAINT `import_ibfk_1` FOREIGN KEY (`EmployeeID`) REFERENCES `employee` (`EmployeeID`);
 
 --
--- Constraints for table `importdetail`
+-- Các ràng buộc cho bảng `importdetail`
 --
 ALTER TABLE `importdetail`
+  ADD CONSTRAINT `fk_importdetail_supplier` FOREIGN KEY (`SupplierID`) REFERENCES `supplier` (`SupplierID`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `importdetail_ibfk_1` FOREIGN KEY (`ImportID`) REFERENCES `import` (`ImportID`),
   ADD CONSTRAINT `importdetail_ibfk_3` FOREIGN KEY (`ProductSizeID`) REFERENCES `productsize` (`ProductSizeID`);
 
 --
--- Constraints for table `orderdetail`
+-- Các ràng buộc cho bảng `orderdetail`
 --
 ALTER TABLE `orderdetail`
   ADD CONSTRAINT `fk_orderdetail_productsize` FOREIGN KEY (`ProductSizeID`) REFERENCES `productsize` (`ProductSizeID`),
   ADD CONSTRAINT `orderdetail_ibfk_1` FOREIGN KEY (`OrderID`) REFERENCES `orders` (`OrderID`);
 
 --
--- Constraints for table `orders`
+-- Các ràng buộc cho bảng `orders`
 --
 ALTER TABLE `orders`
   ADD CONSTRAINT `fk_district` FOREIGN KEY (`DistrictID`) REFERENCES `district` (`district_id`),
@@ -11772,45 +12473,45 @@ ALTER TABLE `orders`
   ADD CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`SaleID`) REFERENCES `employee` (`EmployeeID`);
 
 --
--- Constraints for table `paymentdetail`
+-- Các ràng buộc cho bảng `paymentdetail`
 --
 ALTER TABLE `paymentdetail`
   ADD CONSTRAINT `paymentdetail_ibfk_1` FOREIGN KEY (`OrderID`) REFERENCES `orders` (`OrderID`);
 
 --
--- Constraints for table `permission`
---
-ALTER TABLE `permission`
-  ADD CONSTRAINT `permission_ibfk_1` FOREIGN KEY (`FunctionID`) REFERENCES `function` (`FunctionID`);
-
---
--- Constraints for table `product`
+-- Các ràng buộc cho bảng `product`
 --
 ALTER TABLE `product`
   ADD CONSTRAINT `product_ibfk_1` FOREIGN KEY (`CategoryID`) REFERENCES `categories` (`CategoryID`),
   ADD CONSTRAINT `product_ibfk_2` FOREIGN KEY (`BrandID`) REFERENCES `brand` (`BrandID`);
 
 --
--- Constraints for table `productsize`
+-- Các ràng buộc cho bảng `productsize`
 --
 ALTER TABLE `productsize`
   ADD CONSTRAINT `productsize_ibfk_1` FOREIGN KEY (`ProductID`) REFERENCES `product` (`ProductID`);
 
 --
--- Constraints for table `savedpayments`
+-- Các ràng buộc cho bảng `quyen`
+--
+ALTER TABLE `quyen`
+  ADD CONSTRAINT `quyen_ibfk_1` FOREIGN KEY (`id_chuc_nang`) REFERENCES `chuc_nang` (`id`) ON DELETE CASCADE;
+
+--
+-- Các ràng buộc cho bảng `savedpayments`
 --
 ALTER TABLE `savedpayments`
   ADD CONSTRAINT `savedpayments_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `user` (`UserID`);
 
 --
--- Constraints for table `supplierproduct`
+-- Các ràng buộc cho bảng `supplierproduct`
 --
 ALTER TABLE `supplierproduct`
   ADD CONSTRAINT `supplierproduct_ibfk_1` FOREIGN KEY (`SupplierID`) REFERENCES `supplier` (`SupplierID`) ON DELETE CASCADE,
   ADD CONSTRAINT `supplierproduct_ibfk_2` FOREIGN KEY (`ProductID`) REFERENCES `product` (`ProductID`) ON DELETE CASCADE;
 
 --
--- Constraints for table `user`
+-- Các ràng buộc cho bảng `user`
 --
 ALTER TABLE `user`
   ADD CONSTRAINT `fk_user_district` FOREIGN KEY (`DistrictID`) REFERENCES `district` (`district_id`),
